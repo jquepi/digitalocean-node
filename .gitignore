@@ -1,0 +1,9 @@
+.idea
+node_modules
+npm-debug.log
+*.swp
+docs
+.DS_Store
+
+test/config.json
+

@@ -1,0 +1,31 @@
+{
+  "name": "digitalocean",
+  "version": "0.3.0",
+  "author": "Phillip Baker <phillbaker@retrodict.com>",
+  "description": "nodejs wrapper for digitalocean v2 api",
+  "main": "./lib/digitalocean",
+  "repository": "phillbaker/digitalocean-node",
+  "keywords": [
+    "wrapper",
+    "api",
+    "v2",
+    "digitalocean"
+  ],
+  "scripts": {
+    "test": "mocha --bail --recursive --reporter dot"
+  },
+  "dependencies": {
+    "request": "2.51.x",
+    "randomstring": "1.x.x",
+    "deep-extend": "0.x.x"
+  },
+  "devDependencies": {
+    "chai": "~1.10.0",
+    "nock": "0.57.x",
+    "mocha": "~2.1.0"
+  },
+  "engines": {
+    "node": ">0.4.11"
+  },
+  "license": "MIT"
+}
