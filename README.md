@@ -14,9 +14,12 @@ var digitalocean = require('digitalocean');
 
 var client = digitalocean.client('TOKEN');
 
-var doAccount      = client.account();
-var doDroplets     = client.droplets();
-var doDroplet      = client.droplet(123);
+client.account.get(callback);
+client.droplets.list(callback);
+client.droplets.create(options, callback);
+client.droplets.get(123, callback);
+client.droplets.delete(123, callback);
+client.droplet_actions.powerOff(123, callback);
 ```
 
 #### Build a client from an access token
@@ -33,30 +36,16 @@ client.get('/account', {}, function (err, status, body, headers) {
 
 Request options can be set by setting defaults on the client.
 
-## Authentication
-
-#TODO
-
-## Rate Limiting
-
-You can also check your rate limit status by calling the following.
-
-```js
-client.limit(function (err, left, max) {
-  console.log(left); // 4999
-  console.log(max);  // 5000
-});
-```
-
 ## API Callback Structure
 
-__All the callbacks for the following will take first an error argument, then a data argument, like this:__
+__All the callbacks for the following will take first an error argument, then a data argument, then the raw response. For example:__
 
 ```js
-doAccount.get(function(err, data, headers) {
+client.account.get(function(err, account, headers, response) {
   console.log("error: " + err);
-  console.log("data: " + data);
+  console.log("account: " + account);
   console.log("headers: " + headers);
+  console.log("response: " + response);
 });
 ```
 
@@ -69,18 +58,31 @@ The `perPage` argument is also optional and is used to specify how many objects 
 
 ```js
 // Normal usage of function
-client.droplets(callback); // Callback recevies an array of first 30 issues
+client.droplets.list(callback); // Callback receives an array of first 30 issues
 
 // Using pagination parameters
-client.droplets(2, 100, callback); // Callback recevies an array of second 100 issues
-client.droplets(10, callback); // Callback recevies an array of 30 issues from page 10
+client.droplets.list(2, 100, callback); // Callback receives an array of second 100 issues
+client.droplets.list(10, callback); // Callback receives an array of 30 issues from page 10
 
 // Pagination parameters can be set with query object too
-client.droplets({
+client.droplets.list({
   page: 2,
-  perPage: 100,
+  per_page: 100
 }, callback); //array of second 100 issues which are closed
 ```
+
+## Rate Limiting
+
+You can also check your rate limit status by calling the following.
+
+```js
+client.droplets.list(function (err, account, headers, response) {
+  console.log(headers['ratelimit-remaining']); // 4999
+  console.log(headers['ratelimit-limit']);  // 5000
+  console.log(headers['ratelimit-reset']);  // Time in Unix Epoch, e.g. 1415984218
+});
+```
+
 ## Contributions
 
 TODO
