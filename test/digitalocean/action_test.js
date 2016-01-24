@@ -26,7 +26,7 @@ describe('action endpoints', function() {
     it('returns actions', function() {
       testUtils.api.get('/v2/actions').reply(200, JSON.stringify(data));
 
-      client.action.list(function(err, actions, headers) {
+      client.actions.list(function(err, actions, headers) {
         expect(actions).to.be.eql(data.actions);
       });
     });
@@ -34,7 +34,7 @@ describe('action endpoints', function() {
     it('returns actions at page', function() {
       testUtils.api.get('/v2/actions?page=2').reply(200, JSON.stringify(data));
 
-      client.action.list(2, function(err, actions, headers) {
+      client.actions.list(2, function(err, actions, headers) {
         expect(actions).to.be.eql(data.actions);
       });
     });
@@ -42,7 +42,18 @@ describe('action endpoints', function() {
     it('returns actions at page with length', function() {
       testUtils.api.get('/v2/actions?page=2&per_page=2').reply(200, JSON.stringify(data));
 
-      client.action.list(2, 2, function(err, actions, headers) {
+      client.actions.list(2, 2, function(err, actions, headers) {
+        expect(actions).to.be.eql(data.actions);
+      });
+    });
+
+    it('returns actions with a query object', function() {
+      testUtils.api.get('/v2/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
+
+      client.actions.list({
+        page: 1,
+        per_page: 2
+      }, function(err, actions, headers) {
         expect(actions).to.be.eql(data.actions);
       });
     });
@@ -71,7 +82,7 @@ describe('action endpoints', function() {
       };
       testUtils.api.get('/v2/action/123').reply(200, JSON.stringify(data));
 
-      client.action.get(123, function(err, action, headers) {
+      client.actions.get(123, function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
