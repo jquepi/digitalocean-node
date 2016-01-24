@@ -99,8 +99,8 @@ describe('droplet endpoints', function() {
     it('returns droplets', function() {
       testUtils.api.get('/v2/droplets').reply(200, JSON.stringify(data));
 
-      client.droplets.list(function(err, response, headers) {
-        expect(response).to.be.eql(data.droplets);
+      client.droplets.list(function(err, droplets, headers) {
+        expect(droplets).to.be.eql(data.droplets);
       });
     });
 
@@ -117,6 +117,98 @@ describe('droplet endpoints', function() {
 
       client.droplets.list(2, 1, function(err, droplets, headers) {
         expect(droplets).to.be.eql(data.droplets);
+      });
+    });
+  });
+
+  describe('create', function() {
+    var data = {
+      "droplet": {
+        "id": 19,
+        "name": "name",
+        "memory": 1024,
+        "vcpus": 2,
+        "disk": 20,
+        "region": {
+          "slug": "nyc1",
+          "name": "New York",
+          "sizes": [
+            "1024mb",
+            "512mb"
+          ],
+          "available": true,
+          "features": [
+            "virtio",
+            "private_networking",
+            "backups",
+            "ipv6"
+          ]
+        },
+        "image": {
+          "id": 1,
+          "name": "Ubuntu 13.04",
+          "distribution": "ubuntu",
+          "slug": "ubuntu1304",
+          "public": true,
+          "regions": [
+            "nyc1"
+          ],
+          "created_at": "2014-07-29T14:35:37Z"
+        },
+        "size_slug": "1gb",
+        "locked": false,
+        "status": "new",
+        "networks": {
+          "v4": [
+            {
+              "ip_address": "10.0.0.19",
+              "netmask": "255.255.0.0",
+              "gateway": "10.0.0.1",
+              "type": "private"
+            },
+            {
+              "ip_address": "127.0.0.19",
+              "netmask": "255.255.255.0",
+              "gateway": "127.0.0.20",
+              "type": "public"
+            }
+          ],
+          "v6": [
+            {
+              "ip_address": "2001::13",
+              "cidr": 124,
+              "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
+              "type": "public"
+            }
+          ]
+        },
+        "kernel": {
+          "id": 485432985,
+          "name": "DO-recovery-static-fsck",
+          "version": "3.8.0-25-generic"
+        },
+        "created_at": "2014-07-29T14:35:37Z",
+        "features": [
+          "ipv6"
+        ],
+        "backup_ids": [],
+        "snapshot_ids": [],
+        "action_ids": []
+      }
+    };
+
+    it('creates the droplet', function() {
+      var attributes = {
+        name: 'name',
+        region: 'nyc1',
+        size: '1gb',
+        image: 1
+      };
+
+      testUtils.api.post('/v2/droplets', attributes).reply(202, data);
+
+      client.droplets.create(attributes, function(err, droplet, headers) {
+        expect(droplet).to.be.eql(data.droplet);
       });
     });
   });
@@ -206,100 +298,70 @@ describe('droplet endpoints', function() {
     it('returns the droplet', function() {
       testUtils.api.get('/v2/droplets/123').reply(200, JSON.stringify(data));
 
-      client.droplets.get(123, function(err, response, headers) {
-        expect(response).to.be.eql(data.droplet);
+      client.droplets.get(123, function(err, droplet, headers) {
+        expect(droplet).to.be.eql(data.droplet);
       });
     });
   });
 
-  describe('create', function() {
+  describe('actions', function() {
     var data = {
-      "droplet": {
-        "id": 19,
-        "name": "name",
-        "memory": 1024,
-        "vcpus": 2,
-        "disk": 20,
-        "region": {
-          "slug": "nyc1",
-          "name": "New York",
-          "sizes": [
-            "1024mb",
-            "512mb"
-          ],
-          "available": true,
-          "features": [
-            "virtio",
-            "private_networking",
-            "backups",
-            "ipv6"
-          ]
-        },
-        "image": {
-          "id": 1,
-          "name": "Ubuntu 13.04",
-          "distribution": "ubuntu",
-          "slug": "ubuntu1304",
-          "public": true,
-          "regions": [
-            "nyc1"
-          ],
-          "created_at": "2014-07-29T14:35:37Z"
-        },
-        "size_slug": "1gb",
-        "locked": false,
-        "status": "new",
-        "networks": {
-          "v4": [
-            {
-              "ip_address": "10.0.0.19",
-              "netmask": "255.255.0.0",
-              "gateway": "10.0.0.1",
-              "type": "private"
-            },
-            {
-              "ip_address": "127.0.0.19",
-              "netmask": "255.255.255.0",
-              "gateway": "127.0.0.20",
-              "type": "public"
-            }
-          ],
-          "v6": [
-            {
-              "ip_address": "2001::13",
-              "cidr": 124,
-              "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
-              "type": "public"
-            }
-          ]
-        },
-        "kernel": {
-          "id": 485432985,
-          "name": "DO-recovery-static-fsck",
-          "version": "3.8.0-25-generic"
-        },
-        "created_at": "2014-07-29T14:35:37Z",
-        "features": [
-          "ipv6"
-        ],
-        "backup_ids": [],
-        "snapshot_ids": [],
-        "action_ids": []
+      "actions": [
+        {
+          "id": 19,
+          "status": "in-progress",
+          "type": "create",
+          "started_at": "2014-07-29T14:35:39Z",
+          "completed_at": null,
+          "resource_id": 24,
+          "resource_type": "droplet",
+          "region_slug": "nyc1",
+          "region": {
+            "name": "New York",
+            "slug": "nyc1",
+            "available": true,
+            "sizes": ["512mb"],
+            "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
+          }
+        }
+      ],
+      "meta": {
+        "total": 1
       }
     };
 
-    it('creates the droplet', function() {
-      var droplet = {
-        name: 'name',
-        region: 'nyc1',
-        size: '1gb',
-        image: 1
-      };
+    it('lists droplet actions', function() {
+      testUtils.api.get('/v2/droplets/123/actions').reply(200, JSON.stringify(data));
 
-      testUtils.api.post('/v2/droplets', droplet).reply(202, data);
+      client.droplets.actions(123, function(err, actions, headers) {
+        expect(actions).to.be.eql(data.actions);
+      });
+    });
 
-      client.droplets.create(droplet, function(err, response, headers) {
-        expect(response).to.be.eql(data.droplet);
+    it('lists droplet actions at page', function() {
+      testUtils.api.get('/v2/droplets/123/actions?page=2').reply(200, JSON.stringify(data));
+
+      client.droplets.actions(123, 2, function(err, droplets, headers) {
+        expect(droplets).to.be.eql(data.actions);
+      });
+    });
+
+    it('lists droplet actions at page with length', function() {
+      testUtils.api.get('/v2/droplets/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.droplets.actions(123, 2, 1, function(err, droplets, headers) {
+        expect(droplets).to.be.eql(data.actions);
+      });
+    });
+
+    it('lists droplet actions with a query object', function() {
+      testUtils.api.get('/v2/droplets/123/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
+
+      client.droplets.actions(123, {
+        page: 1,
+        per_page: 2
+      }, function(err, actions, headers) {
+        expect(actions).to.be.eql(data.actions);
       });
     });
   });
@@ -308,7 +370,7 @@ describe('droplet endpoints', function() {
     it('deletes the droplet', function(done) {
       testUtils.api.delete('/v2/droplets/123').reply(204, '');
 
-      client.droplets.delete(123, function(err, response, headers) {
+      client.droplets.delete(123, function() {
         done();
       });
     });

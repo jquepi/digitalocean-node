@@ -18,6 +18,7 @@ client.account.get(callback);
 client.droplets.list(callback);
 client.droplets.create(options, callback);
 client.droplets.get(123, callback);
+client.droplets.actions(123, callback);
 client.droplets.delete(123, callback);
 client.droplet_actions.powerOff(123, callback);
 ```

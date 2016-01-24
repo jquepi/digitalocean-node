@@ -29,7 +29,7 @@ describe('digitalocean client', function() {
         var data = { 'i_am_json': true };
         testUtils.api.get('/v2/account').reply(200, JSON.stringify(data));
 
-        client.account.get(function(err, response, headers, raw) {
+        client.account.get(function(err, object, headers, raw) {
           expect(raw).to.be.eql(data)
         });
       });
@@ -37,7 +37,7 @@ describe('digitalocean client', function() {
       it('It receives an error', function(done) {
         testUtils.api.get('/v2/account').reply(401, "Error foo");
 
-        client.account.get(function(err, data, headers) {
+        client.account.get(function(err) {
           if (err) done();
         });
       });
