@@ -26,8 +26,8 @@ describe('domain endpoints', function() {
     it('returns domains', function() {
       testUtils.api.get('/v2/domains').reply(200, JSON.stringify(data));
 
-      client.domains.list(function(err, domain, headers) {
-        expect(domain).to.be.eql(data.domains);
+      client.domains.list(function(err, domains, headers) {
+        expect(domains).to.be.eql(data.domains);
       });
     });
 
@@ -81,9 +81,9 @@ describe('domain endpoints', function() {
     };
 
     it('returns the domain', function() {
-      testUtils.api.get('/v2/domains/123').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/3').reply(200, JSON.stringify(data));
 
-      client.domains.get(123, function(err, domain, headers) {
+      client.domains.get(3, function(err, domain, headers) {
         expect(domain).to.be.eql(data.domain);
       });
     });
