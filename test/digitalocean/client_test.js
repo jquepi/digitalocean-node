@@ -9,9 +9,14 @@ var token = testUtils.getUserDigitalOceanToken();
 var client = digitalocean.client(token);
 
 describe('digitalocean client', function() {
-  describe('request defaults', function() {
-    it('Should return a user-agent serialized JSON object', function() {
-      expect(client.requestDefaults.headers).to.include.keys('User-Agent');
+  describe('buildRequestOptions', function() {
+    it('Should include a user-agent header by default', function() {
+      expect(client._buildRequestOptions({}, {}).headers).to.include.keys('User-Agent');
+    });
+
+    it('merges request options from initializer', function() {
+      var client = digitalocean.client(token, { requestOptions: { headers: { 'Foo': 'Bar' } }});
+      expect(client._buildRequestOptions({}, {}).headers).to.include.keys('Foo');
     });
   });
 
@@ -42,7 +47,5 @@ describe('digitalocean client', function() {
         });
       });
     });
-
   });
-
 });

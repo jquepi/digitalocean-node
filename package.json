@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "request": "2.51.x",
-    "randomstring": "1.x.x",
     "deep-extend": "0.x.x"
   },
   "devDependencies": {

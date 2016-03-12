@@ -11,16 +11,15 @@ npm install digitalocean
 
 ```js
 var digitalocean = require('digitalocean');
-
 var client = digitalocean.client('TOKEN');
 
 client.account.get(callback);
 client.droplets.list(callback);
 client.droplets.create(options, callback);
 client.droplets.get(123, callback);
-client.droplets.actions(123, callback);
 client.droplets.delete(123, callback);
 client.droplet_actions.powerOff(123, callback);
+client.droplet_actions.get(123, 456, callback);
 ```
 
 #### Build a client from an access token
@@ -33,9 +32,21 @@ client.get('/account', {}, function (err, status, body, headers) {
 });
 ```
 
-## Request Options
+## Client Options
 
-Request options can be set by setting defaults on the client.
+The DigitalOcean client depends on [`request`](https://github.com/request/request), and [options can be passed through](https://github.com/request/request#requestoptions-callback) (e.g. a proxy or user agent).
+
+```js
+var client = digitalocean.client('TOKEN', {
+  request: myInitializedRequestObject,
+  requestOptions: {
+    proxy: 'https://myproxy.com:1085',
+    headers: {
+      'User-Agent': 'foo'
+    }
+  }
+});
+```
 
 ## API Callback Structure
 
@@ -84,9 +95,13 @@ client.droplets.list(function (err, account, headers, response) {
 });
 ```
 
-## Contributions
+## Contributing
 
-TODO
+1. Fork it ( https://github.com/phillbaker/digitalocean-node/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
 
 ## Testing
 
