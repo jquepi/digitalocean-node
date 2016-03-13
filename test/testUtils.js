@@ -12,3 +12,7 @@ var utils = module.exports = {
   },
   api: nock('https://api.digitalocean.com')
 };
+
+require('mocha-jshint')({
+  pretty: true
+});
