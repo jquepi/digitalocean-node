@@ -1,0 +1,28 @@
+{
+  "name": "digitalocean",
+  "description": "js wrapper for digitalocean v2 api",
+  "main": "dist/digitalocean.js",
+  "authors": [
+    "Phillip Baker <phillbaker@retrodict.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "wrapper",
+    "api",
+    "v2",
+    "droplet",
+    "digitalocean",
+    "digital ocean"
+  ],
+  "homepage": "https://github.com/phillbaker/digitalocean-node",
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

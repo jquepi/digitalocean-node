@@ -109,6 +109,28 @@ client.droplets.list(function (err, account, headers, response) {
 npm test
 ```
 
+## Usage in the Browser
+
+This library is also available as a single file built for usage in the browser at `dist/digitalocean.js`. It uses [browserify](http://browserify.org/) to package all dependencies and output the built file. This file is updated and released to [Bower](https://bower.io) for each release with the same version.
+
+
+For example, using the built file at `dist/digitalocean.js`:
+```html
+<html>
+  <head></head>
+  <body>
+    <script src="dist/digitalocean.js"></script>
+    <script>
+      var client = digitalocean.client('TOKEN');
+
+      client.account.get(function(_, account) {
+        console.log(account.uuid);
+      });
+    </script>
+  </body>
+</html>
+```
+
 ## License
 
 MIT

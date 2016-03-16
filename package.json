@@ -12,13 +12,24 @@
     "digitalocean"
   ],
   "scripts": {
-    "test": "mocha --bail --recursive --reporter dot"
+    "test": "mocha --bail --recursive --reporter dot",
+    "clean": "rm -r dist/*",
+    "build:js": "browserify lib/digitalocean.js -o dist/digitalocean.js --standalone 'digitalocean'",
+    "build": "mkdir -p dist && npm run build:js",
+    "preversion": "npm test",
+    "version": "npm run build && git add -A dist",
+    "release": "git push --follow-tags && npm publish",
+    "release:patch": "npm version patch -m 'Bump version to %s'",
+    "release:minor": "npm version minor -m 'Bump version to %s'",
+    "release:major": "npm version major -m 'Bump version to %s'"
   },
   "dependencies": {
     "deep-extend": "0.x.x",
     "request": "2.51.x"
   },
   "devDependencies": {
+    "bower": ">= 0.0.0",
+    "browserify": "^13.0.0",
     "chai": "~1.10.0",
     "mocha": "~2.1.0",
     "mocha-jshint": "^2.3.1",
