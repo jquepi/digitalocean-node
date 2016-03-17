@@ -131,6 +131,14 @@ For example, using the built file at `dist/digitalocean.js`:
 </html>
 ```
 
+## Releasing
+
+Run:
+
+```sh
+npm run release:patch # or release:minor or release:major depending on the type of version bump
+```
+
 ## License
 
 MIT
