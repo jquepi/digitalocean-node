@@ -9,7 +9,9 @@
     "wrapper",
     "api",
     "v2",
-    "digitalocean"
+    "digital ocean",
+    "digitalocean",
+    "droplet"
   ],
   "scripts": {
     "test": "mocha --bail --recursive --reporter dot",
@@ -39,5 +41,6 @@
     "node": ">0.4.11",
     "npm": ">= 2.13.1"
   },
+  "tonicExampleFilename": "examples/create_droplet.js",
   "license": "MIT"
 }

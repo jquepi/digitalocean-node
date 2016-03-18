@@ -1,10 +1,10 @@
 # digitalocean-node [![Build Status](https://travis-ci.org/phillbaker/digitalocean-node.svg?branch=master)](https://travis-ci.org/phillbaker/digitalocean-node)
 
-digitalocean-node is a library for nodejs to access the [DigitalOcean v2 api](https://developers.digitalocean.com/documentation/v2/)
+digitalocean-node is a library for nodejs to access the [DigitalOcean v2 API](https://developers.digitalocean.com/documentation/v2/).
 
 ## Installation
 ```
-npm install digitalocean
+npm install digitalocean --save
 ```
 
 ## Usage
@@ -70,11 +70,11 @@ The `perPage` argument is also optional and is used to specify how many objects 
 
 ```js
 // Normal usage of function
-client.droplets.list(callback); // Callback receives an array of first 30 issues
+client.droplets.list(callback); // Callback receives an array of first 25 issues
 
 // Using pagination parameters
 client.droplets.list(2, 100, callback); // Callback receives an array of second 100 issues
-client.droplets.list(10, callback); // Callback receives an array of 30 issues from page 10
+client.droplets.list(10, callback); // Callback receives an array of 25 issues from page 10
 
 // Pagination parameters can be set with query object too
 client.droplets.list({
