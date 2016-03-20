@@ -83,6 +83,40 @@ client.droplets.list({
 }, callback); //array of second 100 issues which are closed
 ```
 
+To fetch all the pages of a resource, the pages must be traversed. For example, to fetch all Droplets:
+```js
+listPagesUntilDone(1, function(allDroplets) {
+  console.log(allDroplets.length);
+});
+
+function listPagesUntilDone(page, callback, array) {
+  client.droplets.list(page, function(err, droplets, _, response) {
+    if (err) {
+      return console.error('Error fetching pages', err);
+    }
+
+    if (array === undefined) {
+      array = [];
+    }
+    array = array.concat(droplets);
+
+    // has no pages or has pages and has no last page
+    var isLastPage = response['links'] && (
+      !response['links']['pages'] ||
+        (response['links']['pages'] && response['links']['pages']['last'] === undefined)
+    );
+    if (!err && isLastPage) {
+      callback.call(this, array);
+    } else if (!err && !isLastPage) {
+      listPagesUntilDone(page + 1, callback, array);
+    } else {
+      // whoops, try again
+      listPagesUntilDone(page, callback, array);
+    }
+  })
+};
+```
+
 ## Rate Limiting
 
 You can also check your rate limit status by calling the following.
@@ -93,20 +127,6 @@ client.droplets.list(function (err, account, headers, response) {
   console.log(headers['ratelimit-limit']);  // 5000
   console.log(headers['ratelimit-reset']);  // Time in Unix Epoch, e.g. 1415984218
 });
-```
-
-## Contributing
-
-1. Fork it ( https://github.com/phillbaker/digitalocean-node/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
-
-## Testing
-
-```
-npm test
 ```
 
 ## Usage in the Browser
@@ -129,6 +149,21 @@ For example, using the built file at `dist/digitalocean.js`:
     </script>
   </body>
 </html>
+```
+
+
+## Contributing
+
+1. Fork it ( https://github.com/phillbaker/digitalocean-node/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+
+## Testing
+
+```
+npm test
 ```
 
 ## Releasing
