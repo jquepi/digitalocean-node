@@ -90,6 +90,14 @@ describe('ssh key endpoints', function() {
         expect(sshKey).to.be.eql(data.ssh_key);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/account/keys/foo%2Fbar').reply(200, JSON.stringify(data));
+
+      client.sshKeys.get('foo/bar', function(err, sshKey, headers) {
+        expect(sshKey).to.be.eql(data.ssh_key);
+      });
+    });
   });
 
   describe('update', function() {
@@ -102,14 +110,22 @@ describe('ssh key endpoints', function() {
       }
     };
 
-    it('returns the ssh key', function() {
-      var attributes = {
-        "name": "Key Example"
-      };
+    var attributes = {
+      "name": "Key Example"
+    };
 
+    it('returns the ssh key', function() {
       testUtils.api.put('/v2/account/keys/3', attributes).reply(200, JSON.stringify(data));
 
       client.sshKeys.update(3, attributes, function(err, sshKey, headers) {
+        expect(sshKey).to.be.eql(data.ssh_key);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.put('/v2/account/keys/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
+
+      client.sshKeys.update('foo/bar', attributes, function(err, sshKey, headers) {
         expect(sshKey).to.be.eql(data.ssh_key);
       });
     });
@@ -120,6 +136,14 @@ describe('ssh key endpoints', function() {
       testUtils.api.delete('/v2/account/keys/123').reply(204, '');
 
       client.sshKeys.delete(123, function() {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.delete('/v2/account/keys/foo%2Fbar').reply(204, '');
+
+      client.sshKeys.delete('foo/bar', function() {
         done();
       });
     });

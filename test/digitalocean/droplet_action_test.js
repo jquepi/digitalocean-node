@@ -69,32 +69,49 @@ describe('droplet action endpoints', function() {
         expect(actions).to.be.eql(data.actions);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/droplets/foo%2Fbar/actions').reply(200, JSON.stringify(data));
+
+      client.dropletActions.list('foo/bar', function(err, actions, headers) {
+        expect(actions).to.be.eql(data.actions);
+      });
+    });
   });
 
   describe('get', function() {
-    it('returns the action', function() {
-      var data = {
-        "action": {
-          "id": 123,
-          "status": "in-progress",
-          "type": "test",
-          "started_at": "2014-07-29T14:35:27Z",
-          "completed_at": null,
-          "resource_id": null,
-          "resource_type": "backend",
-          "region_slug": "nyc1",
-          "region": {
-            "name": "New York",
-            "slug": "nyc1",
-            "available": true,
-            "sizes": ["512mb"],
-            "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
-          }
+    var data = {
+      "action": {
+        "id": 123,
+        "status": "in-progress",
+        "type": "test",
+        "started_at": "2014-07-29T14:35:27Z",
+        "completed_at": null,
+        "resource_id": null,
+        "resource_type": "backend",
+        "region_slug": "nyc1",
+        "region": {
+          "name": "New York",
+          "slug": "nyc1",
+          "available": true,
+          "sizes": ["512mb"],
+          "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
         }
-      };
+      }
+    };
+
+    it('returns the action', function() {
       testUtils.api.get('/v2/droplets/123/actions/123').reply(200, JSON.stringify(data));
 
       client.dropletActions.get(123, 123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/droplets/foo%2Fbar/actions/foo%2Fbar').reply(200, JSON.stringify(data));
+
+      client.dropletActions.get('foo/bar', 'foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -122,6 +139,14 @@ describe('droplet action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'shutdown' }).reply(201, data);
+
+      client.dropletActions.shutdown('foo/bar', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('powerOff', function() {
@@ -143,6 +168,14 @@ describe('droplet action endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'power_off' }).reply(201, data);
 
       client.dropletActions.powerOff(123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'power_off' }).reply(201, data);
+
+      client.dropletActions.powerOff('foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -170,6 +203,14 @@ describe('droplet action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'power_on' }).reply(201, data);
+
+      client.dropletActions.powerOn('foo/bar', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('powerCycle', function() {
@@ -191,6 +232,14 @@ describe('droplet action endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'power_cycle' }).reply(201, data);
 
       client.dropletActions.powerCycle(123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'power_cycle' }).reply(201, data);
+
+      client.dropletActions.powerCycle('foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -218,6 +267,14 @@ describe('droplet action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'reboot' }).reply(201, data);
+
+      client.dropletActions.reboot('foo/bar', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('enableBackups', function() {
@@ -239,6 +296,14 @@ describe('droplet action endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'enable_backups' }).reply(201, data);
 
       client.dropletActions.enableBackups(123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'enable_backups' }).reply(201, data);
+
+      client.dropletActions.enableBackups('foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -266,6 +331,14 @@ describe('droplet action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'disable_backups' }).reply(201, data);
+
+      client.dropletActions.disableBackups('foo/bar', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('passwordReset', function() {
@@ -287,6 +360,14 @@ describe('droplet action endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'password_reset' }).reply(201, data);
 
       client.dropletActions.passwordReset(123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'password_reset' }).reply(201, data);
+
+      client.dropletActions.passwordReset('foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -314,6 +395,14 @@ describe('droplet action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'enable_ipv6' }).reply(201, data);
+
+      client.dropletActions.enableIPv6('foo/bar', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('enablePrivateNetworking', function() {
@@ -335,6 +424,14 @@ describe('droplet action endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'enable_private_networking' }).reply(201, data);
 
       client.dropletActions.enablePrivateNetworking(123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'enable_private_networking' }).reply(201, data);
+
+      client.dropletActions.enablePrivateNetworking('foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -378,6 +475,16 @@ describe('droplet action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions',
+        { type: 'resize', size: '64gb' }
+      ).reply(201, data);
+
+      client.dropletActions.resize('foo/bar', '64gb', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('rename', function() {
@@ -415,6 +522,16 @@ describe('droplet action endpoints', function() {
       ).reply(201, data);
 
       client.dropletActions.rename(123, 'foo', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions',
+        { type: 'rename', name: 'foo' }
+      ).reply(201, data);
+
+      client.dropletActions.rename('foo/bar', 'foo', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -458,6 +575,16 @@ describe('droplet action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions',
+        { type: 'snapshot', name: 'foo' }
+      ).reply(201, data);
+
+      client.dropletActions.snapshot('foo/bar', 'foo', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('restore', function() {
@@ -495,6 +622,16 @@ describe('droplet action endpoints', function() {
       ).reply(201, data);
 
       client.dropletActions.restore(123, 12345, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions',
+        { type: 'restore', image: 12345 }
+      ).reply(201, data);
+
+      client.dropletActions.restore('foo/bar', 12345, function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -538,6 +675,16 @@ describe('droplet action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions',
+        { type: 'rebuild', image: 'ubuntu-14-04-x64' }
+      ).reply(201, data);
+
+      client.dropletActions.rebuild('foo/bar', 'ubuntu-14-04-x64', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('changeKernel', function() {
@@ -575,6 +722,16 @@ describe('droplet action endpoints', function() {
       ).reply(201, data);
 
       client.dropletActions.changeKernel(123, 12345, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/droplets/foo%2Fbar/actions',
+        { type: 'change_kernel', kernel: 12345 }
+      ).reply(201, data);
+
+      client.dropletActions.changeKernel('foo/bar', 12345, function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });

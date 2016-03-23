@@ -177,6 +177,14 @@ describe('floating ip endpoints', function() {
         expect(floatingIp).to.be.eql(data.floating_ip);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/floating_ips/foo%2Fbar').reply(200, JSON.stringify(data));
+
+      client.floatingIps.get('foo/bar', function(err, floatingIp, headers) {
+        expect(floatingIp).to.be.eql(data.floating_ip);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -184,6 +192,14 @@ describe('floating ip endpoints', function() {
       testUtils.api.delete('/v2/floating_ips/123').reply(204, '');
 
       client.floatingIps.delete(123, function() {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.delete('/v2/floating_ips/foo%2Fbar').reply(204, '');
+
+      client.floatingIps.delete('foo/bar', function() {
         done();
       });
     });

@@ -107,6 +107,14 @@ describe('tag endpoints', function() {
         expect(tag).to.be.eql(data.tag);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/tags/foo%2Fbar').reply(200, JSON.stringify(data));
+
+      client.tags.get('foo/bar', function(err, tag, headers) {
+        expect(tag).to.be.eql(data.tag);
+      });
+    });
   });
 
   describe('update', function() {
@@ -133,6 +141,18 @@ describe('tag endpoints', function() {
         expect(tag).to.be.eql(data.tag);
       });
     });
+
+    it('escapes the name', function() {
+      var attributes = {
+        "name": "awesome"
+      };
+
+      testUtils.api.put('/v2/tags/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
+
+      client.tags.update('foo/bar', attributes, function(err, tag, headers) {
+        expect(tag).to.be.eql(data.tag);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -140,6 +160,14 @@ describe('tag endpoints', function() {
       testUtils.api.delete('/v2/tags/foo').reply(204, '');
 
       client.tags.delete('foo', function() {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.delete('/v2/tags/foo%2Fbar').reply(204, '');
+
+      client.tags.delete('foo/bar', function() {
         done();
       });
     });

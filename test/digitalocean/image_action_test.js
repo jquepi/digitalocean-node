@@ -69,32 +69,49 @@ describe('image action endpoints', function() {
         expect(actions).to.be.eql(data.actions);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/images/foo%2Fbar/actions').reply(200, JSON.stringify(data));
+
+      client.imageActions.list('foo/bar', function(err, actions, headers) {
+        expect(actions).to.be.eql(data.actions);
+      });
+    });
   });
 
   describe('get', function() {
-    it('returns the action', function() {
-      var data = {
-        "action": {
-          "id": 456,
-          "status": "in-progress",
-          "type": "transfer",
-          "started_at": "2014-07-29T14:35:27Z",
-          "completed_at": null,
-          "resource_id": 123,
-          "resource_type": "image",
-          "region_slug": "nyc1",
-          "region": {
-            "name": "New York",
-            "slug": "nyc1",
-            "available": true,
-            "sizes": ["512mb"],
-            "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
-          }
+    var data = {
+      "action": {
+        "id": 456,
+        "status": "in-progress",
+        "type": "transfer",
+        "started_at": "2014-07-29T14:35:27Z",
+        "completed_at": null,
+        "resource_id": 123,
+        "resource_type": "image",
+        "region_slug": "nyc1",
+        "region": {
+          "name": "New York",
+          "slug": "nyc1",
+          "available": true,
+          "sizes": ["512mb"],
+          "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
         }
-      };
+      }
+    };
+
+    it('returns the action', function() {
       testUtils.api.get('/v2/images/123/actions/456').reply(200, JSON.stringify(data));
 
       client.imageActions.get(123, 456, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/images/foo%2Fbar/actions/bar%2Fbaz').reply(200, JSON.stringify(data));
+
+      client.imageActions.get('foo/bar', 'bar/baz', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -119,6 +136,14 @@ describe('image action endpoints', function() {
       testUtils.api.post('/v2/images/123/actions', { type: 'convert' }).reply(201, data);
 
       client.imageActions.convert(123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/images/foo%2Fbar/actions', { type: 'convert' }).reply(201, data);
+
+      client.imageActions.convert('foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -159,6 +184,16 @@ describe('image action endpoints', function() {
       ).reply(201, data);
 
       client.imageActions.transfer(123, 'ams3', function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/images/foo%2Fbar/actions',
+        { type: 'transfer', region: 'ams3' }
+      ).reply(201, data);
+
+      client.imageActions.transfer('foo/bar', 'ams3', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });

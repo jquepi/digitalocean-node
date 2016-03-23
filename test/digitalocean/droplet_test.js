@@ -392,6 +392,14 @@ describe('droplet endpoints', function() {
         expect(droplet).to.be.eql(data.droplet);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/droplets/foo%2Fbar').reply(200, JSON.stringify(data));
+
+      client.droplets.get('foo/bar', function(err, droplet, headers) {
+        expect(droplet).to.be.eql(data.droplet);
+      });
+    });
   });
 
   describe('kernels', function() {
@@ -505,6 +513,14 @@ describe('droplet endpoints', function() {
         expect(snapshots).to.be.eql(data.snapshots);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/droplets/foo%2Fbar/snapshots').reply(200, JSON.stringify(data));
+
+      client.droplets.snapshots('foo/bar', function(err, snapshots, headers) {
+        expect(snapshots).to.be.eql(data.snapshots);
+      });
+    });
   });
 
   describe('backups', function() {
@@ -559,6 +575,14 @@ describe('droplet endpoints', function() {
         page: 1,
         per_page: 1
       }, function(err, backups, headers) {
+        expect(backups).to.be.eql(data.backups);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/droplets/foo%2Fbar/backups').reply(200, JSON.stringify(data));
+
+      client.droplets.backups('foo/bar', function(err, backups, headers) {
         expect(backups).to.be.eql(data.backups);
       });
     });
@@ -685,6 +709,14 @@ describe('droplet endpoints', function() {
         expect(neighbors).to.be.eql(data.droplets);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/droplets/foo%2Fbar/neighbors').reply(200, JSON.stringify(data));
+
+      client.droplets.neighbors('foo/bar', function(err, neighbors, headers) {
+        expect(neighbors).to.be.eql(data.droplets);
+      });
+    });
   });
 
 
@@ -693,6 +725,14 @@ describe('droplet endpoints', function() {
       testUtils.api.delete('/v2/droplets/123').reply(204, '');
 
       client.droplets.delete(123, function() {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.delete('/v2/droplets/foo%2Fbar').reply(204, '');
+
+      client.droplets.delete('foo/bar', function() {
         done();
       });
     });

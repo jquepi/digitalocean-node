@@ -60,29 +60,38 @@ describe('action endpoints', function() {
   });
 
   describe('get', function() {
-    it('returns the action', function() {
-      var data = {
-        "action": {
-          "id": 2,
-          "status": "in-progress",
-          "type": "test",
-          "started_at": "2014-07-29T14:35:27Z",
-          "completed_at": null,
-          "resource_id": null,
-          "resource_type": "backend",
-          "region_slug": "nyc1",
-          "region": {
-            "name": "New York",
-            "slug": "nyc1",
-            "available": true,
-            "sizes": ["512mb"],
-            "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
-          }
+    var data = {
+      "action": {
+        "id": 2,
+        "status": "in-progress",
+        "type": "test",
+        "started_at": "2014-07-29T14:35:27Z",
+        "completed_at": null,
+        "resource_id": null,
+        "resource_type": "backend",
+        "region_slug": "nyc1",
+        "region": {
+          "name": "New York",
+          "slug": "nyc1",
+          "available": true,
+          "sizes": ["512mb"],
+          "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
         }
-      };
+      }
+    };
+
+    it('returns the action', function() {
       testUtils.api.get('/v2/action/123').reply(200, JSON.stringify(data));
 
       client.actions.get(123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/action/foo%2Fbar').reply(200, JSON.stringify(data));
+
+      client.actions.get('foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });

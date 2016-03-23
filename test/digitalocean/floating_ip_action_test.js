@@ -69,32 +69,49 @@ describe('floating ip action endpoints', function() {
         expect(actions).to.be.eql(data.actions);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/floating_ips/foo%2Fbar/actions').reply(200, JSON.stringify(data));
+
+      client.floatingIpActions.list('foo/bar', function(err, actions, headers) {
+        expect(actions).to.be.eql(data.actions);
+      });
+    });
   });
 
   describe('get', function() {
-    it('returns the action', function() {
-      var data = {
-        "action": {
-          "id": 456,
-          "status": "in-progress",
-          "type": "transfer",
-          "started_at": "2014-07-29T14:35:27Z",
-          "completed_at": null,
-          "resource_id": 123,
-          "resource_type": "image",
-          "region_slug": "nyc1",
-          "region": {
-            "name": "New York",
-            "slug": "nyc1",
-            "available": true,
-            "sizes": ["512mb"],
-            "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
-          }
+    var data = {
+      "action": {
+        "id": 456,
+        "status": "in-progress",
+        "type": "transfer",
+        "started_at": "2014-07-29T14:35:27Z",
+        "completed_at": null,
+        "resource_id": 123,
+        "resource_type": "image",
+        "region_slug": "nyc1",
+        "region": {
+          "name": "New York",
+          "slug": "nyc1",
+          "available": true,
+          "sizes": ["512mb"],
+          "features": ["virtio", "private_networking", "backups", "ipv6", "metadata"]
         }
-      };
+      }
+    };
+
+    it('returns the action', function() {
       testUtils.api.get('/v2/floating_ips/123/actions/456').reply(200, JSON.stringify(data));
 
       client.floatingIpActions.get(123, 456, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/floating_ips/foo%2Fbar/actions/bar%2Fbaz').reply(200, JSON.stringify(data));
+
+      client.floatingIpActions.get('foo/bar', 'bar/baz', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });
@@ -138,6 +155,16 @@ describe('floating ip action endpoints', function() {
         expect(action).to.be.eql(data.action);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/floating_ips/foo%2Fbar/actions',
+        { type: 'assign', droplet_id: 456 }
+      ).reply(201, data);
+
+      client.floatingIpActions.assign('foo/bar', 456, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
   });
 
   describe('unassign', function() {
@@ -159,6 +186,14 @@ describe('floating ip action endpoints', function() {
       testUtils.api.post('/v2/floating_ips/123/actions', { type: 'unassign' }).reply(201, data);
 
       client.floatingIpActions.unassign(123, function(err, action, headers) {
+        expect(action).to.be.eql(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/floating_ips/foo%2Fbar/actions', { type: 'unassign' }).reply(201, data);
+
+      client.floatingIpActions.unassign('foo/bar', function(err, action, headers) {
         expect(action).to.be.eql(data.action);
       });
     });

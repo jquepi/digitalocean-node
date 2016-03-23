@@ -90,6 +90,14 @@ describe('image endpoints', function() {
         expect(image).to.be.eql(data.image);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/images/foo%2Fbar').reply(200, JSON.stringify(data));
+
+      client.images.get('foo/bar', function(err, image, headers) {
+        expect(image).to.be.eql(data.image);
+      });
+    });
   });
 
   describe('update', function() {
@@ -106,16 +114,24 @@ describe('image endpoints', function() {
         "created_at": "2014-07-29T14:35:41Z",
         "type": "snapshot"
       }
-    };;
+    };
+
+    var attributes = {
+      "name": "New Name"
+    };
 
     it('returns the image', function() {
-      var attributes = {
-        "name": "New Name"
-      };
-
       testUtils.api.put('/v2/images/146', attributes).reply(200, JSON.stringify(data));
 
       client.images.update(146, attributes, function(err, image, headers) {
+        expect(image).to.be.eql(data.image);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.put('/v2/images/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
+
+      client.images.update('foo/bar', attributes, function(err, image, headers) {
         expect(image).to.be.eql(data.image);
       });
     });
@@ -126,6 +142,14 @@ describe('image endpoints', function() {
       testUtils.api.delete('/v2/images/123').reply(204, '');
 
       client.images.delete(123, function() {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.delete('/v2/images/foo%2Fbar').reply(204, '');
+
+      client.images.delete('foo/bar', function() {
         done();
       });
     });

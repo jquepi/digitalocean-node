@@ -87,6 +87,14 @@ describe('domain endpoints', function() {
         expect(domain).to.be.eql(data.domain);
       });
     });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/domains/foo%2Fbar').reply(200, JSON.stringify(data));
+
+      client.domains.get('foo/bar', function(err, domain, headers) {
+        expect(domain).to.be.eql(data.domain);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -94,6 +102,14 @@ describe('domain endpoints', function() {
       testUtils.api.delete('/v2/domains/123').reply(204, '');
 
       client.domains.delete(123, function() {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.delete('/v2/domains/foo%2Fbar').reply(204, '');
+
+      client.domains.delete('foo/bar', function() {
         done();
       });
     });

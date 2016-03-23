@@ -52,6 +52,10 @@ describe('domain record endpoints', function() {
         expect(domainRecords).to.be.eql(data.domain_records);
       });
     });
+
+    it('escapes the name', function() {
+      // foo%2Fbar
+    });
   });
 
   describe('create', function() {
@@ -80,6 +84,10 @@ describe('domain record endpoints', function() {
         expect(domainRecord).to.be.eql(data.domain_record);
       });
     });
+
+    it('escapes the name', function() {
+      // foo%2Fbar
+    });
   });
 
   describe('get', function() {
@@ -102,6 +110,10 @@ describe('domain record endpoints', function() {
         expect(domainRecord).to.be.eql(data.domain_record);
       });
     });
+
+    it('escapes the name', function() {
+      // foo%2Fbar
+    });
   });
 
   describe('update', function() {
@@ -117,14 +129,22 @@ describe('domain record endpoints', function() {
       }
     };
 
-    it('returns the domain record', function() {
-      var attributes = {
-        "name": "blog",
-      };
+    var attributes = {
+      "name": "blog",
+    };
 
+    it('returns the domain record', function() {
       testUtils.api.put('/v2/domains/example.com/domain_records/123', attributes).reply(200, JSON.stringify(data));
 
       client.domainRecords.update('example.com', 123, attributes, function(err, domainRecord, headers) {
+        expect(domainRecord).to.be.eql(data.domain_record);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.put('/v2/domains/foo%2Fbar.com/domain_records/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
+
+      client.domainRecords.update('foo/bar.com', 'foo/bar', attributes, function(err, domainRecord, headers) {
         expect(domainRecord).to.be.eql(data.domain_record);
       });
     });
@@ -135,6 +155,14 @@ describe('domain record endpoints', function() {
       testUtils.api.delete('/v2/domains/example.com/domain_records/123').reply(204, '');
 
       client.domainRecords.delete('example.com', 123, function() {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.delete('/v2/domains/foo%2Fbar.com/domain_records/foo%2Fbar').reply(204, '');
+
+      client.domainRecords.delete('foo/bar.com', 'foo/bar', function() {
         done();
       });
     });
