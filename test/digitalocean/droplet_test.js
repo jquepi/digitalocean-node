@@ -122,7 +122,7 @@ describe('droplet endpoints', function() {
   });
 
   describe('create', function() {
-    var data = {
+    var data_singular = {
       "droplet": {
         "id": 19,
         "name": "name",
@@ -197,6 +197,81 @@ describe('droplet endpoints', function() {
       }
     };
 
+    var data_multiple = {
+      "droplets": [{
+        "id": 19,
+        "name": "name1",
+        "memory": 1024,
+        "vcpus": 2,
+        "disk": 20,
+        "region": {
+          "slug": "nyc1",
+          "name": "New York",
+          "sizes": [
+            "1024mb",
+            "512mb"
+          ],
+          "available": true,
+          "features": [
+            "virtio",
+            "private_networking",
+            "backups",
+            "ipv6"
+          ]
+        },
+        "image": {
+          "id": 1,
+          "name": "Ubuntu 13.04",
+          "distribution": "ubuntu",
+          "slug": "ubuntu1304",
+          "public": true,
+          "regions": [
+            "nyc1"
+          ],
+          "created_at": "2014-07-29T14:35:37Z"
+        },
+        "size_slug": "1gb",
+        "locked": false,
+        "status": "new",
+        "networks": {
+          "v4": [
+            {
+              "ip_address": "10.0.0.19",
+              "netmask": "255.255.0.0",
+              "gateway": "10.0.0.1",
+              "type": "private"
+            },
+            {
+              "ip_address": "127.0.0.19",
+              "netmask": "255.255.255.0",
+              "gateway": "127.0.0.20",
+              "type": "public"
+            }
+          ],
+          "v6": [
+            {
+              "ip_address": "2001::13",
+              "cidr": 124,
+              "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
+              "type": "public"
+            }
+          ]
+        },
+        "kernel": {
+          "id": 485432985,
+          "name": "DO-recovery-static-fsck",
+          "version": "3.8.0-25-generic"
+        },
+        "created_at": "2014-07-29T14:35:37Z",
+        "features": [
+          "ipv6"
+        ],
+        "backup_ids": [],
+        "snapshot_ids": [],
+        "action_ids": []
+      }]
+    };
+
     it('creates the droplet', function() {
       var attributes = {
         name: 'name',
@@ -205,10 +280,25 @@ describe('droplet endpoints', function() {
         image: 1
       };
 
-      testUtils.api.post('/v2/droplets', attributes).reply(202, data);
+      testUtils.api.post('/v2/droplets', attributes).reply(202, data_singular);
 
       client.droplets.create(attributes, function(err, droplet, headers) {
-        expect(droplet).to.be.eql(data.droplet);
+        expect(droplet).to.be.eql(data_singular.droplet);
+      });
+    });
+
+    it('creates duplicate droplets', function() {
+      var attributes = {
+        names: ['name1'],
+        region: 'nyc1',
+        size: '1gb',
+        image: 1
+      };
+
+      testUtils.api.post('/v2/droplets', attributes).reply(202, data_multiple);
+
+      client.droplets.create(attributes, function(err, droplets, headers) {
+        expect(droplets).to.be.eql(data_multiple.droplets);
       });
     });
   });
