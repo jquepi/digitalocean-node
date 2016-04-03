@@ -360,6 +360,24 @@ Actions supported:
 * `client.floatingIpActions.assign(floatingIp.ip, parametersOrDropletId, callback)`
 * `client.floatingIpActions.unassign(floatingIp.ip, callback)`
 
+### Tag resource
+
+```js
+var digitalocean = require('digitalocean');
+var client = digitalocean.client('TOKEN');
+client.tags
+```
+
+Actions supported:
+
+* `client.tags.list(callback)`
+* `client.tags.get(tag.name, callback)`
+* `client.tags.create(attributes, callback)`
+* `client.tags.update(tag.name, attributes, callback)`
+* `client.tags.delete(tag.name, callback)`
+
+For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#tags).
+
 ## Contributing
 
 1. Fork it ( https://github.com/phillbaker/digitalocean-node/fork )
