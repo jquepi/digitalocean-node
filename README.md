@@ -174,7 +174,7 @@ Actions supported:
 * `client.droplets.backups(droplet.id, callback)`
 * `client.droplets.neighbors(droplet.id, callback)`
 
-For the latest valid attributes, (see the official docs)[https://developers.digitalocean.com/documentation/v2/#droplets].
+For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#droplets).
 
 ### Droplet Action resource
 
@@ -221,7 +221,7 @@ Actions supported:
 * `client.domains.get(domain.name, callback)`
 * `client.domains.delete(domain.name, callback)`
 
-For the latest valid attributes, (see the official docs)[https://developers.digitalocean.com/documentation/v2/#domains].
+For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#domains).
 
 ### Domain record resource
 
@@ -239,7 +239,7 @@ Actions supported:
 * `client.domainRecords.delete(domain.name, domainRecord.id, callback)`
 * `client.domainRecords.update(domain.name, domainRecord.id,, attributes, callback)`
 
-For the latest valid attributes, (see the official docs)[https://developers.digitalocean.com/documentation/v2/#domain-records].
+For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#domain-records).
 
 ### Image resource
 
@@ -307,7 +307,7 @@ var client = digitalocean.client('TOKEN');
 client.sshKeys
 ```
 
-For the latest valid attributes, (see the official docs)[https://developers.digitalocean.com/documentation/v2/#ssh-keys].
+For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#ssh-keys).
 
 Actions supported:
 
@@ -345,7 +345,7 @@ Actions supported:
 * `client.floatingIps.create(attributes, callback)`
 * `client.floatingIps.delete(floatingIp.ip, callback)`
 
-For the latest valid attributes, (see the official docs)[https://developers.digitalocean.com/documentation/v2/#floating-ips].
+For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#floating-ips).
 
 ### Floating IP Action resource
 
