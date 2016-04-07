@@ -374,6 +374,8 @@ Actions supported:
 * `client.tags.get(tag.name, callback)`
 * `client.tags.create(attributes, callback)`
 * `client.tags.update(tag.name, attributes, callback)`
+* `client.tags.tag(tag.name, [{resource_id: , resource_type: }], callback)`
+* `client.tags.untag(tag.name, [{resource_id: , resource_type: }], callback)`
 * `client.tags.delete(tag.name, callback)`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#tags).

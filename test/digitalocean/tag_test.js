@@ -155,6 +155,56 @@ describe('tag endpoints', function() {
     });
   });
 
+  describe('tag', function() {
+    var resources = [
+      {
+        "resource_id": "9569411",
+        "resource_type": "droplet"
+      }
+    ];
+
+    it('tags the resources', function(done) {
+      testUtils.api.post('/v2/tags/foo/resources', { resources: resources }).reply(204, '');
+
+      client.tags.tag('foo', resources, function(err, tag, headers) {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.post('/v2/tags/foo%2Fbar/resources', { resources: resources }).reply(204, '');
+
+      client.tags.tag('foo/bar', resources, function(err, tag, headers) {
+        done();
+      });
+    });
+  });
+
+  describe('untag', function() {
+    var resources = [
+      {
+        "resource_id": "9569411",
+        "resource_type": "droplet"
+      }
+    ];
+
+    it('untags the resources', function(done) {
+      testUtils.api.delete('/v2/tags/foo/resources', { resources: resources }).reply(204, '');
+
+      client.tags.untag('foo', resources, function(err, tag, headers) {
+        done();
+      });
+    });
+
+    it('escapes the name', function(done) {
+      testUtils.api.delete('/v2/tags/foo%2Fbar/resources', { resources: resources }).reply(204, '');
+
+      client.tags.untag('foo/bar', resources, function(err, tag, headers) {
+        done();
+      });
+    });
+  });
+
   describe('delete', function() {
     it('deletes the tag', function(done) {
       testUtils.api.delete('/v2/tags/foo').reply(204, '');
