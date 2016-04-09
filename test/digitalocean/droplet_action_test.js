@@ -736,4 +736,28 @@ describe('droplet action endpoints', function() {
       });
     });
   });
+
+  describe('actionByTag', function() {
+    var data = {
+      "actions": [{
+        "id": 36804751,
+        "status": "in-progress",
+        "type": "enable_private_networking",
+        "started_at": "2014-11-14T16:31:07Z",
+        "completed_at": null,
+        "resource_id": 123,
+        "resource_type": "droplet",
+        "region": "nyc3",
+        "region_slug": "nyc3"
+      }]
+    };
+
+    it('creates the actions', function() {
+      testUtils.api.post('/v2/droplets/actions', { tag_name: 'foo', type: 'enable_private_networking' }).reply(201, data);
+
+      client.dropletActions.actionByTag('foo', 'enable_private_networking', function(err, actions, headers) {
+        expect(actions).to.be.eql(data.actions);
+      });
+    });
+  });
 });

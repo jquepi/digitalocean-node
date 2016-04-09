@@ -169,6 +169,7 @@ Actions supported:
 * `client.droplets.get(droplet.id, callback)`
 * `client.droplets.create(attributes, callback)`
 * `client.droplets.delete(droplet.id, callback)`
+* `client.droplets.deleteByTagName(tag.name, callback)`
 * `client.droplets.kernels(droplet.id, callback)`
 * `client.droplets.snapshots(droplet.id, callback)`
 * `client.droplets.backups(droplet.id, callback)`
@@ -188,6 +189,7 @@ Actions supported:
 
 * `client.dropletActions.list(droplet.id, callback)`
 * `client.dropletActions.get(droplet.id, action.id, callback)`
+* `client.dropletActions.actionByTag(tag.name, actionType, callback)`
 * `client.dropletActions.reboot(droplet.id, callback)`
 * `client.dropletActions.powerCycle(droplet.id, callback)`
 * `client.dropletActions.shutdown(droplet.id, callback)`
