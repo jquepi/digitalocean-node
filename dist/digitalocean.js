@@ -283,7 +283,7 @@ module.exports = {
     // options, optional, object
     // callback, required, function
     Client.prototype.delete = function(path, content, options, callback) {
-      return this._makeRequestWithBody('PUT', path, content, options, callback);
+      return this._makeRequestWithBody('DELETE', path, content, options, callback);
     };
 
     return Client;
