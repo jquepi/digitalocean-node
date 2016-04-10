@@ -23,7 +23,7 @@ describe('account endpoints', function() {
       testUtils.api.get('/v2/account').reply(200, JSON.stringify(data));
 
       client.account.get(function(err, account, headers) {
-        expect(account).to.be.eql(data.account);
+        expect(account).to.shallowDeepEqual(data.account);
       });
     });
   });
@@ -47,7 +47,7 @@ describe('account endpoints', function() {
       testUtils.api.get('/v2/account/keys').reply(200, JSON.stringify(data));
 
       client.account.listSshKeys(function(err, sshKeys, headers) {
-        expect(sshKeys).to.be.eql(data.ssh_keys);
+        expect(sshKeys).to.shallowDeepEqual(data.ssh_keys);
       });
     });
 
@@ -55,7 +55,7 @@ describe('account endpoints', function() {
       testUtils.api.get('/v2/account/keys?page=2').reply(200, JSON.stringify(data));
 
       client.account.listSshKeys(2, function(err, sshKeys, headers) {
-        expect(sshKeys).to.be.eql(data.ssh_keys);
+        expect(sshKeys).to.shallowDeepEqual(data.ssh_keys);
       });
     });
 
@@ -63,7 +63,7 @@ describe('account endpoints', function() {
       testUtils.api.get('/v2/account/keys?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.account.listSshKeys(2, 1, function(err, sshKeys, headers) {
-        expect(sshKeys).to.be.eql(data.ssh_keys);
+        expect(sshKeys).to.shallowDeepEqual(data.ssh_keys);
       });
     });
   });
@@ -87,7 +87,7 @@ describe('account endpoints', function() {
       testUtils.api.post('/v2/account/keys', attributes).reply(201, data);
 
       client.account.createSshKey(attributes, function(err, sshKey, headers) {
-        expect(sshKey).to.be.eql(data.ssh_key);
+        expect(sshKey).to.shallowDeepEqual(data.ssh_key);
       });
     });
   });
@@ -106,7 +106,7 @@ describe('account endpoints', function() {
       testUtils.api.get('/v2/account/keys/3').reply(200, JSON.stringify(data));
 
       client.account.getSshKey(3, function(err, sshKey, headers) {
-        expect(sshKey).to.be.eql(data.ssh_key);
+        expect(sshKey).to.shallowDeepEqual(data.ssh_key);
       });
     });
 
@@ -114,7 +114,7 @@ describe('account endpoints', function() {
       testUtils.api.get('/v2/account/keys/foo%2Fbar').reply(200, JSON.stringify(data));
 
       client.account.getSshKey('foo/bar', function(err, sshKey, headers) {
-        expect(sshKey).to.be.eql(data.ssh_key);
+        expect(sshKey).to.shallowDeepEqual(data.ssh_key);
       });
     });
   });
@@ -137,7 +137,7 @@ describe('account endpoints', function() {
       testUtils.api.put('/v2/account/keys/3', attributes).reply(200, JSON.stringify(data));
 
       client.account.updateSshKey(3, attributes, function(err, sshKey, headers) {
-        expect(sshKey).to.be.eql(data.ssh_key);
+        expect(sshKey).to.shallowDeepEqual(data.ssh_key);
       });
     });
 
@@ -145,7 +145,7 @@ describe('account endpoints', function() {
       testUtils.api.put('/v2/account/keys/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
 
       client.account.updateSshKey('foo/bar', attributes, function(err, sshKey, headers) {
-        expect(sshKey).to.be.eql(data.ssh_key);
+        expect(sshKey).to.shallowDeepEqual(data.ssh_key);
       });
     });
   });

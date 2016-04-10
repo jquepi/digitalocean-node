@@ -60,7 +60,7 @@ describe('region endpoints', function() {
       testUtils.api.get('/v2/regions').reply(200, JSON.stringify(data));
 
       client.regions.list(function(err, regions, headers) {
-        expect(regions).to.be.eql(data.regions);
+        expect(regions).to.shallowDeepEqual(data.regions);
       });
     });
 
@@ -68,7 +68,7 @@ describe('region endpoints', function() {
       testUtils.api.get('/v2/regions?page=2').reply(200, JSON.stringify(data));
 
       client.regions.list(2, function(err, regions, headers) {
-        expect(regions).to.be.eql(data.regions);
+        expect(regions).to.shallowDeepEqual(data.regions);
       });
     });
 
@@ -76,7 +76,7 @@ describe('region endpoints', function() {
       testUtils.api.get('/v2/regions?page=2&per_page=2').reply(200, JSON.stringify(data));
 
       client.regions.list(2, 2, function(err, regions, headers) {
-        expect(regions).to.be.eql(data.regions);
+        expect(regions).to.shallowDeepEqual(data.regions);
       });
     });
 
@@ -87,7 +87,7 @@ describe('region endpoints', function() {
         page: 1,
         per_page: 2
       }, function(err, regions, headers) {
-        expect(regions).to.be.eql(data.regions);
+        expect(regions).to.shallowDeepEqual(data.regions);
       });
     });
   });

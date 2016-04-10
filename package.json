@@ -26,6 +26,7 @@
     "release:major": "npm version major -m 'Bump version to %s'"
   },
   "dependencies": {
+    "bluebird": "^3.0",
     "deep-extend": "0.x.x",
     "request": "^2.50"
   },
@@ -33,6 +34,7 @@
     "bower": ">= 0.0.0",
     "browserify": "^13.0.0",
     "chai": "~1.10.0",
+    "chai-shallow-deep-equal": "^1.4.0",
     "mocha": "~2.1.0",
     "mocha-jshint": "^2.3.1",
     "nock": "0.57.x"

@@ -27,7 +27,7 @@ describe('action endpoints', function() {
       testUtils.api.get('/v2/actions').reply(200, JSON.stringify(data));
 
       client.actions.list(function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -35,7 +35,7 @@ describe('action endpoints', function() {
       testUtils.api.get('/v2/actions?page=2').reply(200, JSON.stringify(data));
 
       client.actions.list(2, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -43,7 +43,7 @@ describe('action endpoints', function() {
       testUtils.api.get('/v2/actions?page=2&per_page=2').reply(200, JSON.stringify(data));
 
       client.actions.list(2, 2, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -54,7 +54,7 @@ describe('action endpoints', function() {
         page: 1,
         per_page: 2
       }, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
   });
@@ -84,7 +84,7 @@ describe('action endpoints', function() {
       testUtils.api.get('/v2/action/123').reply(200, JSON.stringify(data));
 
       client.actions.get(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -92,7 +92,7 @@ describe('action endpoints', function() {
       testUtils.api.get('/v2/action/foo%2Fbar').reply(200, JSON.stringify(data));
 
       client.actions.get('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });

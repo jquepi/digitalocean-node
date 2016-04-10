@@ -100,7 +100,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets').reply(200, JSON.stringify(data));
 
       client.droplets.list(function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.droplets);
+        expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
 
@@ -108,7 +108,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets?page=2').reply(200, JSON.stringify(data));
 
       client.droplets.list(2, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.droplets);
+        expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
 
@@ -116,7 +116,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.droplets.list(2, 1, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.droplets);
+        expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
   });
@@ -283,7 +283,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets', attributes).reply(202, data_singular);
 
       client.droplets.create(attributes, function(err, droplet, headers) {
-        expect(droplet).to.be.eql(data_singular.droplet);
+        expect(droplet).to.shallowDeepEqual(data_singular.droplet);
       });
     });
 
@@ -298,7 +298,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets', attributes).reply(202, data_multiple);
 
       client.droplets.create(attributes, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data_multiple.droplets);
+        expect(droplets).to.shallowDeepEqual(data_multiple.droplets);
       });
     });
   });
@@ -389,7 +389,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123').reply(200, JSON.stringify(data));
 
       client.droplets.get(123, function(err, droplet, headers) {
-        expect(droplet).to.be.eql(data.droplet);
+        expect(droplet).to.shallowDeepEqual(data.droplet);
       });
     });
 
@@ -397,7 +397,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/foo%2Fbar').reply(200, JSON.stringify(data));
 
       client.droplets.get('foo/bar', function(err, droplet, headers) {
-        expect(droplet).to.be.eql(data.droplet);
+        expect(droplet).to.shallowDeepEqual(data.droplet);
       });
     });
   });
@@ -426,7 +426,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/kernels').reply(200, JSON.stringify(data));
 
       client.droplets.kernels(123, function(err, kernels, headers) {
-        expect(kernels).to.be.eql(data.kernels);
+        expect(kernels).to.shallowDeepEqual(data.kernels);
       });
     });
 
@@ -434,7 +434,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/kernels?page=2').reply(200, JSON.stringify(data));
 
       client.droplets.kernels(123, 2, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.kernels);
+        expect(droplets).to.shallowDeepEqual(data.kernels);
       });
     });
 
@@ -442,7 +442,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/kernels?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.droplets.kernels(123, 2, 1, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.kernels);
+        expect(droplets).to.shallowDeepEqual(data.kernels);
       });
     });
 
@@ -453,7 +453,7 @@ describe('droplet endpoints', function() {
         page: 1,
         per_page: 1
       }, function(err, kernels, headers) {
-        expect(kernels).to.be.eql(data.kernels);
+        expect(kernels).to.shallowDeepEqual(data.kernels);
       });
     });
   });
@@ -483,7 +483,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/snapshots').reply(200, JSON.stringify(data));
 
       client.droplets.snapshots(123, function(err, snapshots, headers) {
-        expect(snapshots).to.be.eql(data.snapshots);
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
       });
     });
 
@@ -491,7 +491,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/snapshots?page=2').reply(200, JSON.stringify(data));
 
       client.droplets.snapshots(123, 2, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.snapshots);
+        expect(droplets).to.shallowDeepEqual(data.snapshots);
       });
     });
 
@@ -499,7 +499,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/snapshots?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.droplets.snapshots(123, 2, 1, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.snapshots);
+        expect(droplets).to.shallowDeepEqual(data.snapshots);
       });
     });
 
@@ -510,7 +510,7 @@ describe('droplet endpoints', function() {
         page: 1,
         per_page: 1
       }, function(err, snapshots, headers) {
-        expect(snapshots).to.be.eql(data.snapshots);
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
       });
     });
 
@@ -518,7 +518,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/foo%2Fbar/snapshots').reply(200, JSON.stringify(data));
 
       client.droplets.snapshots('foo/bar', function(err, snapshots, headers) {
-        expect(snapshots).to.be.eql(data.snapshots);
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
       });
     });
   });
@@ -548,7 +548,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/backups').reply(200, JSON.stringify(data));
 
       client.droplets.backups(123, function(err, backups, headers) {
-        expect(backups).to.be.eql(data.backups);
+        expect(backups).to.shallowDeepEqual(data.backups);
       });
     });
 
@@ -556,7 +556,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/backups?page=2').reply(200, JSON.stringify(data));
 
       client.droplets.backups(123, 2, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.backups);
+        expect(droplets).to.shallowDeepEqual(data.backups);
       });
     });
 
@@ -564,7 +564,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/backups?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.droplets.backups(123, 2, 1, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.backups);
+        expect(droplets).to.shallowDeepEqual(data.backups);
       });
     });
 
@@ -575,7 +575,7 @@ describe('droplet endpoints', function() {
         page: 1,
         per_page: 1
       }, function(err, backups, headers) {
-        expect(backups).to.be.eql(data.backups);
+        expect(backups).to.shallowDeepEqual(data.backups);
       });
     });
 
@@ -583,7 +583,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/foo%2Fbar/backups').reply(200, JSON.stringify(data));
 
       client.droplets.backups('foo/bar', function(err, backups, headers) {
-        expect(backups).to.be.eql(data.backups);
+        expect(backups).to.shallowDeepEqual(data.backups);
       });
     });
   });
@@ -678,8 +678,8 @@ describe('droplet endpoints', function() {
     it('lists droplet neighbors', function() {
       testUtils.api.get('/v2/droplets/123/neighbors').reply(200, JSON.stringify(data));
 
-      client.droplets.neighbors(123, function(err, neighbors, headers) {
-        expect(neighbors).to.be.eql(data.droplets);
+      client.droplets.neighbors(123, function(err, droplets, headers) {
+        expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
 
@@ -687,7 +687,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/neighbors?page=2').reply(200, JSON.stringify(data));
 
       client.droplets.neighbors(123, 2, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.droplets);
+        expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
 
@@ -695,7 +695,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/neighbors?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.droplets.neighbors(123, 2, 1, function(err, droplets, headers) {
-        expect(droplets).to.be.eql(data.droplets);
+        expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
 
@@ -705,16 +705,16 @@ describe('droplet endpoints', function() {
       client.droplets.neighbors(123, {
         page: 1,
         per_page: 1
-      }, function(err, neighbors, headers) {
-        expect(neighbors).to.be.eql(data.droplets);
+      }, function(err, droplets, headers) {
+        expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
 
     it('escapes the name', function() {
       testUtils.api.get('/v2/droplets/foo%2Fbar/neighbors').reply(200, JSON.stringify(data));
 
-      client.droplets.neighbors('foo/bar', function(err, neighbors, headers) {
-        expect(neighbors).to.be.eql(data.droplets);
+      client.droplets.neighbors('foo/bar', function(err, droplets, headers) {
+        expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
   });
@@ -777,7 +777,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/actions').reply(200, JSON.stringify(data));
 
       client.droplets.listActions(123, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -785,7 +785,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/actions?page=2').reply(200, JSON.stringify(data));
 
       client.droplets.listActions(123, 2, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -793,7 +793,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.droplets.listActions(123, 2, 1, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -804,7 +804,7 @@ describe('droplet endpoints', function() {
         page: 1,
         per_page: 2
       }, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -812,7 +812,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/foo%2Fbar/actions').reply(200, JSON.stringify(data));
 
       client.droplets.listActions('foo/bar', function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
   });
@@ -842,7 +842,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/actions/123').reply(200, JSON.stringify(data));
 
       client.droplets.getAction(123, 123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -850,7 +850,7 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/foo%2Fbar/actions/foo%2Fbar').reply(200, JSON.stringify(data));
 
       client.droplets.getAction('foo/bar', 'foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -874,7 +874,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'shutdown' }).reply(201, data);
 
       client.droplets.shutdown(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -882,7 +882,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'shutdown' }).reply(201, data);
 
       client.droplets.shutdown('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -906,7 +906,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'power_off' }).reply(201, data);
 
       client.droplets.powerOff(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -914,7 +914,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'power_off' }).reply(201, data);
 
       client.droplets.powerOff('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -938,7 +938,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'power_on' }).reply(201, data);
 
       client.droplets.powerOn(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -946,7 +946,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'power_on' }).reply(201, data);
 
       client.droplets.powerOn('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -970,7 +970,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'power_cycle' }).reply(201, data);
 
       client.droplets.powerCycle(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -978,7 +978,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'power_cycle' }).reply(201, data);
 
       client.droplets.powerCycle('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1002,7 +1002,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'reboot' }).reply(201, data);
 
       client.droplets.reboot(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1010,7 +1010,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'reboot' }).reply(201, data);
 
       client.droplets.reboot('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1034,7 +1034,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'enable_backups' }).reply(201, data);
 
       client.droplets.enableBackups(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1042,7 +1042,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'enable_backups' }).reply(201, data);
 
       client.droplets.enableBackups('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1066,7 +1066,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'disable_backups' }).reply(201, data);
 
       client.droplets.disableBackups(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1074,7 +1074,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'disable_backups' }).reply(201, data);
 
       client.droplets.disableBackups('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1098,7 +1098,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'password_reset' }).reply(201, data);
 
       client.droplets.passwordReset(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1106,7 +1106,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'password_reset' }).reply(201, data);
 
       client.droplets.passwordReset('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1130,7 +1130,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'enable_ipv6' }).reply(201, data);
 
       client.droplets.enableIPv6(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1138,7 +1138,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'enable_ipv6' }).reply(201, data);
 
       client.droplets.enableIPv6('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1162,7 +1162,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/123/actions', { type: 'enable_private_networking' }).reply(201, data);
 
       client.droplets.enablePrivateNetworking(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1170,7 +1170,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/foo%2Fbar/actions', { type: 'enable_private_networking' }).reply(201, data);
 
       client.droplets.enablePrivateNetworking('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1200,7 +1200,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.resize(123, parameters, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1210,7 +1210,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.resize(123, '64gb', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1220,7 +1220,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.resize('foo/bar', '64gb', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1250,7 +1250,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.rename(123, parameters, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1260,7 +1260,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.rename(123, 'foo', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1270,7 +1270,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.rename('foo/bar', 'foo', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1300,7 +1300,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.snapshot(123, parameters, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1310,7 +1310,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.snapshot(123, 'foo', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1320,7 +1320,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.snapshot('foo/bar', 'foo', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1350,7 +1350,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.restore(123, parameters, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1360,7 +1360,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.restore(123, 12345, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1370,7 +1370,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.restore('foo/bar', 12345, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1400,7 +1400,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.rebuild(123, parameters, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1410,7 +1410,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.rebuild(123, 'ubuntu-14-04-x64', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1420,7 +1420,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.rebuild('foo/bar', 'ubuntu-14-04-x64', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1450,7 +1450,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.changeKernel(123, parameters, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1460,7 +1460,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.changeKernel(123, 12345, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -1470,7 +1470,7 @@ describe('droplet endpoints', function() {
       ).reply(201, data);
 
       client.droplets.changeKernel('foo/bar', 12345, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -1494,7 +1494,7 @@ describe('droplet endpoints', function() {
       testUtils.api.post('/v2/droplets/actions', { tag_name: 'foo', type: 'enable_private_networking' }).reply(201, data);
 
       client.droplets.actionByTag('foo', 'enable_private_networking', function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
   });

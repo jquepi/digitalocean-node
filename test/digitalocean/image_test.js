@@ -46,7 +46,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images').reply(200, JSON.stringify(data));
 
       client.images.list(function(err, images, headers) {
-        expect(images).to.be.eql(data.images);
+        expect(images).to.shallowDeepEqual(data.images);
       });
     });
 
@@ -54,7 +54,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images?page=2').reply(200, JSON.stringify(data));
 
       client.images.list(2, function(err, images, headers) {
-        expect(images).to.be.eql(data.images);
+        expect(images).to.shallowDeepEqual(data.images);
       });
     });
 
@@ -62,7 +62,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.images.list(2, 1, function(err, images, headers) {
-        expect(images).to.be.eql(data.images);
+        expect(images).to.shallowDeepEqual(data.images);
       });
     });
   });
@@ -87,7 +87,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/146').reply(200, JSON.stringify(data));
 
       client.images.get(146, function(err, image, headers) {
-        expect(image).to.be.eql(data.image);
+        expect(image).to.shallowDeepEqual(data.image);
       });
     });
 
@@ -95,7 +95,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/foo%2Fbar').reply(200, JSON.stringify(data));
 
       client.images.get('foo/bar', function(err, image, headers) {
-        expect(image).to.be.eql(data.image);
+        expect(image).to.shallowDeepEqual(data.image);
       });
     });
   });
@@ -124,7 +124,7 @@ describe('image endpoints', function() {
       testUtils.api.put('/v2/images/146', attributes).reply(200, JSON.stringify(data));
 
       client.images.update(146, attributes, function(err, image, headers) {
-        expect(image).to.be.eql(data.image);
+        expect(image).to.shallowDeepEqual(data.image);
       });
     });
 
@@ -132,7 +132,7 @@ describe('image endpoints', function() {
       testUtils.api.put('/v2/images/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
 
       client.images.update('foo/bar', attributes, function(err, image, headers) {
-        expect(image).to.be.eql(data.image);
+        expect(image).to.shallowDeepEqual(data.image);
       });
     });
   });
@@ -185,7 +185,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/123/actions').reply(200, JSON.stringify(data));
 
       client.images.listActions(123, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -193,7 +193,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/123/actions?page=2').reply(200, JSON.stringify(data));
 
       client.images.listActions(123, 2, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -201,7 +201,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.images.listActions(123, 2, 1, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -212,7 +212,7 @@ describe('image endpoints', function() {
         page: 1,
         per_page: 2
       }, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -220,7 +220,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/foo%2Fbar/actions').reply(200, JSON.stringify(data));
 
       client.images.listActions('foo/bar', function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
   });
@@ -250,7 +250,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/123/actions/456').reply(200, JSON.stringify(data));
 
       client.images.getAction(123, 456, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -258,7 +258,7 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/foo%2Fbar/actions/bar%2Fbaz').reply(200, JSON.stringify(data));
 
       client.images.getAction('foo/bar', 'bar/baz', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -282,7 +282,7 @@ describe('image endpoints', function() {
       testUtils.api.post('/v2/images/123/actions', { type: 'convert' }).reply(201, data);
 
       client.images.convert(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -290,7 +290,7 @@ describe('image endpoints', function() {
       testUtils.api.post('/v2/images/foo%2Fbar/actions', { type: 'convert' }).reply(201, data);
 
       client.images.convert('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -320,7 +320,7 @@ describe('image endpoints', function() {
       ).reply(201, data);
 
       client.images.transfer(123, parameters, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -330,7 +330,7 @@ describe('image endpoints', function() {
       ).reply(201, data);
 
       client.images.transfer(123, 'ams3', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -340,7 +340,7 @@ describe('image endpoints', function() {
       ).reply(201, data);
 
       client.images.transfer('foo/bar', 'ams3', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });

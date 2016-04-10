@@ -74,24 +74,24 @@ describe('floating ip endpoints', function() {
     it('returns floating ip', function() {
       testUtils.api.get('/v2/floating_ips').reply(200, JSON.stringify(data));
 
-      client.floatingIps.list(function(err, floatingIp, headers) {
-        expect(floatingIp).to.be.eql(data.floating_ips);
+      client.floatingIps.list(function(err, floatingIps, headers) {
+        expect(floatingIps).to.shallowDeepEqual(data.floating_ips);
       });
     });
 
     it('returns floating ip at page', function() {
       testUtils.api.get('/v2/floating_ips?page=2').reply(200, JSON.stringify(data));
 
-      client.floatingIps.list(2, function(err, floatingIp, headers) {
-        expect(floatingIp).to.be.eql(data.floating_ips);
+      client.floatingIps.list(2, function(err, floatingIps, headers) {
+        expect(floatingIps).to.shallowDeepEqual(data.floating_ips);
       });
     });
 
     it('returns floating ip at page with length', function() {
       testUtils.api.get('/v2/floating_ips?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.floatingIps.list(2, 1, function(err, floatingIp, headers) {
-        expect(floatingIp).to.be.eql(data.floating_ips);
+      client.floatingIps.list(2, 1, function(err, floatingIps, headers) {
+        expect(floatingIps).to.shallowDeepEqual(data.floating_ips);
       });
     });
   });
@@ -135,7 +135,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.post('/v2/floating_ips', attributes).reply(202, data);
 
       client.floatingIps.create(attributes, function(err, floatingIp, headers) {
-        expect(floatingIp).to.be.eql(data.floating_ip);
+        expect(floatingIp).to.shallowDeepEqual(data.floating_ip);
       });
     });
   });
@@ -174,7 +174,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/123').reply(200, JSON.stringify(data));
 
       client.floatingIps.get(123, function(err, floatingIp, headers) {
-        expect(floatingIp).to.be.eql(data.floating_ip);
+        expect(floatingIp).to.shallowDeepEqual(data.floating_ip);
       });
     });
 
@@ -182,7 +182,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/foo%2Fbar').reply(200, JSON.stringify(data));
 
       client.floatingIps.get('foo/bar', function(err, floatingIp, headers) {
-        expect(floatingIp).to.be.eql(data.floating_ip);
+        expect(floatingIp).to.shallowDeepEqual(data.floating_ip);
       });
     });
   });
@@ -235,7 +235,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/123/actions').reply(200, JSON.stringify(data));
 
       client.floatingIps.listActions(123, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -243,7 +243,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/123/actions?page=2').reply(200, JSON.stringify(data));
 
       client.floatingIps.listActions(123, 2, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -251,7 +251,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.floatingIps.listActions(123, 2, 1, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -262,7 +262,7 @@ describe('floating ip endpoints', function() {
         page: 1,
         per_page: 2
       }, function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
@@ -270,7 +270,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/foo%2Fbar/actions').reply(200, JSON.stringify(data));
 
       client.floatingIps.listActions('foo/bar', function(err, actions, headers) {
-        expect(actions).to.be.eql(data.actions);
+        expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
   });
@@ -300,7 +300,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/123/actions/456').reply(200, JSON.stringify(data));
 
       client.floatingIps.getAction(123, 456, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -308,7 +308,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/foo%2Fbar/actions/bar%2Fbaz').reply(200, JSON.stringify(data));
 
       client.floatingIps.getAction('foo/bar', 'bar/baz', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -338,7 +338,7 @@ describe('floating ip endpoints', function() {
       ).reply(201, data);
 
       client.floatingIps.assign(123, parameters, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -348,7 +348,7 @@ describe('floating ip endpoints', function() {
       ).reply(201, data);
 
       client.floatingIps.assign(123, 456, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -358,7 +358,7 @@ describe('floating ip endpoints', function() {
       ).reply(201, data);
 
       client.floatingIps.assign('foo/bar', 456, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });
@@ -382,7 +382,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.post('/v2/floating_ips/123/actions', { type: 'unassign' }).reply(201, data);
 
       client.floatingIps.unassign(123, function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
@@ -390,7 +390,7 @@ describe('floating ip endpoints', function() {
       testUtils.api.post('/v2/floating_ips/foo%2Fbar/actions', { type: 'unassign' }).reply(201, data);
 
       client.floatingIps.unassign('foo/bar', function(err, action, headers) {
-        expect(action).to.be.eql(data.action);
+        expect(action).to.shallowDeepEqual(data.action);
       });
     });
   });

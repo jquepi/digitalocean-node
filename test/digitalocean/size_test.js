@@ -52,7 +52,7 @@ describe('size endpoints', function() {
       testUtils.api.get('/v2/sizes').reply(200, JSON.stringify(data));
 
       client.sizes.list(function(err, sizes, headers) {
-        expect(sizes).to.be.eql(data.sizes);
+        expect(sizes).to.shallowDeepEqual(data.sizes);
       });
     });
 
@@ -60,7 +60,7 @@ describe('size endpoints', function() {
       testUtils.api.get('/v2/sizes?page=2').reply(200, JSON.stringify(data));
 
       client.sizes.list(2, function(err, sizes, headers) {
-        expect(sizes).to.be.eql(data.sizes);
+        expect(sizes).to.shallowDeepEqual(data.sizes);
       });
     });
 
@@ -68,7 +68,7 @@ describe('size endpoints', function() {
       testUtils.api.get('/v2/sizes?page=2&per_page=2').reply(200, JSON.stringify(data));
 
       client.sizes.list(2, 2, function(err, sizes, headers) {
-        expect(sizes).to.be.eql(data.sizes);
+        expect(sizes).to.shallowDeepEqual(data.sizes);
       });
     });
 
@@ -79,7 +79,7 @@ describe('size endpoints', function() {
         page: 1,
         per_page: 2
       }, function(err, sizes, headers) {
-        expect(sizes).to.be.eql(data.sizes);
+        expect(sizes).to.shallowDeepEqual(data.sizes);
       });
     });
   });

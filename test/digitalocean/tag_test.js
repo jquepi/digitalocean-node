@@ -40,7 +40,7 @@ describe('tag endpoints', function() {
       testUtils.api.get('/v2/tags').reply(200, JSON.stringify(data));
 
       client.tags.list(function(err, tags, headers) {
-        expect(tags).to.be.eql(data.tags);
+        expect(tags).to.shallowDeepEqual(data.tags);
       });
     });
 
@@ -48,7 +48,7 @@ describe('tag endpoints', function() {
       testUtils.api.get('/v2/tags?page=2').reply(200, JSON.stringify(data));
 
       client.tags.list(2, function(err, tags, headers) {
-        expect(tags).to.be.eql(data.tags);
+        expect(tags).to.shallowDeepEqual(data.tags);
       });
     });
 
@@ -56,7 +56,7 @@ describe('tag endpoints', function() {
       testUtils.api.get('/v2/tags?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.tags.list(2, 1, function(err, tags, headers) {
-        expect(tags).to.be.eql(data.tags);
+        expect(tags).to.shallowDeepEqual(data.tags);
       });
     });
   });
@@ -82,7 +82,7 @@ describe('tag endpoints', function() {
       testUtils.api.post('/v2/tags', attributes).reply(201, data);
 
       client.tags.create(attributes, function(err, tag, headers) {
-        expect(tag).to.be.eql(data.tag);
+        expect(tag).to.shallowDeepEqual(data.tag);
       });
     });
   });
@@ -104,7 +104,7 @@ describe('tag endpoints', function() {
       testUtils.api.get('/v2/tags/foo').reply(200, JSON.stringify(data));
 
       client.tags.get('foo', function(err, tag, headers) {
-        expect(tag).to.be.eql(data.tag);
+        expect(tag).to.shallowDeepEqual(data.tag);
       });
     });
 
@@ -112,7 +112,7 @@ describe('tag endpoints', function() {
       testUtils.api.get('/v2/tags/foo%2Fbar').reply(200, JSON.stringify(data));
 
       client.tags.get('foo/bar', function(err, tag, headers) {
-        expect(tag).to.be.eql(data.tag);
+        expect(tag).to.shallowDeepEqual(data.tag);
       });
     });
   });
@@ -138,7 +138,7 @@ describe('tag endpoints', function() {
       testUtils.api.put('/v2/tags/foo', attributes).reply(200, JSON.stringify(data));
 
       client.tags.update('foo', attributes, function(err, tag, headers) {
-        expect(tag).to.be.eql(data.tag);
+        expect(tag).to.shallowDeepEqual(data.tag);
       });
     });
 
@@ -150,7 +150,7 @@ describe('tag endpoints', function() {
       testUtils.api.put('/v2/tags/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
 
       client.tags.update('foo/bar', attributes, function(err, tag, headers) {
-        expect(tag).to.be.eql(data.tag);
+        expect(tag).to.shallowDeepEqual(data.tag);
       });
     });
   });

@@ -27,7 +27,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains').reply(200, JSON.stringify(data));
 
       client.domains.list(function(err, domains, headers) {
-        expect(domains).to.be.eql(data.domains);
+        expect(domains).to.shallowDeepEqual(data.domains);
       });
     });
 
@@ -35,7 +35,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains?page=2').reply(200, JSON.stringify(data));
 
       client.domains.list(2, function(err, domains, headers) {
-        expect(domains).to.be.eql(data.domains);
+        expect(domains).to.shallowDeepEqual(data.domains);
       });
     });
 
@@ -43,7 +43,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.domains.list(2, 1, function(err, domains, headers) {
-        expect(domains).to.be.eql(data.domains);
+        expect(domains).to.shallowDeepEqual(data.domains);
       });
     });
   });
@@ -66,7 +66,7 @@ describe('domain endpoints', function() {
       testUtils.api.post('/v2/domains', attributes).reply(201, data);
 
       client.domains.create(attributes, function(err, domain, headers) {
-        expect(domain).to.be.eql(data.domain);
+        expect(domain).to.shallowDeepEqual(data.domain);
       });
     });
   });
@@ -84,7 +84,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/3').reply(200, JSON.stringify(data));
 
       client.domains.get(3, function(err, domain, headers) {
-        expect(domain).to.be.eql(data.domain);
+        expect(domain).to.shallowDeepEqual(data.domain);
       });
     });
 
@@ -92,7 +92,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/foo%2Fbar').reply(200, JSON.stringify(data));
 
       client.domains.get('foo/bar', function(err, domain, headers) {
-        expect(domain).to.be.eql(data.domain);
+        expect(domain).to.shallowDeepEqual(data.domain);
       });
     });
   });
@@ -139,7 +139,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/example.com/domain_records').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com', function(err, domainRecords, headers) {
-        expect(domainRecords).to.be.eql(data.domain_records);
+        expect(domainRecords).to.shallowDeepEqual(data.domain_records);
       });
     });
 
@@ -147,7 +147,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/example.com/domain_records?page=2').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com', 2, function(err, domainRecords, headers) {
-        expect(domainRecords).to.be.eql(data.domain_records);
+        expect(domainRecords).to.shallowDeepEqual(data.domain_records);
       });
     });
 
@@ -155,7 +155,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/example.com/domain_records?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com', 2, 1, function(err, domainRecords, headers) {
-        expect(domainRecords).to.be.eql(data.domain_records);
+        expect(domainRecords).to.shallowDeepEqual(data.domain_records);
       });
     });
 
@@ -163,7 +163,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/foo%2Fbar.com/domain_records').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('foo/bar.com', function(err, domainRecords, headers) {
-        expect(domainRecords).to.be.eql(data.domain_records);
+        expect(domainRecords).to.shallowDeepEqual(data.domain_records);
       });
     });
   });
@@ -190,7 +190,7 @@ describe('domain endpoints', function() {
       testUtils.api.post('/v2/domains/example.com/domain_records', attributes).reply(201, data);
 
       client.domains.createRecord('example.com', attributes, function(err, domainRecord, headers) {
-        expect(domainRecord).to.be.eql(data.domain_record);
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
       });
     });
 
@@ -198,7 +198,7 @@ describe('domain endpoints', function() {
       testUtils.api.post('/v2/domains/foo%2Fbar.com/domain_records', attributes).reply(201, data);
 
       client.domains.createRecord('foo/bar.com', attributes, function(err, domainRecord, headers) {
-        expect(domainRecord).to.be.eql(data.domain_record);
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
       });
     });
   });
@@ -220,7 +220,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/example.com/domain_records/123').reply(200, JSON.stringify(data));
 
       client.domains.getRecord('example.com', 123, function(err, domainRecord, headers) {
-        expect(domainRecord).to.be.eql(data.domain_record);
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
       });
     });
 
@@ -228,7 +228,7 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/foo%2Fbar.com/domain_records/123').reply(200, JSON.stringify(data));
 
       client.domains.getRecord('foo/bar.com', 123, function(err, domainRecord, headers) {
-        expect(domainRecord).to.be.eql(data.domain_record);
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
       });
     });
   });
@@ -254,7 +254,7 @@ describe('domain endpoints', function() {
       testUtils.api.put('/v2/domains/example.com/domain_records/123', attributes).reply(200, JSON.stringify(data));
 
       client.domains.updateRecord('example.com', 123, attributes, function(err, domainRecord, headers) {
-        expect(domainRecord).to.be.eql(data.domain_record);
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
       });
     });
 
@@ -262,7 +262,7 @@ describe('domain endpoints', function() {
       testUtils.api.put('/v2/domains/foo%2Fbar.com/domain_records/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
 
       client.domains.updateRecord('foo/bar.com', 'foo/bar', attributes, function(err, domainRecord, headers) {
-        expect(domainRecord).to.be.eql(data.domain_record);
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
       });
     });
   });
