@@ -188,19 +188,19 @@ describe('floating ip endpoints', function() {
   });
 
   describe('delete', function() {
-    it('deletes the droplet', function(done) {
+    it('deletes the droplet', function() {
       testUtils.api.delete('/v2/floating_ips/123').reply(204, '');
 
-      client.floatingIps.delete(123, function() {
-        done();
+      client.floatingIps.delete(123, function(err) {
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.delete('/v2/floating_ips/foo%2Fbar').reply(204, '');
 
-      client.floatingIps.delete('foo/bar', function() {
-        done();
+      client.floatingIps.delete('foo/bar', function(err) {
+        expect(err).to.be.null;
       });
     });
   });

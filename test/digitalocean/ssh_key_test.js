@@ -132,19 +132,19 @@ describe('ssh key endpoints', function() {
   });
 
   describe('delete', function() {
-    it('deletes the ssh key', function(done) {
+    it('deletes the ssh key', function() {
       testUtils.api.delete('/v2/account/keys/123').reply(204, '');
 
-      client.sshKeys.delete(123, function() {
-        done();
+      client.sshKeys.delete(123, function(err) {
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.delete('/v2/account/keys/foo%2Fbar').reply(204, '');
 
-      client.sshKeys.delete('foo/bar', function() {
-        done();
+      client.sshKeys.delete('foo/bar', function(err) {
+        expect(err).to.be.null;
       });
     });
   });

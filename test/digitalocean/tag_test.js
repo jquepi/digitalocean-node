@@ -163,19 +163,19 @@ describe('tag endpoints', function() {
       }
     ];
 
-    it('tags the resources', function(done) {
+    it('tags the resources', function() {
       testUtils.api.post('/v2/tags/foo/resources', { resources: resources }).reply(204, '');
 
       client.tags.tag('foo', resources, function(err, tag, headers) {
-        done();
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.post('/v2/tags/foo%2Fbar/resources', { resources: resources }).reply(204, '');
 
       client.tags.tag('foo/bar', resources, function(err, tag, headers) {
-        done();
+        expect(err).to.be.null;
       });
     });
   });
@@ -188,37 +188,37 @@ describe('tag endpoints', function() {
       }
     ];
 
-    it('untags the resources', function(done) {
+    it('untags the resources', function() {
       testUtils.api.delete('/v2/tags/foo/resources', { resources: resources }).reply(204, '');
 
       client.tags.untag('foo', resources, function(err, tag, headers) {
-        done();
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.delete('/v2/tags/foo%2Fbar/resources', { resources: resources }).reply(204, '');
 
       client.tags.untag('foo/bar', resources, function(err, tag, headers) {
-        done();
+        expect(err).to.be.null;
       });
     });
   });
 
   describe('delete', function() {
-    it('deletes the tag', function(done) {
+    it('deletes the tag', function() {
       testUtils.api.delete('/v2/tags/foo').reply(204, '');
 
-      client.tags.delete('foo', function() {
-        done();
+      client.tags.delete('foo', function(err) {
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.delete('/v2/tags/foo%2Fbar').reply(204, '');
 
-      client.tags.delete('foo/bar', function() {
-        done();
+      client.tags.delete('foo/bar', function(err) {
+        expect(err).to.be.null;
       });
     });
   });

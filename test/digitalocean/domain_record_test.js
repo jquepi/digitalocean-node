@@ -151,19 +151,19 @@ describe('domain record endpoints', function() {
   });
 
   describe('delete', function() {
-    it('deletes the domain record', function(done) {
+    it('deletes the domain record', function() {
       testUtils.api.delete('/v2/domains/example.com/domain_records/123').reply(204, '');
 
-      client.domainRecords.delete('example.com', 123, function() {
-        done();
+      client.domainRecords.delete('example.com', 123, function(err) {
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.delete('/v2/domains/foo%2Fbar.com/domain_records/foo%2Fbar').reply(204, '');
 
-      client.domainRecords.delete('foo/bar.com', 'foo/bar', function() {
-        done();
+      client.domainRecords.delete('foo/bar.com', 'foo/bar', function(err) {
+        expect(err).to.be.null;
       });
     });
   });

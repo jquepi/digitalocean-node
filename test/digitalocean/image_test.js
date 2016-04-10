@@ -138,19 +138,19 @@ describe('image endpoints', function() {
   });
 
   describe('delete', function() {
-    it('deletes the image', function(done) {
+    it('deletes the image', function() {
       testUtils.api.delete('/v2/images/123').reply(204, '');
 
-      client.images.delete(123, function() {
-        done();
+      client.images.delete(123, function(err) {
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.delete('/v2/images/foo%2Fbar').reply(204, '');
 
-      client.images.delete('foo/bar', function() {
-        done();
+      client.images.delete('foo/bar', function(err) {
+        expect(err).to.be.null;
       });
     });
   });

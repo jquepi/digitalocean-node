@@ -98,19 +98,19 @@ describe('domain endpoints', function() {
   });
 
   describe('delete', function() {
-    it('deletes the domain', function(done) {
+    it('deletes the domain', function() {
       testUtils.api.delete('/v2/domains/123').reply(204, '');
 
-      client.domains.delete(123, function() {
-        done();
+      client.domains.delete(123, function(err) {
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.delete('/v2/domains/foo%2Fbar').reply(204, '');
 
-      client.domains.delete('foo/bar', function() {
-        done();
+      client.domains.delete('foo/bar', function(err) {
+        expect(err).to.be.null;
       });
     });
   });

@@ -721,37 +721,29 @@ describe('droplet endpoints', function() {
 
 
   describe('delete', function() {
-    it('deletes the droplet', function(done) {
+    it('deletes the droplet', function() {
       testUtils.api.delete('/v2/droplets/123').reply(204, '');
 
-      client.droplets.delete(123, function() {
-        done();
+      client.droplets.delete(123, function(err) {
+        expect(err).to.be.null;
       });
     });
 
-    it('escapes the name', function(done) {
+    it('escapes the name', function() {
       testUtils.api.delete('/v2/droplets/foo%2Fbar').reply(204, '');
 
-      client.droplets.delete('foo/bar', function() {
-        done();
+      client.droplets.delete('foo/bar', function(err) {
+        expect(err).to.be.null;
       });
     });
   });
 
   describe('deleteByTag', function() {
-    it('deletes the droplet', function(done) {
-      testUtils.api.delete('/v2/droplets?tag_name=awesome').reply(204, '');
+    it('deletes the droplet', function() {
+      testUtils.api.delete('/v2/droplets', { tag_name: 'awesome' }).reply(204, '');
 
-      client.droplets.deleteByTag('awesome', function() {
-        done();
-      });
-    });
-
-    it('escapes the name', function(done) {
-      testUtils.api.delete('/v2/droplets?tag_name=foo%2Fbar').reply(204, '');
-
-      client.droplets.deleteByTag('foo/bar', function() {
-        done();
+      client.droplets.deleteByTag('awesome', function(err) {
+        expect(err).to.be.null;
       });
     });
   });
