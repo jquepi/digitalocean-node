@@ -117,9 +117,10 @@ module.exports = {
 
       this.requestOptions = this.options && this.options.requestOptions || {};
       this.request = this.options && this.options.request || request;
+      var version = require('../../package.json').version;
       this.requestDefaults = {
         headers: {
-          'User-Agent': 'digitalocean-node/0.3.0',
+          'User-Agent': 'digitalocean-node/' + version,
           'Content-Type': 'application/json'
         }
       };
@@ -246,6 +247,9 @@ module.exports = {
           {
             uri: this._buildUrl(path, options.query),
             method: type,
+            headers: {
+              'Authorization': 'Bearer ' + this.token
+            },
             body: JSON.stringify(content)
           },
           options
@@ -293,7 +297,7 @@ module.exports = {
     return new Client(token, options);
   };
 }).call(this);
-},{"./account":2,"./action":3,"./domain":5,"./domain_record":6,"./droplet":7,"./droplet_action":8,"./error":9,"./floating_ip":10,"./floating_ip_action":11,"./image":12,"./image_action":13,"./region":14,"./size":15,"./ssh_key":16,"./tag":17,"deep-extend":270,"request":271,"url":263}],5:[function(require,module,exports){
+},{"../../package.json":347,"./account":2,"./action":3,"./domain":5,"./domain_record":6,"./droplet":7,"./droplet_action":8,"./error":9,"./floating_ip":10,"./floating_ip_action":11,"./image":12,"./image_action":13,"./region":14,"./size":15,"./ssh_key":16,"./tag":17,"deep-extend":270,"request":271,"url":263}],5:[function(require,module,exports){
 (function() {
   var slice = [].slice,
     util = require('./util');
@@ -57936,5 +57940,53 @@ Request.prototype.toJSON = requestToJSON
 module.exports = Request
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/cookies":272,"./lib/copy":273,"./lib/debug":274,"./lib/helpers":275,"_process":236,"aws-sign2":276,"bl":277,"buffer":35,"caseless":286,"combined-stream":287,"forever-agent":289,"form-data":290,"hawk":295,"http":256,"http-signature":310,"https":232,"mime-types":327,"net":19,"node-uuid":330,"oauth-sign":331,"qs":332,"querystring":240,"stream":255,"stringstream":337,"tunnel-agent":345,"url":263,"util":266,"zlib":34}]},{},[1])(1)
+},{"./lib/cookies":272,"./lib/copy":273,"./lib/debug":274,"./lib/helpers":275,"_process":236,"aws-sign2":276,"bl":277,"buffer":35,"caseless":286,"combined-stream":287,"forever-agent":289,"form-data":290,"hawk":295,"http":256,"http-signature":310,"https":232,"mime-types":327,"net":19,"node-uuid":330,"oauth-sign":331,"qs":332,"querystring":240,"stream":255,"stringstream":337,"tunnel-agent":345,"url":263,"util":266,"zlib":34}],347:[function(require,module,exports){
+module.exports={
+  "name": "digitalocean",
+  "version": "0.5.2",
+  "author": "Phillip Baker <phillbaker@retrodict.com>",
+  "description": "nodejs wrapper for digitalocean v2 api",
+  "main": "./lib/digitalocean",
+  "repository": "phillbaker/digitalocean-node",
+  "keywords": [
+    "wrapper",
+    "api",
+    "v2",
+    "digital ocean",
+    "digitalocean",
+    "droplet"
+  ],
+  "scripts": {
+    "test": "mocha --bail --recursive --reporter dot",
+    "clean": "rm -r dist/*",
+    "build:js": "browserify lib/digitalocean.js -o dist/digitalocean.js --standalone 'digitalocean'",
+    "build": "mkdir -p dist && npm run build:js",
+    "preversion": "npm test",
+    "version": "npm run build && git add -A dist",
+    "release": "git push --follow-tags && npm publish",
+    "release:patch": "npm version patch -m 'Bump version to %s'",
+    "release:minor": "npm version minor -m 'Bump version to %s'",
+    "release:major": "npm version major -m 'Bump version to %s'"
+  },
+  "dependencies": {
+    "deep-extend": "0.x.x",
+    "request": "^2.50"
+  },
+  "devDependencies": {
+    "bower": ">= 0.0.0",
+    "browserify": "^13.0.0",
+    "chai": "~1.10.0",
+    "mocha": "~2.1.0",
+    "mocha-jshint": "^2.3.1",
+    "nock": "0.57.x"
+  },
+  "engines": {
+    "node": ">0.4.11",
+    "npm": ">= 2.13.1"
+  },
+  "tonicExampleFilename": "examples/create_droplet.js",
+  "license": "MIT"
+}
+
+},{}]},{},[1])(1)
 });
