@@ -20,6 +20,86 @@ describe('digitalocean client', function() {
     });
   });
 
+  describe('get', function() {
+    it('includes authorization header', function() {
+      testUtils.apiWithHeaders({ 'Authorization': 'Bearer ' + token })
+        .get('/v2/foo')
+        .reply(200, '');
+
+      client.get('/foo', {}, function(err) {
+        expect(err).to.be.null;
+      });
+    });
+
+    it('has a GET method', function() {
+      testUtils.api.get('/v2/foo').reply(200, '');
+
+      client.get('/foo', {}, function(err) {
+        expect(err).to.be.null;
+      });
+    });
+  });
+
+  describe('post', function() {
+    it('includes authorization header', function() {
+      testUtils.apiWithHeaders({ 'Authorization': 'Bearer ' + token })
+        .post('/v2/foo')
+        .reply(200, '');
+
+      client.post('/foo', {}, function(err) {
+        expect(err).to.be.null;
+      });
+    });
+
+    it('has a POST method', function() {
+      testUtils.api.post('/v2/foo').reply(200, '');
+
+      client.post('/foo', {}, function(err) {
+        expect(err).to.be.null;
+      });
+    });
+  });
+
+  describe('put', function() {
+    it('includes authorization header', function() {
+      testUtils.apiWithHeaders({ 'Authorization': 'Bearer ' + token })
+        .put('/v2/foo')
+        .reply(200, '');
+
+      client.put('/foo', {}, function(err) {
+        expect(err).to.be.null;
+      });
+    });
+
+    it('has a PUT method', function() {
+      testUtils.api.put('/v2/foo').reply(200, '');
+
+      client.put('/foo', {}, function(err) {
+        expect(err).to.be.null;
+      });
+    });
+  });
+
+  describe('delete', function() {
+    it('includes authorization header', function() {
+      testUtils.apiWithHeaders({ 'Authorization': 'Bearer ' + token })
+        .delete('/v2/foo')
+        .reply(200, '');
+
+      client.delete('/foo', {}, function(err) {
+        expect(err).to.be.null;
+      });
+    });
+
+    it('has a DELETE method', function() {
+      testUtils.api.delete('/v2/foo').reply(200, '');
+
+      client.delete('/foo', {}, function(err) {
+        expect(err).to.be.null;
+      });
+    });
+  });
+
   describe('Callback support', function() {
     describe('Any given endpoint', function() {
       it('Will call a callback if successful', function(done) {

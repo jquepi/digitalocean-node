@@ -52,7 +52,7 @@ var client = digitalocean.client('TOKEN', {
 
 ## API Callback Structure
 
-__All the callbacks for the following will take first an error argument, then a data argument, then the raw response. For example:__
+__All the callbacks for the following will take first an error argument, then a data argument, the headers, then the raw response. For example:__
 
 ```js
 client.account.get(function(err, account, headers, response) {
