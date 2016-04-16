@@ -91,17 +91,20 @@ client.droplets.list({
 
 To fetch all the pages of a resource, the pages must be traversed. For example, to fetch all Droplets:
 ```js
-listPagesUntilDone(1, function(allDroplets) {
+getAllDroplets(function(allDroplets) {
   console.log(allDroplets.length);
 });
 
-function listPagesUntilDone(page, callback, array) {
+function getAllDroplets(callback, page, array) {
   client.droplets.list(page, function(err, droplets, _, response) {
     if (err) {
       return console.error('Error fetching pages', err);
     }
 
-    if (array === undefined) {
+    if (page == null) {
+      page = 1;
+    }
+    if (array == null) {
       array = [];
     }
     array = array.concat(droplets);
@@ -121,6 +124,39 @@ function listPagesUntilDone(page, callback, array) {
     }
   })
 };
+
+// promise style
+
+getAllDroplets().then(function(allDroplets) {
+
+}).catch(function(err) {
+  console.log(err);
+});
+
+function getAllDroplets(limit, offset, query) {
+    var allTrades = [];
+
+    function getTrades(limit, offset, query){
+        return trader.getTradesAsync(limit, offset, query)
+            .each(function(trade) {
+                allTrades.push(trade)
+                // or, doStuff(trade), etc.
+            })
+            .then(function(trades) {
+                if (trades.length === limit) {
+                    offset += limit;
+                    return getTrades(limit, offset, query);
+                } else {
+                    return allTrades;
+                }
+            })
+            .catch(function(e) {
+                console.log(e.stack);
+            })
+    }
+
+    return getTrades(limit, offset, query)
+}
 ```
 
 ## Rate Limiting
