@@ -190,3 +190,51 @@ describe('utility functions', function() {
     });
   });
 });
+
+describe('ListResponse', function() {
+  var testUtils = require('../testUtils');
+
+  var digitalocean = require('../../lib/digitalocean');
+
+  var token = testUtils.getUserDigitalOceanToken();
+  var client = digitalocean.client(token);
+
+  var data = {
+    "ssh_keys": [
+      {
+        "id": 1,
+        "fingerprint": "f5:d1:78:ed:28:72:5f:e1:ac:94:fd:1f:e0:a3:48:6d",
+        "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAQQDGk5V68BJ4P3Ereh779Vi/Ft2qs/rbXrcjKLGo6zsyeyFUE0svJUpRDEJvFSf8RlezKx1/1ulJu9+kZsxRiUKn example",
+        "name": "Example Key"
+      }
+    ],
+    "meta": {
+      "total": 1
+    }
+  };
+
+  it('paginates', function(done) {
+    var pages = Object.assign({}, data);
+    pages.meta.total = 2;
+    testUtils.api.get('/v2/account/keys?per_page=1').reply(200, JSON.stringify(data));
+    testUtils.api.get('/v2/account/keys')
+      .query({per_page: '1', page: '2'})
+      .reply(200, JSON.stringify(data));
+
+    client.account.listSshKeys({ per_page: 1 }).then(function(sshKeys) {
+      var counter = 0;
+      sshKeys.all(function(err, sshKey) {
+        expect(err).to.equal(null);
+        expect(sshKey).to.shallowDeepEqual(data.ssh_keys[0]);
+        counter += 1;
+        if (counter === 2) {
+          done();
+        }
+      });
+
+
+    }).catch(function(err) {
+      done(err);
+    });
+  });
+});

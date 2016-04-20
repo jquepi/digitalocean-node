@@ -131,7 +131,7 @@ client.account.get(function(err, account, headers, response) {
 
 ## Promise result
 
-Promise results are the resource(s) returned by a successful response - an array, an individual object, or a blank object (for successful empty responses such as deletes). These objects have a special property, `_digitalOcean` that includes response information. For example:
+Promise results are the resource(s) returned by a successful response - a list response object, an individual object, or a blank object (for successful empty responses such as deletes). These objects have a special property, `_digitalOcean` that includes response information. For example:
 
 ```js
 // ...
@@ -149,7 +149,70 @@ Promise results are the resource(s) returned by a successful response - an array
 
 ## Pagination
 
-If a function is said to be supporting pagination, then that function can be used in many ways as shown below. Results from the function are arranged in [pages](https://developers.digitalocean.com/documentation/v2/#links).
+### Auto pagination
+
+Although the DigitalOcean API returns results from query endpoints in [pages](https://developers.digitalocean.com/documentation/v2/#links), this client abstracts that notion by lazily fetching subsequent pages when they are needed. This allows developers to easily handles fetching large lists of resources without having to manually paginate results and perform subsequent requests - adding a layer of convenience on top of what is a common limitation in REST based APIs. An example of using this is:
+
+```js
+client.droplets.list(function(err, droplets) {
+  if (err) {
+    return console.error('Error fetching pages', err);
+  }
+
+  droplets.all(function(err, droplet) {
+    console.log(err, droplet);
+  });
+
+  var error = iterator.error()
+  if (error) {
+    console.log(error);
+  }
+});
+```
+
+Note that the magic `.length` property on `ListResponse` is tied to the first page of results.
+
+```js
+client.droplets.list(function(err, droplets) {
+  if (err) {
+    return console.error('Error fetching pages', err);
+  }
+
+  // Limited to original page only:
+  for (var i = 0, len = droplets.length; i < len; i++) {
+    console.log(droplets[i]);
+  }
+});
+```
+
+Under the hood, this enumeration is handled by an iterator object, this can be accessed as well (it uses promises internally):
+
+```js
+client.droplets.list(function(err, droplets) {
+  if (err) {
+    return console.error('Error fetching pages', err);
+  }
+
+  var iterator = droplets.iterator();
+  var iterable = iterator.next();
+  while(!iterable.done) {
+    iterable.value.then(function(value) {
+      console.log(value);
+      iterable = iterator.next();
+    });
+  }
+
+  // Check the error afterwards:
+  var error = iterator.error()
+  if (error) {
+    console.log(error);
+  }
+});
+```
+
+### Pagination parameters
+
+If a function declares pagination parameters, then results from the function are arranged in [pages](https://developers.digitalocean.com/documentation/v2/#links). These arguments are:
 
 The `page` argument is optional and is used to specify which page of objects to retrieve.
 The `perPage` argument is also optional and is used to specify how many objects per page.
@@ -169,7 +232,10 @@ client.droplets.list({
 }, callback); //array of second 100 issues which are closed
 ```
 
+### Pagination examples
+
 To fetch all the pages of a resource, the pages must be traversed. For example, to fetch all Droplets:
+
 ```js
 getAllDroplets(function(allDroplets) {
   console.log(allDroplets.length);
@@ -197,12 +263,12 @@ function getAllDroplets(callback, page, array) {
     if (!err && isLastPage) {
       callback.call(this, array);
     } else if (!err && !isLastPage) {
-      listPagesUntilDone(page + 1, callback, array);
+      getAllDroplets(callback, page + 1, array);
     } else {
       // whoops, try again
-      listPagesUntilDone(page, callback, array);
+      getAllDroplets(callback, page, array);
     }
-  })
+  });
 };
 ```
 
