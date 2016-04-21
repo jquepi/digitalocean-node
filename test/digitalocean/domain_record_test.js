@@ -54,7 +54,11 @@ describe('domain record endpoints', function() {
     });
 
     it('escapes the name', function() {
-      // foo%2Fbar
+      testUtils.api.get('/v2/domains/foo%2Fbar.com/domain_records?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.domainRecords.list('foo/bar.com', 2, 1, function(err, domainRecords, headers) {
+        expect(domainRecords).to.be.eql(data.domain_records);
+      });
     });
   });
 
@@ -70,14 +74,14 @@ describe('domain record endpoints', function() {
         "weight": null
       }
     };
+    var attributes = {
+      "type": "A",
+      "name": "www",
+      "data": "162.10.66.0"
+    };
+
 
     it('creates the domain record', function() {
-      var attributes = {
-        "type": "A",
-        "name": "www",
-        "data": "162.10.66.0"
-      };
-
       testUtils.api.post('/v2/domains/example.com/domain_records', attributes).reply(201, data);
 
       client.domainRecords.create('example.com', attributes, function(err, domainRecord, headers) {
@@ -86,7 +90,11 @@ describe('domain record endpoints', function() {
     });
 
     it('escapes the name', function() {
-      // foo%2Fbar
+      testUtils.api.post('/v2/domains/foo%2Fbar.com/domain_records', attributes).reply(201, data);
+
+      client.domainRecords.create('foo/bar.com', attributes, function(err, domainRecord, headers) {
+        expect(domainRecord).to.be.eql(data.domain_record);
+      });
     });
   });
 
@@ -112,7 +120,11 @@ describe('domain record endpoints', function() {
     });
 
     it('escapes the name', function() {
-      // foo%2Fbar
+      testUtils.api.get('/v2/domains/foo%2Fbar.com/domain_records/123').reply(200, JSON.stringify(data));
+
+      client.domainRecords.get('foo/bar.com', 123, function(err, domainRecord, headers) {
+        expect(domainRecord).to.be.eql(data.domain_record);
+      });
     });
   });
 
