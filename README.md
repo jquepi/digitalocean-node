@@ -165,22 +165,22 @@ var client = digitalocean.client('TOKEN');
 client.droplets
 ```
 
-* `client.droplets.list(callback)`
+* `client.droplets.list([page, perPage,] callback)`
 * `client.droplets.get(droplet.id, callback)`
 * `client.droplets.create(attributes, callback)`
 * `client.droplets.delete(droplet.id, callback)`
 * `client.droplets.deleteByTagName(tag.name, callback)`
-* `client.droplets.kernels(droplet.id, callback)`
-* `client.droplets.snapshots(droplet.id, callback)`
-* `client.droplets.backups(droplet.id, callback)`
-* `client.droplets.neighbors(droplet.id, callback)`
+* `client.droplets.kernels([page, perPage,] droplet.id, callback)`
+* `client.droplets.snapshots([page, perPage,] droplet.id, callback)`
+* `client.droplets.backups([page, perPage,] droplet.id, callback)`
+* `client.droplets.neighbors([page, perPage,] droplet.id, callback)`
+* `client.droplets.listActions([page, perPage,] droplet.id, callback)`
+* `client.droplets.getAction(droplet.id, action.id, callback)`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#droplets).
 
 Methods resulting in an `action`:
 
-* `client.droplets.list(droplet.id, callback)`
-* `client.droplets.get(droplet.id, action.id, callback)`
 * `client.droplets.actionByTag(tag.name, actionType, callback)`
 * `client.droplets.reboot(droplet.id, callback)`
 * `client.droplets.powerCycle(droplet.id, callback)`
@@ -207,11 +207,11 @@ var client = digitalocean.client('TOKEN');
 client.domains
 ```
 
-* `client.domains.list(callback)`
+* `client.domains.list([page, perPage,] callback)`
 * `client.domains.create(attributes, callback)`
 * `client.domains.get(domain.name, callback)`
 * `client.domains.delete(domain.name, callback)`
-* `client.domains.listRecords(domain.name, callback)`
+* `client.domains.listRecords([page, perPage,] domain.name, callback)`
 * `client.domains.createRecord(domain.name, attributes, callback)`
 * `client.domains.getRecord(domain.name, domainRecord.id, callback)`
 * `client.domains.deleteRecord(domain.name, domainRecord.id, callback)`
@@ -228,15 +228,15 @@ var client = digitalocean.client('TOKEN');
 client.images
 ```
 
-* `client.images.list(callback)`
+* `client.images.list([page, perPage,] callback)`
 * `client.images.get(image.id, callback)`
 * `client.images.delete(image.id, callback)`
 * `client.images.update(image.id, attributes, callback)`
+* `client.imageActions.list([page, perPage,] image.id, callback)`
+* `client.imageActions.get([page, perPage,] image.id, action.id, callback)`
 
 Methods resulting in an `action`:
 
-* `client.imageActions.list(image.id, callback)`
-* `client.imageActions.get(image.id, action.id, callback)`
 * `client.imageActions.transfer(image.id, parametersOrRegionSlug, callback)`
 * `client.imageActions.convert(image.id, callback)`
 
@@ -272,7 +272,7 @@ client.account
 ```
 
 * `client.account.get(callback)`
-* `client.account.listSshKey(callback)`
+* `client.account.listSshKey([page, perPage,] callback)`
 * `client.account.createSshKey(attributes, callback)`
 * `client.account.getSshKey(sshKey.id, callback)`
 * `client.account.deleteSshKey(sshKey.id, callback)`
@@ -288,10 +288,12 @@ var client = digitalocean.client('TOKEN');
 client.floatingIps
 ```
 
-* `client.floatingIps.list(callback)`
+* `client.floatingIps.list([page, perPage,] callback)`
 * `client.floatingIps.get(floatingIp.ip, callback)`
 * `client.floatingIps.create(attributes, callback)`
 * `client.floatingIps.delete(floatingIp.ip, callback)`
+* `client.floatingIps.listActions([page, perPage,] callback)`
+* `client.floatingIps.getAction(floatingIp.ip, callback)`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#floating-ips).
 
@@ -308,7 +310,7 @@ var client = digitalocean.client('TOKEN');
 client.tags
 ```
 
-* `client.tags.list(callback)`
+* `client.tags.list([page, perPage,] callback)`
 * `client.tags.get(tag.name, callback)`
 * `client.tags.create(attributes, callback)`
 * `client.tags.update(tag.name, attributes, callback)`
