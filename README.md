@@ -303,6 +303,34 @@ Methods resulting in an `action`:
 * `client.droplets.restore(droplet.id, parametersOrImageId, [callback])`
 * `client.droplets.resize(droplet.id, parametersOrSizeSlug, [callback])`
 
+### Drive resource
+
+```js
+var digitalocean = require('digitalocean');
+var client = digitalocean.client('TOKEN');
+client.drives
+```
+
+* `client.drives.list([page, perPage,] [callback])`
+* `client.drives.list([queryObject] [callback])`
+
+[See the official docs](https://developers.digitalocean.com/documentation/v2/block-storage-beta/#retrieve-an-existing-block-storage-drive-by-name) on different parameters to pass via the query object to filter the drives.
+
+* `client.drives.get(tag.name, [callback])`
+* `client.drives.create(attributes, [callback])`
+
+For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/block-storage-beta/#create-a-new-block-storage-drive).
+
+* `client.drives.delete(tag.name, [callback])`
+
+Methods resulting in an `action`:
+
+* `client.drives.attach(drive.id, parametersOrDropletId, [callback])`
+* `client.drives.detach(drive.id, [callback])`
+* `client.drives.listActions(drive.id, [page, perPage,] [callback])`
+* `client.drives.listActions(drive.id, [queryObject] [callback])`
+* `client.drives.getAction(drive.id, action.id, [callback])`
+
 ### Domain resource
 
 ```js
