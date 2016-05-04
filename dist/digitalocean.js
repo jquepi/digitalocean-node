@@ -16,16 +16,7 @@ module.exports = {
 
     // callback, optional
     Account.prototype.get = function(callback) {
-      return this.client.get('/account', {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Account error: ' + status));
-        } else {
-          return callback(null, response['account'], headers, response);
-        }
-      });
+      return this.client.get('/account', {}, 200, 'account', callback);
     };
 
     // page or query object, optional
@@ -36,47 +27,20 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/account/keys', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Account Key error: ' + status));
-        } else {
-          return callback(null, response['ssh_keys'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/account/keys', {}].concat(slice.call(params), [200, 'ssh_keys', callback]));
     };
 
     // attributes, required
     // callback, required
     Account.prototype.createSshKey = function(attributes, callback) {
-      return this.client.post('/account/keys', attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 201) {
-          return callback(new Error('Account Key error: ' + status));
-        } else {
-          return callback(null, response['ssh_key'], headers, response);
-        }
-      });
+      return this.client.post('/account/keys', attributes, 201, 'ssh_key', callback);
     };
 
     // id, required
     // callback, required
     Account.prototype.getSshKey = function(id, callback) {
       var url = util.safeUrl('account', 'keys', id);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Account Key error: ' + status));
-        } else {
-          return callback(null, response['ssh_key'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'ssh_key', callback);
     };
 
     // id, required
@@ -84,32 +48,14 @@ module.exports = {
     // callback, required
     Account.prototype.updateSshKey = function(id, attributes, callback) {
       var url = util.safeUrl('account', 'keys', id);
-      return this.client.put(url, attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Account Key error: ' + status));
-        } else {
-          return callback(null, response['ssh_key'], headers, response);
-        }
-      });
+      return this.client.put(url, attributes, 200, 'ssh_key', callback);
     };
 
     // id, required
     // callback, required
     Account.prototype.deleteSshKey = function(id, callback) {
       var url = util.safeUrl('account', 'keys', id);
-      return this.client.delete(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Account Key error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, {}, 204, [], callback);
     };
 
     return Account;
@@ -135,32 +81,14 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/actions', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Action error: ' + status));
-        } else {
-          return callback(null, response['actions'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/actions', {}].concat(slice.call(params), [200, 'actions', callback]));
     };
 
     // id, required
     // callback, required
     Action.prototype.get = function(id, callback) {
       var url = util.safeUrl('action', id);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Action error: ' + status));
-        } else {
-          return callback(null, response['action'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'action', callback);
     };
 
     return Action;
@@ -248,31 +176,60 @@ module.exports = {
 
     // Returns a function that curries the callback to handle the response from
     // `request`.
-    Client.prototype._handleError = function(callback) {
+    //
+    // successStatuses, required, number or array of numbers
+    // successRootKeys, required, string or array of strings
+    // callback, required, function
+    Client.prototype._handleResponse = function(successStatuses, successRootKeys, callback) {
+      if (typeof successStatuses === 'number') {
+        successStatuses = [successStatuses];
+      }
+
+      if (typeof successRootKeys === 'string') {
+        successRootKeys = [successRootKeys];
+      }
+
       return function(err, res, body) {
         if (err) {
           return callback(err);
         }
 
-        if (Math.floor(res.statusCode / 100) === 5) {
+        // Handle errors on DO's side (5xx level)
+        var statusCodeLevel = Math.floor(res.statusCode / 100);
+        if (statusCodeLevel === 5) {
           return callback(new DigitalOceanError('Error ' + res.statusCode, res.statusCode, res.headers));
         }
 
+        // Handle improperly returned reponses (e.g. html or something else bizarre)
         if (typeof body === 'string') {
           try {
             body = JSON.parse(body || '{}');
-          } catch (_error) {
-            err = _error;
-            return callback(err);
+          } catch (jsonParseError) {
+            return callback(jsonParseError);
           }
         }
 
-        var code = res.statusCode;
-        if (body.message && (code === 400 || code === 401 || code === 403 || code === 404 || code === 410 || code === 422)) {
+        // Handle validation errors (4xx level)
+        if (body.message && statusCodeLevel === 4) {
           return callback(new DigitalOceanError(body.message, res.statusCode, res.headers, body));
         }
 
-        return callback(null, res.statusCode, body, res.headers);
+        // Handle an unexpcted response code
+        if (successStatuses.indexOf(res.statusCode) < 0) {
+          return callback(new Error('Unexpected reponse code: ' + res.statusCode));
+        }
+
+        // find the first key from the body object in successRootKeys
+        var data = null;
+        for (var i = 0; i < successRootKeys.length; i++) {
+          var key = successRootKeys[i];
+          if (body[key]) {
+            data = body[key];
+            break;
+          }
+        }
+
+        return callback(null, data, res.headers, body);
       };
     };
 
@@ -280,12 +237,16 @@ module.exports = {
     // options, required
     // page or query object, optional
     // perPage, optional
-    // callback, required
+    // successStatuses, required, number or array of numbers
+    // successRootKeys, required, string or array of strings
+    // callback, required, function
     Client.prototype.get = function() {
       var i;
       var path = arguments[0],
           options = arguments[1],
-          params = 4 <= arguments.length ? slice.call(arguments, 2, i = arguments.length - 1) : (i = 2, []),
+          params = 4 <= arguments.length ? slice.call(arguments, 2, i = arguments.length - 3) : (i = 2, []),
+          successStatuses = arguments[i++],
+          successRootKeys = arguments[i++],
           callback = arguments[i++];
 
       var pageOrQuery = params[0],
@@ -310,13 +271,17 @@ module.exports = {
             'Authorization': 'Bearer ' + this.token
           }
         }, options),
-        this._handleError(callback)
+        this._handleResponse(successStatuses, successRootKeys, callback)
       );
     };
 
-    Client.prototype._makeRequestWithBody = function(type, path, content, options, callback) {
-      if ((callback == null) && typeof options === 'function') {
-        callback = options;
+    Client.prototype._makeRequestWithBody = function(type, path, content, options, successStatuses, successRootKeys, callback) {
+      if ((callback == null) && typeof successRootKeys === 'function') {
+        // if `options` isn't passed, shift arguments back by one and set
+        // default hash for options
+        callback = successRootKeys;
+        successRootKeys = successStatuses;
+        successStatuses = options;
         options = {};
       }
 
@@ -331,40 +296,48 @@ module.exports = {
           },
           options
         ),
-        this._handleError(callback)
+        this._handleResponse(successStatuses, successRootKeys, callback)
       );
     };
 
     // path, required, string
     // content, required, object
     // options, optional, object
+    // successStatuses, required, number or array of numbers
+    // successRootKeys, required, string or array of strings
     // callback, required, function
-    Client.prototype.post = function(path, content, options, callback) {
-      return this._makeRequestWithBody('POST', path, content, options, callback);
+    Client.prototype.post = function(path, content, options, successStatuses, successRootKeys, callback) {
+      return this._makeRequestWithBody('POST', path, content, options, successStatuses, successRootKeys, callback);
     };
 
     // path, required, string
     // content, optional, object
     // options, optional, object
+    // successStatuses, required, number or array of numbers
+    // successRootKeys, required, string or array of strings
     // callback, required, function
-    Client.prototype.patch = function(path, content, options, callback) {
-      return this._makeRequestWithBody('PATCH', path, content, options, callback);
+    Client.prototype.patch = function(path, content, options, successStatuses, successRootKeys, callback) {
+      return this._makeRequestWithBody('PATCH', path, content, options, successStatuses, successRootKeys, callback);
     };
 
     // path, required, string
     // content, optional, object
     // options, optional, object
+    // successStatuses, required, number or array of numbers
+    // successRootKeys, required, string or array of strings
     // callback, required, function
-    Client.prototype.put = function(path, content, options, callback) {
-      return this._makeRequestWithBody('PUT', path, content, options, callback);
+    Client.prototype.put = function(path, content, options, successStatuses, successRootKeys, callback) {
+      return this._makeRequestWithBody('PUT', path, content, options, successStatuses, successRootKeys, callback);
     };
 
     // path, required, string
     // content, optional, object
     // options, optional, object
+    // successStatuses, required, number or array of numbers
+    // successRootKeys, required, string or array of strings
     // callback, required, function
-    Client.prototype.delete = function(path, content, options, callback) {
-      return this._makeRequestWithBody('DELETE', path, content, options, callback);
+    Client.prototype.delete = function(path, content, options, successStatuses, successRootKeys, callback) {
+      return this._makeRequestWithBody('DELETE', path, content, options, successStatuses, successRootKeys, callback);
     };
 
     return Client;
@@ -392,63 +365,27 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/domains', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, response['domains'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/domains', {}].concat(slice.call(params), [200, 'domains', callback]));
     };
 
     // attributes, required
     // callback, required
     Domain.prototype.create = function(attributes, callback) {
-      return this.client.post('/domains', attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 201) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, response['domain'], headers, response);
-        }
-      });
+      return this.client.post('/domains', attributes, 201, 'domain', callback);
     };
 
     // name, required
     // callback, required
     Domain.prototype.get = function(name, callback) {
       var url = util.safeUrl('domains', name);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, response['domain'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'domain', callback);
     };
 
     // name, required
     // callback, required
     Domain.prototype.delete = function(name, callback) {
       var url = util.safeUrl('domains', name);
-      return this.client.delete(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, {}, 204, [], callback);
     };
 
     // domainName, required
@@ -462,16 +399,7 @@ module.exports = {
           callback = arguments[i++];
 
       var url = util.safeUrl('domains', domainName, 'domain_records');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, response['domain_records'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'domain_records', callback]));
     };
 
     // domainName, rqeuired
@@ -479,16 +407,7 @@ module.exports = {
     // callback, required
     Domain.prototype.getRecord = function(domainName, id, callback) {
       var url = util.safeUrl('domains', domainName, 'domain_records', id);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, response['domain_record'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'domain_record', callback);
     };
 
     // domainName, required
@@ -496,16 +415,7 @@ module.exports = {
     // callback, required
     Domain.prototype.createRecord = function(domainName, attributes, callback) {
       var url = util.safeUrl('domains', domainName, 'domain_records');
-      return this.client.post(url, attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 201) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, response['domain_record'], headers, response);
-        }
-      });
+      return this.client.post(url, attributes, 201, 'domain_record', callback);
     };
 
     // domainName, required
@@ -514,16 +424,7 @@ module.exports = {
     // callback, required
     Domain.prototype.updateRecord = function(domainName, id, attributes, callback) {
       var url = util.safeUrl('domains', domainName, 'domain_records', id);
-      return this.client.put(url, attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, response['domain_record'], headers, response);
-        }
-      });
+      return this.client.put(url, attributes, 200, 'domain_record', callback);
     };
 
     // domainName, required
@@ -531,16 +432,7 @@ module.exports = {
     // callback, required
     Domain.prototype.deleteRecord = function(domainName, id, callback) {
       var url = util.safeUrl('domains', domainName, 'domain_records', id);
-      return this.client.delete(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Domain error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, {}, 204, [], callback);
     };
 
     return Domain;
@@ -566,47 +458,20 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/droplets', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['droplets'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/droplets', {}].concat(slice.call(params), [200, 'droplets', callback]));
     };
 
     // attributes, required
     // callback, required
     Droplet.prototype.create = function(attributes, callback) {
-      return this.client.post('/droplets', attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 202) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['droplet'] || response['droplets'], headers, response);
-        }
-      });
+      return this.client.post('/droplets', attributes, 202, ['droplet', 'droplets'], callback);
     };
 
     // id, required
     // callback, required
     Droplet.prototype.get = function(id, callback) {
       var url = util.safeUrl('droplets', id);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['droplet'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'droplet', callback);
     };
 
     // id, required
@@ -620,16 +485,7 @@ module.exports = {
           callback = arguments[i++];
 
       var url = util.safeUrl('droplets', id, 'kernels');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['kernels'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'kernels', callback]));
     };
 
     // id, required
@@ -643,16 +499,7 @@ module.exports = {
           callback = arguments[i++];
 
       var url = util.safeUrl('droplets', id, 'snapshots');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['snapshots'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'snapshots', callback]));
     };
 
     // id, required
@@ -666,16 +513,7 @@ module.exports = {
           callback = arguments[i++];
 
       var url = util.safeUrl('droplets', id, 'backups');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['backups'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'backups', callback]));
     };
 
     // id, required
@@ -689,32 +527,14 @@ module.exports = {
           callback = arguments[i++];
 
       var url = util.safeUrl('droplets', id, 'neighbors');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['droplets'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'droplets', callback]));
     };
 
     // id, required
     // callback, required
     Droplet.prototype.delete = function(id, callback) {
       var url = util.safeUrl('droplets', id);
-      return this.client.delete(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, {}, 204, [], callback);
     };
 
     // name, required
@@ -722,16 +542,7 @@ module.exports = {
     Droplet.prototype.deleteByTag = function(name, callback) {
       var url = util.safeUrl('droplets');
       var params = { tag_name: encodeURIComponent(name) };
-      return this.client.delete(url, params, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, params, 204, [], callback);
     };
 
     // dropletId, required
@@ -745,16 +556,7 @@ module.exports = {
           callback = arguments[i++];
 
       var url = util.safeUrl('droplets', dropletId, 'actions');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['actions'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'actions', callback]));
     };
 
     // dropletId, rqeuired
@@ -762,16 +564,7 @@ module.exports = {
     // callback, required
     Droplet.prototype.getAction = function(dropletId, id, callback) {
       var url = util.safeUrl('droplets', dropletId, 'actions', id);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['action'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'action', callback);
     };
 
     // dropletId, required
@@ -787,16 +580,7 @@ module.exports = {
       }
 
       var url = util.safeUrl('droplets', dropletId, 'actions');
-      return this.client.post(url, parameters, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 201) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['action'], headers, response);
-        }
-      });
+      return this.client.post(url, parameters, 201, 'action', callback);
     };
 
     // tagName, required
@@ -808,16 +592,7 @@ module.exports = {
         type: actionType
       };
 
-      return this.client.post('/droplets/actions', parameters, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 201) {
-          return callback(new Error('Droplet error: ' + status));
-        } else {
-          return callback(null, response['actions'], headers, response);
-        }
-      });
+      return this.client.post('/droplets/actions', parameters, 201, 'actions', callback);
     };
 
     // dropletId, required
@@ -1044,63 +819,27 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/floating_ips', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('FloatingIp error: ' + status));
-        } else {
-          return callback(null, response['floating_ips'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/floating_ips', {}].concat(slice.call(params), [200, 'floating_ips', callback]));
     };
 
     // attributes, required
     // callback, required
     FloatingIp.prototype.create = function(attributes, callback) {
-      return this.client.post('/floating_ips', attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 202) {
-          return callback(new Error('FloatingIp error: ' + status));
-        } else {
-          return callback(null, response['floating_ip'], headers, response);
-        }
-      });
+      return this.client.post('/floating_ips', attributes, 202, 'floating_ip', callback);
     };
 
     // ip, required
     // callback, required
     FloatingIp.prototype.get = function(ip, callback) {
       var url = util.safeUrl('floating_ips', ip);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('FloatingIp error: ' + status));
-        } else {
-          return callback(null, response['floating_ip'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'floating_ip', callback);
     };
 
     // ip, required
     // callback, required
     FloatingIp.prototype.delete = function(ip, callback) {
       var url = util.safeUrl('floating_ips', ip);
-      return this.client.delete(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('FloatingIp error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, {}, 204, [], callback);
     };
 
     // ip, required
@@ -1114,16 +853,7 @@ module.exports = {
           callback = arguments[i++];
 
       var url = util.safeUrl('floating_ips', ip, 'actions');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Floating IP error: ' + status));
-        } else {
-          return callback(null, response['actions'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'actions', callback]));
     };
 
     // ip, rqeuired
@@ -1131,16 +861,7 @@ module.exports = {
     // callback, required
     FloatingIp.prototype.getAction = function(ip, id, callback) {
       var url = util.safeUrl('floating_ips', ip, 'actions', id);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('FloatingIp error: ' + status));
-        } else {
-          return callback(null, response['action'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'action', callback);
     };
 
     // ip, required
@@ -1156,16 +877,7 @@ module.exports = {
       }
 
       var url = util.safeUrl('floating_ips', ip, 'actions');
-      return this.client.post(url, parameters, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 201) {
-          return callback(new Error('FloatingIp error: ' + status));
-        } else {
-          return callback(null, response['action'], headers, response);
-        }
-      });
+      return this.client.post(url, parameters, 201, 'action', callback);
     };
 
     // ip, required
@@ -1215,32 +927,14 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/images', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Image error: ' + status));
-        } else {
-          return callback(null, response['images'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/images', {}].concat(slice.call(params), [200, 'images', callback]));
     };
 
     // id, required
     // callback, required
     Image.prototype.get = function(id, callback) {
       var url = util.safeUrl('images', id);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Image error: ' + status));
-        } else {
-          return callback(null, response['image'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'image', callback);
     };
 
     // id, required
@@ -1248,32 +942,14 @@ module.exports = {
     // callback, required
     Image.prototype.update = function(id, attributes, callback) {
       var url = util.safeUrl('images', id);
-      return this.client.put(url, attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Image error: ' + status));
-        } else {
-          return callback(null, response['image'], headers, response);
-        }
-      });
+      return this.client.put(url, attributes, 200, 'image', callback);
     };
 
     // id, required
     // callback, required
     Image.prototype.delete = function(id, callback) {
       var url = util.safeUrl('images', id);
-      return this.client.delete(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Image error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, {}, 204, [], callback);
     };
 
     // imageId, required
@@ -1287,16 +963,7 @@ module.exports = {
           callback = arguments[i++];
 
       var url = util.safeUrl('images', imageId, 'actions');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Image error: ' + status));
-        } else {
-          return callback(null, response['actions'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'actions', callback]));
     };
 
     // imageId, rqeuired
@@ -1304,16 +971,7 @@ module.exports = {
     // callback, required
     Image.prototype.getAction = function(imageId, id, callback) {
       var url = util.safeUrl('images', imageId, 'actions', id);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Image error: ' + status));
-        } else {
-          return callback(null, response['action'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'action', callback);
     };
 
     // imageId, required
@@ -1329,16 +987,7 @@ module.exports = {
       }
 
       var url = util.safeUrl('images', imageId, 'actions');
-      return this.client.post(url, parameters, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 201) {
-          return callback(new Error('Image error: ' + status));
-        } else {
-          return callback(null, response['action'], headers, response);
-        }
-      });
+      return this.client.post(url, parameters, 201, 'action', callback);
     };
 
     // imageId, required
@@ -1387,16 +1036,7 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/regions', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Region error: ' + status));
-        } else {
-          return callback(null, response['regions'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/regions', {}].concat(slice.call(params), [200, 'regions', callback]));
     };
 
     return Region;
@@ -1421,16 +1061,7 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/sizes', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Size error: ' + status));
-        } else {
-          return callback(null, response['sizes'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/sizes', {}].concat(slice.call(params), [200, 'sizes', callback]));
     };
 
     return Size;
@@ -1456,47 +1087,20 @@ module.exports = {
           params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
           callback = arguments[i++];
 
-      return this.client.get.apply(this.client, ['/tags', {}].concat(slice.call(params), [function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Tag error: ' + status));
-        } else {
-          return callback(null, response['tags'], headers, response);
-        }
-      }]));
+      return this.client.get.apply(this.client, ['/tags', {}].concat(slice.call(params), [200, 'tags', callback]));
     };
 
     // attributes, required
     // callback, required
     Tag.prototype.create = function(attributes, callback) {
-      return this.client.post('/tags', attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 201) {
-          return callback(new Error('Tag error: ' + status));
-        } else {
-          return callback(null, response['tag'], headers, response);
-        }
-      });
+      return this.client.post('/tags', attributes, 201, 'tag', callback);
     };
 
     // name, required
     // callback, required
     Tag.prototype.get = function(name, callback) {
       var url = util.safeUrl('tags', name);
-      return this.client.get(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Tag error: ' + status));
-        } else {
-          return callback(null, response['tag'], headers, response);
-        }
-      });
+      return this.client.get(url, {}, 200, 'tag', callback);
     };
 
     // name, required
@@ -1504,16 +1108,7 @@ module.exports = {
     // callback, required
     Tag.prototype.update = function(name, attributes, callback) {
       var url = util.safeUrl('tags', name);
-      return this.client.put(url, attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 200) {
-          return callback(new Error('Tag error: ' + status));
-        } else {
-          return callback(null, response['tag'], headers, response);
-        }
-      });
+      return this.client.put(url, attributes, 200, 'tag', callback);
     };
 
     // name, required
@@ -1522,16 +1117,7 @@ module.exports = {
     Tag.prototype.tag = function(name, resources, callback) {
       var attributes = { "resources": resources };
       var url = util.safeUrl('tags', name, 'resources');
-      return this.client.post(url, attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Tag error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.post(url, attributes, 204, [], callback);
     };
 
     // name, required
@@ -1540,32 +1126,14 @@ module.exports = {
     Tag.prototype.untag = function(name, resources, callback) {
       var attributes = { "resources": resources };
       var url = util.safeUrl('tags', name, 'resources');
-      return this.client.delete(url, attributes, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Tag error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, attributes, 204, [], callback);
     };
 
     // name, required
     // callback, required
     Tag.prototype.delete = function(name, callback) {
       var url = util.safeUrl('tags', name);
-      return this.client.delete(url, {}, function(err, status, response, headers) {
-        if (err) {
-          return callback(err);
-        }
-        if (status !== 204) {
-          return callback(new Error('Tag error: ' + status));
-        } else {
-          return callback(null, null, headers, response);
-        }
-      });
+      return this.client.delete(url, {}, 204, [], callback);
     };
 
     return Tag;
@@ -57861,7 +57429,7 @@ module.exports = Request
 },{"./lib/cookies":267,"./lib/copy":268,"./lib/debug":269,"./lib/helpers":270,"_process":231,"aws-sign2":271,"bl":272,"buffer":30,"caseless":281,"combined-stream":282,"forever-agent":284,"form-data":285,"hawk":290,"http":251,"http-signature":305,"https":227,"mime-types":322,"net":14,"node-uuid":325,"oauth-sign":326,"qs":327,"querystring":235,"stream":250,"stringstream":332,"tunnel-agent":340,"url":258,"util":261,"zlib":29}],342:[function(require,module,exports){
 module.exports={
   "name": "digitalocean",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
