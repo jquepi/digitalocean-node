@@ -26,7 +26,7 @@ describe('digitalocean client', function() {
         .get('/v2/foo')
         .reply(200, '');
 
-      client.get('/foo', {}, function(err) {
+      client.get('/foo', {}, 200, [], function(err) {
         expect(err).to.be.null;
       });
     });
@@ -34,8 +34,40 @@ describe('digitalocean client', function() {
     it('has a GET method', function() {
       testUtils.api.get('/v2/foo').reply(200, '');
 
-      client.get('/foo', {}, function(err) {
+      client.get('/foo', {}, 200, [], function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('handles a 500', function() {
+      testUtils.api.get('/v2/foo').reply(500, '');
+
+      client.get('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles a 400', function() {
+      testUtils.api.get('/v2/foo').reply(400, '{ "message": "don\'t do that" }');
+
+      client.get('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles bad json', function() {
+      testUtils.api.get('/v2/foo').reply(200, '{ ]');
+
+      client.get('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles an unexpected error code', function() {
+      testUtils.api.get('/v2/foo').reply(201, '');
+
+      client.get('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
       });
     });
   });
@@ -46,7 +78,7 @@ describe('digitalocean client', function() {
         .post('/v2/foo')
         .reply(200, '');
 
-      client.post('/foo', {}, function(err) {
+      client.post('/foo', {}, 200, [], function(err) {
         expect(err).to.be.null;
       });
     });
@@ -54,8 +86,40 @@ describe('digitalocean client', function() {
     it('has a POST method', function() {
       testUtils.api.post('/v2/foo').reply(200, '');
 
-      client.post('/foo', {}, function(err) {
+      client.post('/foo', {}, 200, [], function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('handles a 500', function() {
+      testUtils.api.post('/v2/foo').reply(500, '');
+
+      client.post('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles a 400', function() {
+      testUtils.api.post('/v2/foo').reply(400, '{ "message": "don\'t do that" }');
+
+      client.post('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles bad json', function() {
+      testUtils.api.post('/v2/foo').reply(200, '{ ]');
+
+      client.post('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles an unexpected error code', function() {
+      testUtils.api.post('/v2/foo').reply(201, '');
+
+      client.post('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
       });
     });
   });
@@ -66,7 +130,7 @@ describe('digitalocean client', function() {
         .put('/v2/foo')
         .reply(200, '');
 
-      client.put('/foo', {}, function(err) {
+      client.put('/foo', {}, 200, [], function(err) {
         expect(err).to.be.null;
       });
     });
@@ -74,8 +138,40 @@ describe('digitalocean client', function() {
     it('has a PUT method', function() {
       testUtils.api.put('/v2/foo').reply(200, '');
 
-      client.put('/foo', {}, function(err) {
+      client.put('/foo', {}, 200, [], function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('handles a 500', function() {
+      testUtils.api.put('/v2/foo').reply(500, '');
+
+      client.put('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles a 400', function() {
+      testUtils.api.put('/v2/foo').reply(400, '{ "message": "don\'t do that" }');
+
+      client.put('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles bad json', function() {
+      testUtils.api.put('/v2/foo').reply(200, '{ ]');
+
+      client.put('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles an unexpected error code', function() {
+      testUtils.api.put('/v2/foo').reply(201, '');
+
+      client.put('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
       });
     });
   });
@@ -86,7 +182,7 @@ describe('digitalocean client', function() {
         .delete('/v2/foo')
         .reply(200, '');
 
-      client.delete('/foo', {}, function(err) {
+      client.delete('/foo', {}, 200, [], function(err) {
         expect(err).to.be.null;
       });
     });
@@ -94,8 +190,40 @@ describe('digitalocean client', function() {
     it('has a DELETE method', function() {
       testUtils.api.delete('/v2/foo').reply(200, '');
 
-      client.delete('/foo', {}, function(err) {
+      client.delete('/foo', {}, 200, [], function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('handles a 500', function() {
+      testUtils.api.delete('/v2/foo').reply(500, '');
+
+      client.delete('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles a 400', function() {
+      testUtils.api.delete('/v2/foo').reply(400, '{ "message": "don\'t do that" }');
+
+      client.delete('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles bad json', function() {
+      testUtils.api.delete('/v2/foo').reply(200, '{ ]');
+
+      client.delete('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
+      });
+    });
+
+    it('handles an unexpected error code', function() {
+      testUtils.api.delete('/v2/foo').reply(201, '');
+
+      client.delete('/foo', {}, 200, [], function(err) {
+        expect(err).to.not.be.null;
       });
     });
   });
