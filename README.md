@@ -1,4 +1,8 @@
-# digitalocean-node [![Build Status](https://travis-ci.org/phillbaker/digitalocean-node.svg?branch=master)](https://travis-ci.org/phillbaker/digitalocean-node)
+# digitalocean-node
+
+[![Build Status](https://travis-ci.org/phillbaker/digitalocean-node.svg?branch=master)](https://travis-ci.org/phillbaker/digitalocean-node)
+[![Dependencies](https://david-dm.org/phillbaker/digitalocean-node.svg)](https://www.npmjs.com/package/digitalocean)
+[![Downloads](https://img.shields.io/npm/dm/digitalocean.svg)](https://www.npmjs.com/package/digitalocean)
 
 digitalocean-node is a library for nodejs to access the [DigitalOcean v2 API](https://developers.digitalocean.com/documentation/v2/).
 
