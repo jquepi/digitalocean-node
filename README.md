@@ -124,38 +124,45 @@ function getAllDroplets(callback, page, array) {
     }
   })
 };
+```
 
-// promise style
+Or Promise style:
 
+```
 getAllDroplets().then(function(allDroplets) {
-
+  console.log(allDroplets);
 }).catch(function(err) {
   console.log(err);
 });
 
-function getAllDroplets(limit, offset, query) {
-    var allTrades = [];
+function getAllDroplets() {
+  var allDroplets = [];
 
-    function getTrades(limit, offset, query){
-        return trader.getTradesAsync(limit, offset, query)
-            .each(function(trade) {
-                allTrades.push(trade)
-                // or, doStuff(trade), etc.
-            })
-            .then(function(trades) {
-                if (trades.length === limit) {
-                    offset += limit;
-                    return getTrades(limit, offset, query);
-                } else {
-                    return allTrades;
-                }
-            })
-            .catch(function(e) {
-                console.log(e.stack);
-            })
+  function getDropletPage(page) {
+    if (page == null) {
+      page = 1;
     }
 
-    return getTrades(limit, offset, query)
+    return client.droplets.list(page)
+      .each(function(droplet) {
+        allDroplets.push(droplet);
+      })
+      .then(function(droplets) {
+        var links = droplets._digitalocean.body.links;
+        var isLastPage = links && (
+          !links.pages ||
+            (links.pages && links.pages.last === undefined)
+        );
+
+        if (isLastPage) {
+          return allDroplets;
+        } else {
+          return getDropletPage(page + 1);
+        }
+      });
+  }
+
+  return getDropletPage();
 }
 ```
 
