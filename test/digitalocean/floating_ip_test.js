@@ -94,6 +94,17 @@ describe('floating ip endpoints', function() {
         expect(floatingIps).to.shallowDeepEqual(data.floating_ips);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/floating_ips').reply(200, JSON.stringify(data));
+
+      client.floatingIps.list().then(function(floatingIps) {
+        expect(floatingIps).to.shallowDeepEqual(data.floating_ips);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create', function() {
@@ -126,16 +137,26 @@ describe('floating ip endpoints', function() {
         "links": {}
       }
     };
+    var attributes = {
+      region: 'nyc1',
+    };
 
     it('creates the floating ip', function() {
-      var attributes = {
-        region: 'nyc1',
-      };
-
       testUtils.api.post('/v2/floating_ips', attributes).reply(202, data);
 
       client.floatingIps.create(attributes, function(err, floatingIp, headers) {
         expect(floatingIp).to.shallowDeepEqual(data.floating_ip);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/floating_ips', attributes).reply(202, data);
+
+      client.floatingIps.create(attributes).then(function(floatingIp) {
+        expect(floatingIp).to.shallowDeepEqual(data.floating_ip);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -185,6 +206,17 @@ describe('floating ip endpoints', function() {
         expect(floatingIp).to.shallowDeepEqual(data.floating_ip);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/floating_ips/123').reply(200, JSON.stringify(data));
+
+      client.floatingIps.get(123).then(function(floatingIp) {
+        expect(floatingIp).to.shallowDeepEqual(data.floating_ip);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -201,6 +233,17 @@ describe('floating ip endpoints', function() {
 
       client.floatingIps.delete('foo/bar', function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.delete('/v2/floating_ips/123').reply(204, '');
+
+      client.floatingIps.delete(123).then(function(floatingIp) {
+        expect(floatingIp.ip).to.be.undefined;
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -273,6 +316,17 @@ describe('floating ip endpoints', function() {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/floating_ips/123/actions').reply(200, JSON.stringify(data));
+
+      client.floatingIps.listActions(123).then(function(actions) {
+        expect(actions).to.shallowDeepEqual(data.actions);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('get action', function() {
@@ -309,6 +363,17 @@ describe('floating ip endpoints', function() {
 
       client.floatingIps.getAction('foo/bar', 'bar/baz', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/floating_ips/123/actions/456').reply(200, JSON.stringify(data));
+
+      client.floatingIps.getAction(123, 456).then(function(action) {
+        expect(action).to.shallowDeepEqual(data.action);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -361,6 +426,19 @@ describe('floating ip endpoints', function() {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/floating_ips/123/actions',
+        { type: 'assign', droplet_id: 456 }
+      ).reply(201, data);
+
+      client.floatingIps.assign(123, 456).then(function(action) {
+        expect(action).to.shallowDeepEqual(data.action);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('unassign', function() {
@@ -391,6 +469,17 @@ describe('floating ip endpoints', function() {
 
       client.floatingIps.unassign('foo/bar', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/floating_ips/123/actions', { type: 'unassign' }).reply(201, data);
+
+      client.floatingIps.unassign(123).then(function(action) {
+        expect(action).to.shallowDeepEqual(data.action);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });

@@ -82,6 +82,17 @@ describe('size endpoints', function() {
         expect(sizes).to.shallowDeepEqual(data.sizes);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/sizes').reply(200, JSON.stringify(data));
+
+      client.sizes.list().then(function(sizes) {
+        expect(sizes).to.shallowDeepEqual(data.sizes);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
 });

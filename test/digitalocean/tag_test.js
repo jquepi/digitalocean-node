@@ -59,6 +59,17 @@ describe('tag endpoints', function() {
         expect(tags).to.shallowDeepEqual(data.tags);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/tags').reply(200, JSON.stringify(data));
+
+      client.tags.list().then(function(tags) {
+        expect(tags).to.shallowDeepEqual(data.tags);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create', function() {
@@ -73,16 +84,26 @@ describe('tag endpoints', function() {
         }
       }
     };
+    var attributes = {
+      "name": "foo"
+    };
 
     it('creates the tag', function() {
-      var attributes = {
-        "name": "foo"
-      };
-
       testUtils.api.post('/v2/tags', attributes).reply(201, data);
 
       client.tags.create(attributes, function(err, tag, headers) {
         expect(tag).to.shallowDeepEqual(data.tag);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/tags', attributes).reply(201, data);
+
+      client.tags.create(attributes).then(function(tag) {
+        expect(tag).to.shallowDeepEqual(data.tag);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -115,6 +136,17 @@ describe('tag endpoints', function() {
         expect(tag).to.shallowDeepEqual(data.tag);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/tags/foo').reply(200, JSON.stringify(data));
+
+      client.tags.get('foo').then(function(tag) {
+        expect(tag).to.shallowDeepEqual(data.tag);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('update', function() {
@@ -129,12 +161,11 @@ describe('tag endpoints', function() {
         }
       }
     };
+    var attributes = {
+      "name": "awesome"
+    };
 
     it('returns the tag', function() {
-      var attributes = {
-        "name": "awesome"
-      };
-
       testUtils.api.put('/v2/tags/foo', attributes).reply(200, JSON.stringify(data));
 
       client.tags.update('foo', attributes, function(err, tag, headers) {
@@ -143,14 +174,21 @@ describe('tag endpoints', function() {
     });
 
     it('escapes the name', function() {
-      var attributes = {
-        "name": "awesome"
-      };
-
       testUtils.api.put('/v2/tags/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
 
       client.tags.update('foo/bar', attributes, function(err, tag, headers) {
         expect(tag).to.shallowDeepEqual(data.tag);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.put('/v2/tags/foo', attributes).reply(200, JSON.stringify(data));
+
+      client.tags.update('foo', attributes).then(function(tag) {
+        expect(tag).to.shallowDeepEqual(data.tag);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -178,6 +216,17 @@ describe('tag endpoints', function() {
         expect(err).to.be.null;
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/tags/foo/resources', { resources: resources }).reply(204, '');
+
+      client.tags.tag('foo', resources).then(function(result) {
+        expect(result).to.be.present;
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('untag', function() {
@@ -203,6 +252,17 @@ describe('tag endpoints', function() {
         expect(err).to.be.null;
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.delete('/v2/tags/foo/resources', { resources: resources }).reply(204, '');
+
+      client.tags.untag('foo', resources).then(function(result) {
+        expect(result).to.be.present;
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -219,6 +279,17 @@ describe('tag endpoints', function() {
 
       client.tags.delete('foo/bar', function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.delete('/v2/tags/foo').reply(204, '');
+
+      client.tags.delete('foo').then(function(tag) {
+        expect(tag.name).to.be.undefined;
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });

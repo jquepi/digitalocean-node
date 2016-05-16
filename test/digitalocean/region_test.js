@@ -90,6 +90,16 @@ describe('region endpoints', function() {
         expect(regions).to.shallowDeepEqual(data.regions);
       });
     });
-  });
 
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/regions').reply(200, JSON.stringify(data));
+
+      client.regions.list().then(function(regions) {
+        expect(regions).to.shallowDeepEqual(data.regions);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+  });
 });

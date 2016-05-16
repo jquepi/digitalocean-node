@@ -85,6 +85,62 @@ describe('digitalocean client', function() {
         expect(err).to.not.be.null;
       });
     });
+
+    it('calls a callback if successful', function(done) {
+      testUtils.api.get('/v2/foo').reply(200, "");
+
+      client.get('/foo', {}, 200, [], function() {
+        done();
+      });
+    });
+
+    it('exposes HTTP response', function() {
+      var data = { 'i_am_json': true };
+      testUtils.api.get('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.get('/foo', {}, 200, [], function(err, object, headers, raw) {
+        expect(raw).to.be.eql(data)
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.get('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.get('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('resolves promise with resource', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.get('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.get('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        expect(foo).to.shallowDeepEqual(data.i_am_json);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('resolves promise with special properties', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.get('/v2/foo').reply(200, JSON.stringify(data), {
+        'X-My-Headers': 'My Header value'
+      });
+
+      client.get('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        expect(foo._digitalOcean.body).to.shallowDeepEqual(data);
+        expect(foo._digitalOcean.statusCode).to.eq(200);
+        expect(foo._digitalOcean.headers).to.include({ 'x-my-headers': 'My Header value' });
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('post', function() {
@@ -135,6 +191,62 @@ describe('digitalocean client', function() {
 
       client.post('/foo', {}, 200, [], function(err) {
         expect(err).to.not.be.null;
+      });
+    });
+
+    it('calls a callback if successful', function(done) {
+      testUtils.api.post('/v2/foo').reply(200, "");
+
+      client.post('/foo', {}, 200, [], function() {
+        done();
+      });
+    });
+
+    it('exposes HTTP response', function() {
+      var data = { 'i_am_json': true };
+      testUtils.api.post('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.post('/foo', {}, 200, [], function(err, object, headers, raw) {
+        expect(raw).to.be.eql(data)
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.post('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.post('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('resolves promise with resource', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.post('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.post('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        expect(foo).to.shallowDeepEqual(data.i_am_json);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('resolves promise with special properties', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.post('/v2/foo').reply(200, JSON.stringify(data), {
+        'X-My-Headers': 'My Header value'
+      });
+
+      client.post('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        expect(foo._digitalOcean.body).to.shallowDeepEqual(data);
+        expect(foo._digitalOcean.statusCode).to.eq(200);
+        expect(foo._digitalOcean.headers).to.include({ 'x-my-headers': 'My Header value' });
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -189,6 +301,62 @@ describe('digitalocean client', function() {
         expect(err).to.not.be.null;
       });
     });
+
+    it('calls a callback if successful', function(done) {
+      testUtils.api.put('/v2/foo').reply(200, "");
+
+      client.put('/foo', {}, 200, [], function() {
+        done();
+      });
+    });
+
+    it('exposes HTTP response', function() {
+      var data = { 'i_am_json': true };
+      testUtils.api.put('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.put('/foo', {}, 200, [], function(err, object, headers, raw) {
+        expect(raw).to.be.eql(data)
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.put('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.put('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('resolves promise with resource', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.put('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.put('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        expect(foo).to.shallowDeepEqual(data.i_am_json);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('resolves promise with special properties', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.put('/v2/foo').reply(200, JSON.stringify(data), {
+        'X-My-Headers': 'My Header value'
+      });
+
+      client.put('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        expect(foo._digitalOcean.body).to.shallowDeepEqual(data);
+        expect(foo._digitalOcean.statusCode).to.eq(200);
+        expect(foo._digitalOcean.headers).to.include({ 'x-my-headers': 'My Header value' });
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -241,33 +409,60 @@ describe('digitalocean client', function() {
         expect(err).to.not.be.null;
       });
     });
-  });
 
-  describe('callback support', function() {
-    describe('any given endpoint', function() {
-      it('calls a callback if successful', function(done) {
-        testUtils.api.get('/v2/account').reply(200, "");
+    it('calls a callback if successful', function(done) {
+      testUtils.api.delete('/v2/foo').reply(200, "");
 
-        client.account.get(function() {
-          done();
-        });
+      client.delete('/foo', {}, 200, [], function() {
+        done();
+      });
+    });
+
+    it('exposes HTTP response', function() {
+      var data = { 'i_am_json': true };
+      testUtils.api.delete('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.delete('/foo', {}, 200, [], function(err, object, headers, raw) {
+        expect(raw).to.be.eql(data)
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.delete('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.delete('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('resolves promise with resource', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.delete('/v2/foo').reply(200, JSON.stringify(data));
+
+      client.delete('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        expect(foo).to.shallowDeepEqual(data.i_am_json);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('resolves promise with special properties', function(done) {
+      var data = { 'i_am_json': { 'foo': true } };
+      testUtils.api.delete('/v2/foo').reply(200, JSON.stringify(data), {
+        'X-My-Headers': 'My Header value'
       });
 
-      it('exposes HTTP response', function() {
-        var data = { 'i_am_json': true };
-        testUtils.api.get('/v2/account').reply(200, JSON.stringify(data));
-
-        client.account.get(function(err, object, headers, raw) {
-          expect(raw).to.be.eql(data)
-        });
-      });
-
-      it('it receives an error', function(done) {
-        testUtils.api.get('/v2/account').reply(401, "Error foo");
-
-        client.account.get(function(err) {
-          if (err) done();
-        });
+      client.delete('/foo', {}, 200, 'i_am_json', null).then(function(foo) {
+        expect(foo._digitalOcean.body).to.shallowDeepEqual(data);
+        expect(foo._digitalOcean.statusCode).to.eq(200);
+        expect(foo._digitalOcean.headers).to.include({ 'x-my-headers': 'My Header value' });
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });

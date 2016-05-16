@@ -10,20 +10,32 @@ var client = digitalocean.client(token);
 
 describe('account endpoints', function() {
   describe('get', function() {
+    var data = {
+      "account": {
+        "droplet_limit": 25,
+        "floating_ip_limit": 25,
+        "email": "sammy@digitalocean.com",
+        "uuid": "b6fr89dbf6d9156cace5f3c78dc9851d957381ef",
+        "email_verified": true
+      }
+    };
+
     it('returns data', function() {
-      var data = {
-        "account": {
-          "droplet_limit": 25,
-          "floating_ip_limit": 25,
-          "email": "sammy@digitalocean.com",
-          "uuid": "b6fr89dbf6d9156cace5f3c78dc9851d957381ef",
-          "email_verified": true
-        }
-      };
       testUtils.api.get('/v2/account').reply(200, JSON.stringify(data));
 
       client.account.get(function(err, account, headers) {
         expect(account).to.shallowDeepEqual(data.account);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/account').reply(200, JSON.stringify(data));
+
+      client.account.get().then(function(account) {
+        expect(account).to.shallowDeepEqual(data.account);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -66,6 +78,17 @@ describe('account endpoints', function() {
         expect(sshKeys).to.shallowDeepEqual(data.ssh_keys);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/account/keys').reply(200, JSON.stringify(data));
+
+      client.account.listSshKeys().then(function(sshKeys) {
+        expect(sshKeys).to.shallowDeepEqual(data.ssh_keys);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create ssh key', function() {
@@ -77,17 +100,27 @@ describe('account endpoints', function() {
         "name": "Example Key"
       }
     };
+    var attributes = {
+      "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAQQDZEgsAbWmQF+f8TU3F4fCg4yjVzdKudQbbhGb+qRKP5ju4Yo0Zzneia+oFm4bfzG+ydxUlOlbzq+Tpoj+INFv5 example",
+      "name": "Example Key"
+    };
 
     it('creates the ssh key', function() {
-      var attributes = {
-        "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAQQDZEgsAbWmQF+f8TU3F4fCg4yjVzdKudQbbhGb+qRKP5ju4Yo0Zzneia+oFm4bfzG+ydxUlOlbzq+Tpoj+INFv5 example",
-        "name": "Example Key"
-      };
-
       testUtils.api.post('/v2/account/keys', attributes).reply(201, data);
 
       client.account.createSshKey(attributes, function(err, sshKey, headers) {
         expect(sshKey).to.shallowDeepEqual(data.ssh_key);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/account/keys', attributes).reply(201, data);
+
+      client.account.createSshKey(attributes).then(function(sshKey) {
+        expect(sshKey).to.shallowDeepEqual(data.ssh_key);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -117,6 +150,17 @@ describe('account endpoints', function() {
         expect(sshKey).to.shallowDeepEqual(data.ssh_key);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/account/keys/3').reply(200, JSON.stringify(data));
+
+      client.account.getSshKey(3).then(function(sshKey) {
+        expect(sshKey).to.shallowDeepEqual(data.ssh_key);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('update ssh key', function() {
@@ -128,7 +172,6 @@ describe('account endpoints', function() {
         "name": "Key Example"
       }
     };
-
     var attributes = {
       "name": "Key Example"
     };
@@ -148,6 +191,17 @@ describe('account endpoints', function() {
         expect(sshKey).to.shallowDeepEqual(data.ssh_key);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.put('/v2/account/keys/3', attributes).reply(200, JSON.stringify(data));
+
+      client.account.updateSshKey(3, attributes).then(function(sshKey) {
+        expect(sshKey).to.shallowDeepEqual(data.ssh_key);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('delete ssh key', function() {
@@ -164,6 +218,16 @@ describe('account endpoints', function() {
 
       client.account.deleteSshKey('foo/bar', function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.delete('/v2/account/keys/123').reply(204, '');
+
+      client.account.deleteSshKey(123).then(function() {
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });

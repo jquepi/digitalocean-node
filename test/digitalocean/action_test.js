@@ -57,6 +57,17 @@ describe('action endpoints', function() {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/actions').reply(200, JSON.stringify(data));
+
+      client.actions.list().then(function(actions) {
+        expect(actions).to.shallowDeepEqual(data.actions);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('get', function() {
@@ -93,6 +104,17 @@ describe('action endpoints', function() {
 
       client.actions.get('foo/bar', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/action/123').reply(200, JSON.stringify(data));
+
+      client.actions.get(123).then(function(action) {
+        expect(action).to.shallowDeepEqual(data.action);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });

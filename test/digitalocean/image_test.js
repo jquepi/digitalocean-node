@@ -65,6 +65,17 @@ describe('image endpoints', function() {
         expect(images).to.shallowDeepEqual(data.images);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/images').reply(200, JSON.stringify(data));
+
+      client.images.list().then(function(images) {
+        expect(images).to.shallowDeepEqual(data.images);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('get', function() {
@@ -96,6 +107,17 @@ describe('image endpoints', function() {
 
       client.images.get('foo/bar', function(err, image, headers) {
         expect(image).to.shallowDeepEqual(data.image);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/images/146').reply(200, JSON.stringify(data));
+
+      client.images.get(146).then(function(image) {
+        expect(image).to.shallowDeepEqual(data.image);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -135,6 +157,17 @@ describe('image endpoints', function() {
         expect(image).to.shallowDeepEqual(data.image);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.put('/v2/images/146', attributes).reply(200, JSON.stringify(data));
+
+      client.images.update(146, attributes).then(function(image) {
+        expect(image).to.shallowDeepEqual(data.image);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -151,6 +184,17 @@ describe('image endpoints', function() {
 
       client.images.delete('foo/bar', function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.delete('/v2/images/123').reply(204, '');
+
+      client.images.delete(123).then(function(image) {
+        expect(image.id).to.be.undefined;
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -223,6 +267,17 @@ describe('image endpoints', function() {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/images/123/actions').reply(200, JSON.stringify(data));
+
+      client.images.listActions(123).then(function(actions) {
+        expect(actions).to.shallowDeepEqual(data.actions);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('get action', function() {
@@ -261,6 +316,17 @@ describe('image endpoints', function() {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/images/123/actions/456').reply(200, JSON.stringify(data));
+
+      client.images.getAction(123, 456).then(function(action) {
+        expect(action).to.shallowDeepEqual(data.action);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('convert', function() {
@@ -291,6 +357,17 @@ describe('image endpoints', function() {
 
       client.images.convert('foo/bar', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/images/123/actions', { type: 'convert' }).reply(201, data);
+
+      client.images.convert(123).then(function(action) {
+        expect(action).to.shallowDeepEqual(data.action);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -341,6 +418,19 @@ describe('image endpoints', function() {
 
       client.images.transfer('foo/bar', 'ams3', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/images/123/actions',
+        { type: 'transfer', region: 'ams3' }
+      ).reply(201, data);
+
+      client.images.transfer(123, 'ams3').then(function(action) {
+        expect(action).to.shallowDeepEqual(data.action);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });

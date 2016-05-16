@@ -46,6 +46,17 @@ describe('domain endpoints', function() {
         expect(domains).to.shallowDeepEqual(data.domains);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/domains').reply(200, JSON.stringify(data));
+
+      client.domains.list().then(function(domains) {
+        expect(domains).to.shallowDeepEqual(data.domains);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create', function() {
@@ -56,17 +67,27 @@ describe('domain endpoints', function() {
         "zone_file": null
       }
     };
+    var attributes = {
+      name: 'example.com',
+      ip_address: '1.1.1.1'
+    };
 
     it('creates the domain', function() {
-      var attributes = {
-        name: 'example.com',
-        ip_address: '1.1.1.1'
-      };
-
       testUtils.api.post('/v2/domains', attributes).reply(201, data);
 
       client.domains.create(attributes, function(err, domain, headers) {
         expect(domain).to.shallowDeepEqual(data.domain);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/domains', attributes).reply(201, data);
+
+      client.domains.create(attributes).then(function(domain) {
+        expect(domain).to.shallowDeepEqual(data.domain);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -95,6 +116,17 @@ describe('domain endpoints', function() {
         expect(domain).to.shallowDeepEqual(data.domain);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/domains/3').reply(200, JSON.stringify(data));
+
+      client.domains.get(3).then(function(domain) {
+        expect(domain).to.shallowDeepEqual(data.domain);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -111,6 +143,17 @@ describe('domain endpoints', function() {
 
       client.domains.delete('foo/bar', function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.delete('/v2/domains/123').reply(204, '');
+
+      client.domains.delete(123).then(function(domain) {
+        expect(domain.name).to.be.undefined;
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -166,6 +209,17 @@ describe('domain endpoints', function() {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/domains/example.com/domain_records').reply(200, JSON.stringify(data));
+
+      client.domains.listRecords('example.com').then(function(domainRecords) {
+        expect(domainRecords).to.shallowDeepEqual(data.domain_records);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create domain record', function() {
@@ -201,6 +255,17 @@ describe('domain endpoints', function() {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/domains/example.com/domain_records', attributes).reply(201, data);
+
+      client.domains.createRecord('example.com', attributes).then(function(domainRecord) {
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('get domain record', function() {
@@ -229,6 +294,17 @@ describe('domain endpoints', function() {
 
       client.domains.getRecord('foo/bar.com', 123, function(err, domainRecord, headers) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/domains/example.com/domain_records/123').reply(200, JSON.stringify(data));
+
+      client.domains.getRecord('example.com', 123).then(function(domainRecord) {
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -265,6 +341,17 @@ describe('domain endpoints', function() {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
       });
     });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.put('/v2/domains/example.com/domain_records/123', attributes).reply(200, JSON.stringify(data));
+
+      client.domains.updateRecord('example.com', 123, attributes).then(function(domainRecord) {
+        expect(domainRecord).to.shallowDeepEqual(data.domain_record);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('delete domain record', function() {
@@ -281,6 +368,17 @@ describe('domain endpoints', function() {
 
       client.domains.deleteRecord('foo/bar.com', 'foo/bar', function(err) {
         expect(err).to.be.null;
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.delete('/v2/domains/example.com/domain_records/123').reply(204, '');
+
+      client.domains.deleteRecord('example.com', 123).then(function(domainRecord) {
+        expect(domainRecord.id).to.be.undefined;
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
