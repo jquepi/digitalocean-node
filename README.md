@@ -13,11 +13,41 @@ npm install digitalocean --save
 
 ## Usage
 
+Every resource is accessed via an instance of the client. Please [chose one of your tokens](https://cloud.digitalocean.com/settings/api/tokens) and use that where ever `TOKEN` is referenced. For example:
+
 ```js
 var digitalocean = require('digitalocean');
-var client = digitalocean.client('TOKEN');
+var client = digitalocean.client('TOKEN'); // See
+// client.{ RESOURCE_NAME }.{ METHOD_NAME }
+```
 
-client.account.get(callback);
+Every resource method accepts an optional callback as the last argument. For example:
+
+```js
+client.account.get(function(err, account) {
+  console.log(err); // null on success
+  console.log(account); //
+});
+```
+
+See below [for more options in the callback](#api-callback-structure).
+
+Resource methods also return a [promise](https://promisesaplus.com/). For example:
+
+```js
+client.droplets.list().then(function(droplets) {
+  var droplet = droplets[0];
+  return client.droplets.snapshot(droplet.id);
+}).then(function() {
+  console.log("created a snapshot of a Droplet!");
+}).catch(function(err) {
+  // Deal with an error
+});
+```
+
+[All resources and actions](#all-resources-and-actions) are listed below, however, the general structure of the client follows the following pattern:
+
+```js
 client.droplets.list(callback);
 client.droplets.create(options, callback);
 client.droplets.get(123, callback);
@@ -25,19 +55,6 @@ client.droplets.delete(123, callback);
 client.droplets.powerOff(123, callback);
 client.droplets.getAction(123, 456, callback);
 ```
-
-See below for [all resources and actions](#all-resources-and-actions)
-
-#### Build a client from an access token
-
-```js
-var client = digitalocean.client('TOKEN');
-
-client.get('/account', {}, function (err, status, body, headers) {
-  console.log(body); //json object
-});
-```
-
 ## Client Options
 
 The DigitalOcean client depends on [`request`](https://github.com/request/request), and [options can be passed through](https://github.com/request/request#requestoptions-callback) (e.g. a proxy or user agent).
@@ -54,9 +71,25 @@ var client = digitalocean.client('TOKEN', {
 });
 ```
 
-## API Callback Structure
+### Using a client with an access token
 
-__All the callbacks for the following will take first an error argument, then a data argument, the headers, then the raw response. For example:__
+```js
+var client = digitalocean.client('TOKEN');
+
+client.get('/account', {}, 200, 'account', function (err, status, body, headers) {
+  console.log(body); //json object
+});
+```
+
+## Callback function signature
+
+All callbacks will be passed:
+# an error (null if no error occurred)
+# a resource object
+# the response headers
+# the raw response body
+
+For example:
 
 ```js
 client.account.get(function(err, account, headers, response) {
@@ -65,6 +98,24 @@ client.account.get(function(err, account, headers, response) {
   console.log("headers: " + headers);
   console.log("response: " + response);
 });
+```
+
+## Promise result
+
+Promise results are the resource(s) returned by a successful response - an array, an individual object, or a blank object (for successful empty responses such as deletes). These objects have a special property, `_digitalocean` that includes response information. For example:
+
+```js
+// ...
+.then(function(object) {
+  console.log(object); // => 
+  // {
+  //   _digitalOcean: { 
+  //     statusCode: 204, 
+  //     body: {}, 
+  //     headers: {} 
+  //   } 
+  // }
+})
 ```
 
 ## Pagination
@@ -212,39 +263,39 @@ var client = digitalocean.client('TOKEN');
 client.droplets
 ```
 
-* `client.droplets.list([page, perPage,] callback)`
-* `client.droplets.get(droplet.id, callback)`
-* `client.droplets.create(attributes, callback)`
-* `client.droplets.delete(droplet.id, callback)`
-* `client.droplets.deleteByTagName(tag.name, callback)`
-* `client.droplets.kernels([page, perPage,] droplet.id, callback)`
-* `client.droplets.snapshots([page, perPage,] droplet.id, callback)`
-* `client.droplets.backups([page, perPage,] droplet.id, callback)`
-* `client.droplets.neighbors([page, perPage,] droplet.id, callback)`
-* `client.droplets.listActions([page, perPage,] droplet.id, callback)`
-* `client.droplets.getAction(droplet.id, action.id, callback)`
+* `client.droplets.list([page, perPage,] [callback])`
+* `client.droplets.get(droplet.id, [callback])`
+* `client.droplets.create(attributes, [callback])`
+* `client.droplets.delete(droplet.id, [callback])`
+* `client.droplets.deleteByTagName(tag.name, [callback])`
+* `client.droplets.kernels(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.snapshots(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.backups(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.neighbors(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.listActions(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.getAction(droplet.id, action.id, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#droplets).
 
 Methods resulting in an `action`:
 
-* `client.droplets.actionByTag(tag.name, actionType, callback)`
-* `client.droplets.reboot(droplet.id, callback)`
-* `client.droplets.powerCycle(droplet.id, callback)`
-* `client.droplets.shutdown(droplet.id, callback)`
-* `client.droplets.powerOff(droplet.id, callback)`
-* `client.droplets.powerOn(droplet.id, callback)`
-* `client.droplets.passwordReset(droplet.id, callback)`
-* `client.droplets.enableIpv6(droplet.id, callback)`
-* `client.droplets.enableBackups(droplet.id, callback)`
-* `client.droplets.disableBackups(droplet.id, callback)`
-* `client.droplets.enablePrivateNetworking(droplet.id, callback)`
-* `client.droplets.snapshot(droplet.id, parametersOrName, callback)`
-* `client.droplets.changeKernel(droplet.id, parametersOrKernelId, callback)`
-* `client.droplets.rename(droplet.id, parametersOrHostname, callback)`
-* `client.droplets.rebuild(droplet.id, parametersOrImage, callback)`
-* `client.droplets.restore(droplet.id, parametersOrImageId, callback)`
-* `client.droplets.resize(droplet.id, parametersOrSizeSlug, callback)`
+* `client.droplets.actionByTag(tag.name, actionType, [callback])`
+* `client.droplets.reboot(droplet.id, [callback])`
+* `client.droplets.powerCycle(droplet.id, [callback])`
+* `client.droplets.shutdown(droplet.id, [callback])`
+* `client.droplets.powerOff(droplet.id, [callback])`
+* `client.droplets.powerOn(droplet.id, [callback])`
+* `client.droplets.passwordReset(droplet.id, [callback])`
+* `client.droplets.enableIpv6(droplet.id, [callback])`
+* `client.droplets.enableBackups(droplet.id, [callback])`
+* `client.droplets.disableBackups(droplet.id, [callback])`
+* `client.droplets.enablePrivateNetworking(droplet.id, [callback])`
+* `client.droplets.snapshot(droplet.id, parametersOrName, [callback])`
+* `client.droplets.changeKernel(droplet.id, parametersOrKernelId, [callback])`
+* `client.droplets.rename(droplet.id, parametersOrHostname, [callback])`
+* `client.droplets.rebuild(droplet.id, parametersOrImage, [callback])`
+* `client.droplets.restore(droplet.id, parametersOrImageId, [callback])`
+* `client.droplets.resize(droplet.id, parametersOrSizeSlug, [callback])`
 
 ### Domain resource
 
@@ -254,15 +305,15 @@ var client = digitalocean.client('TOKEN');
 client.domains
 ```
 
-* `client.domains.list([page, perPage,] callback)`
-* `client.domains.create(attributes, callback)`
-* `client.domains.get(domain.name, callback)`
-* `client.domains.delete(domain.name, callback)`
-* `client.domains.listRecords([page, perPage,] domain.name, callback)`
-* `client.domains.createRecord(domain.name, attributes, callback)`
-* `client.domains.getRecord(domain.name, domainRecord.id, callback)`
-* `client.domains.deleteRecord(domain.name, domainRecord.id, callback)`
-* `client.domains.updateRecord(domain.name, domainRecord.id,, attributes, callback)`
+* `client.domains.list([page, perPage,] [callback])`
+* `client.domains.create(attributes, [callback])`
+* `client.domains.get(domain.name, [callback])`
+* `client.domains.delete(domain.name, [callback])`
+* `client.domains.listRecords([page, perPage,] domain.name, [callback])`
+* `client.domains.createRecord(domain.name, attributes, [callback])`
+* `client.domains.getRecord(domain.name, domainRecord.id, [callback])`
+* `client.domains.deleteRecord(domain.name, domainRecord.id, [callback])`
+* `client.domains.updateRecord(domain.name, domainRecord.id,, attributes, [callback])`
 
 For the latest valid domain attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#domains). For the latest valid domain record attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#domain-records).
 
@@ -275,17 +326,17 @@ var client = digitalocean.client('TOKEN');
 client.images
 ```
 
-* `client.images.list([page, perPage,] callback)`
-* `client.images.get(image.id, callback)`
-* `client.images.delete(image.id, callback)`
-* `client.images.update(image.id, attributes, callback)`
-* `client.imageActions.list([page, perPage,] image.id, callback)`
-* `client.imageActions.get([page, perPage,] image.id, action.id, callback)`
+* `client.images.list([page, perPage,] [callback])`
+* `client.images.get(image.id, [callback])`
+* `client.images.delete(image.id, [callback])`
+* `client.images.update(image.id, attributes, [callback])`
+* `client.imageActions.list([page, perPage,] image.id, [callback])`
+* `client.imageActions.get([page, perPage,] image.id, action.id, [callback])`
 
 Methods resulting in an `action`:
 
-* `client.imageActions.transfer(image.id, parametersOrRegionSlug, callback)`
-* `client.imageActions.convert(image.id, callback)`
+* `client.imageActions.transfer(image.id, parametersOrRegionSlug, [callback])`
+* `client.imageActions.convert(image.id, [callback])`
 
 
 ### Region resource
@@ -296,7 +347,7 @@ var client = digitalocean.client('TOKEN');
 client.regions
 ```
 
-* `client.regions.list(callback)`
+* `client.regions.list([callback])`
 
 
 ### Size resource
@@ -307,7 +358,7 @@ var client = digitalocean.client('TOKEN');
 client.sizes
 ```
 
-* `client.sizes.list(callback)`
+* `client.sizes.list([callback])`
 
 
 ### Account resource
@@ -318,12 +369,12 @@ var client = digitalocean.client('TOKEN');
 client.account
 ```
 
-* `client.account.get(callback)`
-* `client.account.listSshKey([page, perPage,] callback)`
-* `client.account.createSshKey(attributes, callback)`
-* `client.account.getSshKey(sshKey.id, callback)`
-* `client.account.deleteSshKey(sshKey.id, callback)`
-* `client.account.updateSshKey(sshKey.id, attributes, callback)`
+* `client.account.get([callback])`
+* `client.account.listSshKey([page, perPage,] [callback])`
+* `client.account.createSshKey(attributes, [callback])`
+* `client.account.getSshKey(sshKey.id, [callback])`
+* `client.account.deleteSshKey(sshKey.id, [callback])`
+* `client.account.updateSshKey(sshKey.id, attributes, [callback])`
 
 For the latest ssh key valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#ssh-keys).
 
@@ -335,19 +386,19 @@ var client = digitalocean.client('TOKEN');
 client.floatingIps
 ```
 
-* `client.floatingIps.list([page, perPage,] callback)`
-* `client.floatingIps.get(floatingIp.ip, callback)`
-* `client.floatingIps.create(attributes, callback)`
-* `client.floatingIps.delete(floatingIp.ip, callback)`
-* `client.floatingIps.listActions([page, perPage,] callback)`
-* `client.floatingIps.getAction(floatingIp.ip, callback)`
+* `client.floatingIps.list([page, perPage,] [callback])`
+* `client.floatingIps.get(floatingIp.ip, [callback])`
+* `client.floatingIps.create(attributes, [callback])`
+* `client.floatingIps.delete(floatingIp.ip, [callback])`
+* `client.floatingIps.listActions([page, perPage,] [callback])`
+* `client.floatingIps.getAction(floatingIp.ip, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#floating-ips).
 
 Methods resulting in an `action`:
 
-* `client.floatingIpActions.assign(floatingIp.ip, parametersOrDropletId, callback)`
-* `client.floatingIpActions.unassign(floatingIp.ip, callback)`
+* `client.floatingIpActions.assign(floatingIp.ip, parametersOrDropletId, [callback])`
+* `client.floatingIpActions.unassign(floatingIp.ip, [callback])`
 
 ### Tag resource
 
@@ -357,13 +408,13 @@ var client = digitalocean.client('TOKEN');
 client.tags
 ```
 
-* `client.tags.list([page, perPage,] callback)`
-* `client.tags.get(tag.name, callback)`
-* `client.tags.create(attributes, callback)`
-* `client.tags.update(tag.name, attributes, callback)`
-* `client.tags.tag(tag.name, [{resource_id: , resource_type: }], callback)`
-* `client.tags.untag(tag.name, [{resource_id: , resource_type: }], callback)`
-* `client.tags.delete(tag.name, callback)`
+* `client.tags.list([page, perPage,] [callback])`
+* `client.tags.get(tag.name, [callback])`
+* `client.tags.create(attributes, [callback])`
+* `client.tags.update(tag.name, attributes, [callback])`
+* `client.tags.tag(tag.name, [{resource_id: , resource_type: }], [callback])`
+* `client.tags.untag(tag.name, [{resource_id: , resource_type: }], [callback])`
+* `client.tags.delete(tag.name, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#tags).
 
