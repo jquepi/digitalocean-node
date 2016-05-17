@@ -41,6 +41,6 @@
     "node": ">0.4.11",
     "npm": ">= 2.13.1"
   },
-  "tonicExampleFilename": "examples/create_droplet.js",
+  "tonicExampleFilename": "examples/make_droplet.js",
   "license": "MIT"
 }
