@@ -84,10 +84,10 @@ client.get('/account', {}, 200, 'account', function (err, status, body, headers)
 ## Callback function signature
 
 All callbacks will be passed:
-# an error (null if no error occurred)
-# a resource object
-# the response headers
-# the raw response body
+1. an error (null if no error occurred)
+1. a resource object
+1. the response headers
+1. the raw response body
 
 For example:
 
@@ -102,18 +102,18 @@ client.account.get(function(err, account, headers, response) {
 
 ## Promise result
 
-Promise results are the resource(s) returned by a successful response - an array, an individual object, or a blank object (for successful empty responses such as deletes). These objects have a special property, `_digitalocean` that includes response information. For example:
+Promise results are the resource(s) returned by a successful response - an array, an individual object, or a blank object (for successful empty responses such as deletes). These objects have a special property, `_digitalOcean` that includes response information. For example:
 
 ```js
 // ...
 .then(function(object) {
-  console.log(object); // => 
+  console.log(object); // =>
   // {
-  //   _digitalOcean: { 
-  //     statusCode: 204, 
-  //     body: {}, 
-  //     headers: {} 
-  //   } 
+  //   _digitalOcean: {
+  //     statusCode: 204,
+  //     body: {},
+  //     headers: {}
+  //   }
   // }
 })
 ```
@@ -264,15 +264,21 @@ client.droplets
 ```
 
 * `client.droplets.list([page, perPage,] [callback])`
+* `client.droplets.list([queryObject,] [callback])`
 * `client.droplets.get(droplet.id, [callback])`
 * `client.droplets.create(attributes, [callback])`
 * `client.droplets.delete(droplet.id, [callback])`
 * `client.droplets.deleteByTagName(tag.name, [callback])`
 * `client.droplets.kernels(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.kernels(droplet.id, [queryObject] [callback])`
 * `client.droplets.snapshots(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.snapshots(droplet.id, [queryObject] [callback])`
 * `client.droplets.backups(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.backups(droplet.id, [queryObject] [callback])`
 * `client.droplets.neighbors(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.neighbors(droplet.id, [queryObject] [callback])`
 * `client.droplets.listActions(droplet.id, [page, perPage,] [callback])`
+* `client.droplets.listActions(droplet.id, [queryObject] [callback])`
 * `client.droplets.getAction(droplet.id, action.id, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#droplets).
@@ -306,10 +312,12 @@ client.domains
 ```
 
 * `client.domains.list([page, perPage,] [callback])`
+* `client.domains.list([queryObject,] [callback])`
 * `client.domains.create(attributes, [callback])`
 * `client.domains.get(domain.name, [callback])`
 * `client.domains.delete(domain.name, [callback])`
 * `client.domains.listRecords([page, perPage,] domain.name, [callback])`
+* `client.domains.listRecords([queryObject,] domain.name, [callback])`
 * `client.domains.createRecord(domain.name, attributes, [callback])`
 * `client.domains.getRecord(domain.name, domainRecord.id, [callback])`
 * `client.domains.deleteRecord(domain.name, domainRecord.id, [callback])`
@@ -327,11 +335,17 @@ client.images
 ```
 
 * `client.images.list([page, perPage,] [callback])`
+* `client.images.list([queryObject,] [callback])`
+
+[See the official docs](https://developers.digitalocean.com/documentation/v2/#list-all-distribution-images) on different parameters to pass via the query object to filter the images.
+
 * `client.images.get(image.id, [callback])`
 * `client.images.delete(image.id, [callback])`
 * `client.images.update(image.id, attributes, [callback])`
 * `client.imageActions.list([page, perPage,] image.id, [callback])`
+* `client.imageActions.list([queryObject] image.id, [callback])`
 * `client.imageActions.get([page, perPage,] image.id, action.id, [callback])`
+* `client.imageActions.get([queryObject] image.id, action.id, [callback])`
 
 Methods resulting in an `action`:
 
@@ -371,6 +385,7 @@ client.account
 
 * `client.account.get([callback])`
 * `client.account.listSshKey([page, perPage,] [callback])`
+* `client.account.listSshKey([queryObject] [callback])`
 * `client.account.createSshKey(attributes, [callback])`
 * `client.account.getSshKey(sshKey.id, [callback])`
 * `client.account.deleteSshKey(sshKey.id, [callback])`
@@ -387,10 +402,12 @@ client.floatingIps
 ```
 
 * `client.floatingIps.list([page, perPage,] [callback])`
+* `client.floatingIps.list([queryObject] [callback])`
 * `client.floatingIps.get(floatingIp.ip, [callback])`
 * `client.floatingIps.create(attributes, [callback])`
 * `client.floatingIps.delete(floatingIp.ip, [callback])`
 * `client.floatingIps.listActions([page, perPage,] [callback])`
+* `client.floatingIps.listActions([queryObject] [callback])`
 * `client.floatingIps.getAction(floatingIp.ip, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#floating-ips).
@@ -409,6 +426,7 @@ client.tags
 ```
 
 * `client.tags.list([page, perPage,] [callback])`
+* `client.tags.list([queryObject] [callback])`
 * `client.tags.get(tag.name, [callback])`
 * `client.tags.create(attributes, [callback])`
 * `client.tags.update(tag.name, attributes, [callback])`
