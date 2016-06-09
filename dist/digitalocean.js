@@ -23,11 +23,8 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Account.prototype.listSshKeys = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
-
-      return this.client.get.apply(this.client, ['/account/keys', {}].concat(slice.call(params), [200, 'ssh_keys', callback]));
+      var args = util.extractListArguments(arguments, 0);
+      return this.client.get.apply(this.client, ['/account/keys', {}].concat(slice.call(args.params), [200, 'ssh_keys', args.callback]));
     };
 
     // attributes, required
@@ -77,11 +74,8 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Action.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
-
-      return this.client.get.apply(this.client, ['/actions', {}].concat(slice.call(params), [200, 'actions', callback]));
+      var args = util.extractListArguments(arguments, 0);
+      return this.client.get.apply(this.client, ['/actions', {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
     // id, required
@@ -411,11 +405,8 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Domain.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
-
-      return this.client.get.apply(this.client, ['/domains', {}].concat(slice.call(params), [200, 'domains', callback]));
+      var args = util.extractListArguments(arguments, 0);
+      return this.client.get.apply(this.client, ['/domains', {}].concat(slice.call(args.params), [200, 'domains', args.callback]));
     };
 
     // attributes, required
@@ -443,13 +434,10 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Domain.prototype.listRecords = function() {
-      var domainName = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('domains', args.identifier, 'domain_records');
 
-      var url = util.safeUrl('domains', domainName, 'domain_records');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'domain_records', callback]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'domain_records', args.callback]));
     };
 
     // domainName, rqeuired
@@ -505,11 +493,9 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Droplet.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 0);
 
-      return this.client.get.apply(this.client, ['/droplets', {}].concat(slice.call(params), [200, 'droplets', callback]));
+      return this.client.get.apply(this.client, ['/droplets', {}].concat(slice.call(args.params), [200, 'droplets', args.callback]));
     };
 
     // attributes, required
@@ -530,13 +516,10 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Droplet.prototype.kernels = function() {
-      var id = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('droplets', args.identifier, 'kernels');
 
-      var url = util.safeUrl('droplets', id, 'kernels');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'kernels', callback]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'kernels', args.callback]));
     };
 
     // id, required
@@ -544,13 +527,10 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Droplet.prototype.snapshots = function() {
-      var id = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('droplets', args.identifier, 'snapshots');
 
-      var url = util.safeUrl('droplets', id, 'snapshots');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'snapshots', callback]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'snapshots', args.callback]));
     };
 
     // id, required
@@ -558,13 +538,10 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Droplet.prototype.backups = function() {
-      var id = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('droplets', args.identifier, 'backups');
 
-      var url = util.safeUrl('droplets', id, 'backups');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'backups', callback]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'backups', args.callback]));
     };
 
     // id, required
@@ -572,13 +549,10 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Droplet.prototype.neighbors = function() {
-      var id = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('droplets', args.identifier, 'neighbors');
 
-      var url = util.safeUrl('droplets', id, 'neighbors');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'droplets', callback]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'droplets', args.callback]));
     };
 
     // id, required
@@ -596,18 +570,15 @@ module.exports = {
       return this.client.delete(url, params, 204, [], callback);
     };
 
-    // dropletId, required
+    // id, required
     // page or query object, optional
     // perPage, optional
     // callback, optional
     Droplet.prototype.listActions = function() {
-      var dropletId = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('droplets', args.identifier, 'actions');
 
-      var url = util.safeUrl('droplets', dropletId, 'actions');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'actions', callback]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
     // dropletId, rqeuired
@@ -866,11 +837,9 @@ module.exports = {
     // perPage, optional
     // callback, optional
     FloatingIp.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 0);
 
-      return this.client.get.apply(this.client, ['/floating_ips', {}].concat(slice.call(params), [200, 'floating_ips', callback]));
+      return this.client.get.apply(this.client, ['/floating_ips', {}].concat(slice.call(args.params), [200, 'floating_ips', args.callback]));
     };
 
     // attributes, required
@@ -898,13 +867,10 @@ module.exports = {
     // perPage, optional
     // callback, optional
     FloatingIp.prototype.listActions = function() {
-      var ip = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('floating_ips', args.identifier, 'actions');
 
-      var url = util.safeUrl('floating_ips', ip, 'actions');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'actions', callback]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
     // ip, rqeuired
@@ -974,11 +940,8 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Image.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
-
-      return this.client.get.apply(this.client, ['/images', {}].concat(slice.call(params), [200, 'images', callback]));
+      var args = util.extractListArguments(arguments, 0);
+      return this.client.get.apply(this.client, ['/images', {}].concat(slice.call(args.params), [200, 'images', args.callback]));
     };
 
     // id, required
@@ -1003,18 +966,15 @@ module.exports = {
       return this.client.delete(url, {}, 204, [], callback);
     };
 
-    // imageId, required
+    // id, required
     // page or query object, optional
     // perPage, optional
     // callback, optional
     Image.prototype.listActions = function() {
-      var imageId = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('images', args.identifier, 'actions');
 
-      var url = util.safeUrl('images', imageId, 'actions');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'actions', callback]));
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
     // imageId, rqeuired
@@ -1072,7 +1032,8 @@ module.exports = {
 }).call(this);
 },{"./util":13}],10:[function(require,module,exports){
 (function() {
-  var slice = [].slice;
+  var slice = [].slice,
+    util = require('./util');
 
   var Region = (function() {
     function Region(client) {
@@ -1083,11 +1044,8 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Region.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
-
-      return this.client.get.apply(this.client, ['/regions', {}].concat(slice.call(params), [200, 'regions', callback]));
+      var args = util.extractListArguments(arguments, 0);
+      return this.client.get.apply(this.client, ['/regions', {}].concat(slice.call(args.params), [200, 'regions', args.callback]));
     };
 
     return Region;
@@ -1095,9 +1053,10 @@ module.exports = {
 
   module.exports = Region;
 }).call(this);
-},{}],11:[function(require,module,exports){
+},{"./util":13}],11:[function(require,module,exports){
 (function() {
-  var slice = [].slice;
+  var slice = [].slice,
+    util = require('./util');
 
   var Size = (function() {
     function Size(client) {
@@ -1108,11 +1067,8 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Size.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
-
-      return this.client.get.apply(this.client, ['/sizes', {}].concat(slice.call(params), [200, 'sizes', callback]));
+      var args = util.extractListArguments(arguments, 0);
+      return this.client.get.apply(this.client, ['/sizes', {}].concat(slice.call(args.params), [200, 'sizes', args.callback]));
     };
 
     return Size;
@@ -1120,7 +1076,7 @@ module.exports = {
 
   module.exports = Size;
 }).call(this);
-},{}],12:[function(require,module,exports){
+},{"./util":13}],12:[function(require,module,exports){
 (function() {
   var slice = [].slice,
     util = require('./util');
@@ -1134,11 +1090,8 @@ module.exports = {
     // perPage, optional
     // callback, optional
     Tag.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
-
-      return this.client.get.apply(this.client, ['/tags', {}].concat(slice.call(params), [200, 'tags', callback]));
+      var args = util.extractListArguments(arguments, 0);
+      return this.client.get.apply(this.client, ['/tags', {}].concat(slice.call(args.params), [200, 'tags', args.callback]));
     };
 
     // attributes, required
@@ -1194,13 +1147,43 @@ module.exports = {
 }).call(this);
 },{"./util":13}],13:[function(require,module,exports){
 (function() {
+  var slice = [].slice;
+
   module.exports.safeUrl = function() {
     var args = Array.prototype.slice.call(arguments);
     return args.reduce(function(accum, fragment) {
       return accum + '/' + encodeURIComponent(fragment);
     }, '');
   };
+
+  module.exports.extractListArguments = function(args, countPrependedArgs) {
+    var startIndex, endIndex, id, params, callback;
+
+    startIndex = countPrependedArgs;
+    if (2 <= args.length) {
+      endIndex = args.length - 1;
+      params = slice.call(args, startIndex, endIndex);
+    } else {
+      endIndex = countPrependedArgs;
+      params = [];
+    }
+
+    if (countPrependedArgs > 0) {
+      id = args[0];
+      endIndex += 1;
+      if (typeof(args[endIndex]) === 'function') {
+        callback = args[endIndex];
+      }
+    }
+
+    return {
+      identifier: id,
+      callback: callback,
+      params: params
+    };
+  };
 }).call(this);
+
 },{}],14:[function(require,module,exports){
 (function (process,global){
 /* @preserve
@@ -66706,8 +66689,8 @@ module.exports = Request
 }).call(this,require('_process'),require("buffer").Buffer)
 },{"./lib/auth":268,"./lib/cookies":269,"./lib/getProxyFromURI":270,"./lib/har":271,"./lib/helpers":272,"./lib/multipart":273,"./lib/oauth":274,"./lib/querystring":275,"./lib/redirect":276,"./lib/tunnel":277,"_process":232,"aws-sign2":278,"aws4":279,"bl":281,"buffer":31,"caseless":292,"extend":295,"forever-agent":296,"form-data":297,"hawk":326,"http":252,"http-signature":327,"https":228,"is-typedarray":373,"isstream":374,"mime-types":376,"stream":251,"stringstream":385,"url":259,"util":262,"zlib":30}],395:[function(require,module,exports){
 module.exports={
-  "name": "digitalocean ",
-  "version": "0.7.0",
+  "name": "digitalocean",
+  "version": "0.7.1",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
