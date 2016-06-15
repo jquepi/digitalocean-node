@@ -268,7 +268,7 @@ client.droplets
 * `client.droplets.get(droplet.id, [callback])`
 * `client.droplets.create(attributes, [callback])`
 * `client.droplets.delete(droplet.id, [callback])`
-* `client.droplets.deleteByTagName(tag.name, [callback])`
+* `client.droplets.deleteByTag(tag.name, [callback])`
 * `client.droplets.kernels(droplet.id, [page, perPage,] [callback])`
 * `client.droplets.kernels(droplet.id, [queryObject] [callback])`
 * `client.droplets.snapshots(droplet.id, [page, perPage,] [callback])`
