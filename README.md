@@ -342,15 +342,15 @@ client.images
 * `client.images.get(image.id, [callback])`
 * `client.images.delete(image.id, [callback])`
 * `client.images.update(image.id, attributes, [callback])`
-* `client.imageActions.list([page, perPage,] image.id, [callback])`
-* `client.imageActions.list([queryObject] image.id, [callback])`
-* `client.imageActions.get([page, perPage,] image.id, action.id, [callback])`
-* `client.imageActions.get([queryObject] image.id, action.id, [callback])`
+* `client.image.listActions([page, perPage,] image.id, [callback])`
+* `client.image.listActions([queryObject] image.id, [callback])`
+* `client.image.getAction([page, perPage,] image.id, action.id, [callback])`
+* `client.image.getAction([queryObject] image.id, action.id, [callback])`
 
 Methods resulting in an `action`:
 
-* `client.imageActions.transfer(image.id, parametersOrRegionSlug, [callback])`
-* `client.imageActions.convert(image.id, [callback])`
+* `client.image.transfer(image.id, parametersOrRegionSlug, [callback])`
+* `client.image.convert(image.id, [callback])`
 
 
 ### Region resource
