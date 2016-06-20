@@ -70,6 +70,17 @@ describe('tag endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/tags').reply(200, JSON.stringify(data));
+
+      client.tags.list({ tagName: 'foo' }).then(function(tags) {
+        expect(tags).to.shallowDeepEqual(data.tags);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create', function() {

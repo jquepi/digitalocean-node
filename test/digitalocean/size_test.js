@@ -93,6 +93,17 @@ describe('size endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/sizes').reply(200, JSON.stringify(data));
+
+      client.sizes.list({ tagName: 'foo' }).then(function(sizes) {
+        expect(sizes).to.shallowDeepEqual(data.sizes);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
 });

@@ -57,6 +57,17 @@ describe('domain endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/domains').reply(200, JSON.stringify(data));
+
+      client.domains.list({ tagName: 'foo' }).then(function(domains) {
+        expect(domains).to.shallowDeepEqual(data.domains);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create', function() {
@@ -214,6 +225,17 @@ describe('domain endpoints', function() {
       testUtils.api.get('/v2/domains/example.com/domain_records').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com').then(function(domainRecords) {
+        expect(domainRecords).to.shallowDeepEqual(data.domain_records);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/domains/example.com/domain_records').reply(200, JSON.stringify(data));
+
+      client.domains.listRecords('example.com', { tagName: 'foo' }).then(function(domainRecords) {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
         done();
       }).catch(function(err) {

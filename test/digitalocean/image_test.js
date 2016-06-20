@@ -76,6 +76,17 @@ describe('image endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/images').reply(200, JSON.stringify(data));
+
+      client.images.list({ tagName: 'foo' }).then(function(images) {
+        expect(images).to.shallowDeepEqual(data.images);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('get', function() {
@@ -272,6 +283,17 @@ describe('image endpoints', function() {
       testUtils.api.get('/v2/images/123/actions').reply(200, JSON.stringify(data));
 
       client.images.listActions(123).then(function(actions) {
+        expect(actions).to.shallowDeepEqual(data.actions);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/images/123/actions').reply(200, JSON.stringify(data));
+
+      client.images.listActions(123, { tagName: 'foo' }).then(function(actions) {
         expect(actions).to.shallowDeepEqual(data.actions);
         done();
       }).catch(function(err) {

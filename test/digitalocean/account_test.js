@@ -89,6 +89,17 @@ describe('account endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/account/keys').reply(200, JSON.stringify(data));
+
+      client.account.listSshKeys({ tagName: 'foo' }).then(function(sshKeys) {
+        expect(sshKeys).to.shallowDeepEqual(data.ssh_keys);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create ssh key', function() {

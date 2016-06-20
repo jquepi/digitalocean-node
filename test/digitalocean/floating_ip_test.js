@@ -105,6 +105,17 @@ describe('floating ip endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/floating_ips').reply(200, JSON.stringify(data));
+
+      client.floatingIps.list({ tagName: 'foo' }).then(function(floatingIps) {
+        expect(floatingIps).to.shallowDeepEqual(data.floating_ips);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create', function() {
@@ -321,6 +332,17 @@ describe('floating ip endpoints', function() {
       testUtils.api.get('/v2/floating_ips/123/actions').reply(200, JSON.stringify(data));
 
       client.floatingIps.listActions(123).then(function(actions) {
+        expect(actions).to.shallowDeepEqual(data.actions);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/floating_ips/123/actions').reply(200, JSON.stringify(data));
+
+      client.floatingIps.listActions(123, { tagName: 'foo' }).then(function(actions) {
         expect(actions).to.shallowDeepEqual(data.actions);
         done();
       }).catch(function(err) {

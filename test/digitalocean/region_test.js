@@ -101,5 +101,16 @@ describe('region endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/regions').reply(200, JSON.stringify(data));
+
+      client.regions.list({ tagName: 'foo' }).then(function(regions) {
+        expect(regions).to.shallowDeepEqual(data.regions);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 });

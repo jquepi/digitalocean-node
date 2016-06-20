@@ -130,6 +130,17 @@ describe('droplet endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/droplets').reply(200, JSON.stringify(data));
+
+      client.droplets.list({ tagName: 'foo' }).then(function(droplets) {
+        expect(droplets).to.shallowDeepEqual(data.droplets);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('create', function() {
@@ -498,6 +509,17 @@ describe('droplet endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/droplets/123/kernels').reply(200, JSON.stringify(data));
+
+      client.droplets.kernels(123, { tagName: 'foo' }).then(function(kernels) {
+        expect(kernels).to.shallowDeepEqual(data.kernels);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('snapshots', function() {
@@ -574,6 +596,17 @@ describe('droplet endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/droplets/123/snapshots').reply(200, JSON.stringify(data));
+
+      client.droplets.snapshots(123, { tagName: 'foo' }).then(function(snapshots) {
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('backups', function() {
@@ -644,6 +677,17 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/backups').reply(200, JSON.stringify(data));
 
       client.droplets.backups(123).then(function(backups) {
+        expect(backups).to.shallowDeepEqual(data.backups);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/droplets/123/backups').reply(200, JSON.stringify(data));
+
+      client.droplets.backups(123, { tagName: 'foo' }).then(function(backups) {
         expect(backups).to.shallowDeepEqual(data.backups);
         done();
       }).catch(function(err) {
@@ -792,6 +836,17 @@ describe('droplet endpoints', function() {
         done(err);
       });
     });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/droplets/123/neighbors').reply(200, JSON.stringify(data));
+
+      client.droplets.neighbors(123, { tagName: 'foo' }).then(function(droplets) {
+        expect(droplets).to.shallowDeepEqual(data.droplets);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe('delete', function() {
@@ -917,6 +972,17 @@ describe('droplet endpoints', function() {
       testUtils.api.get('/v2/droplets/123/actions').reply(200, JSON.stringify(data));
 
       client.droplets.listActions(123).then(function(actions) {
+        expect(actions).to.shallowDeepEqual(data.actions);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/droplets/123/actions').reply(200, JSON.stringify(data));
+
+      client.droplets.listActions(123, { tagName: 'foo' }).then(function(actions) {
         expect(actions).to.shallowDeepEqual(data.actions);
         done();
       }).catch(function(err) {
