@@ -4,52 +4,99 @@ module.exports = {
   account: require('./digitalocean/account'),
 };
 
+//
+// Reused type documnentation
+//
+
+/**
+ * Every resource method accepts an optional callback as the last argument.
+ *
+ * @callback requestCallback
+ * @param {object} error - An error or null if no error occurred.
+ * @param {object} resource - The resource or null if error.
+ * @param {object} headers - An object containing the response headers.
+ * @param {string} body - The raw response body.
+ */
 },{"./digitalocean/account":2,"./digitalocean/client":4}],2:[function(require,module,exports){
 (function() {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Account resource
+    * @class Account
+    */
   var Account = (function() {
     function Account(client) {
       this.client = client;
     }
 
-    // callback, optional
+    /**
+     * Get the account object.
+     *
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Account
+     */
     Account.prototype.get = function(callback) {
       return this.client.get('/account', {}, 200, 'account', callback);
     };
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List ssh key objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Account
+     */
     Account.prototype.listSshKeys = function() {
       var args = util.extractListArguments(arguments, 0);
       return this.client.get.apply(this.client, ['/account/keys', {}].concat(slice.call(args.params), [200, 'ssh_keys', args.callback]));
     };
 
-    // attributes, required
-    // callback, optional
+    /**
+     * Create a ssh key object.
+     *
+     * @param {object} attributes - The attributes with wich to create the ssh key. See the {@link https://developers.digitalocean.com/documentation/v2/#ssh-keys|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Account
+     */
     Account.prototype.createSshKey = function(attributes, callback) {
       return this.client.post('/account/keys', attributes, 201, 'ssh_key', callback);
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified ssh key object.
+     *
+     * @param {number} id - The id of the ssh key to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Account
+     */
     Account.prototype.getSshKey = function(id, callback) {
       var url = util.safeUrl('account', 'keys', id);
       return this.client.get(url, {}, 200, 'ssh_key', callback);
     };
 
-    // id, required
-    // attributes, required
-    // callback, optional
+    /**
+     * Update the identified ssh key object.
+     *
+     * @param {number} id - The id of the ssh key to update
+     * @param {object} attributes - The attributes with which to update the ssh key. See the {@link https://developers.digitalocean.com/documentation/v2/#ssh-keys|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Account
+     */
     Account.prototype.updateSshKey = function(id, attributes, callback) {
       var url = util.safeUrl('account', 'keys', id);
       return this.client.put(url, attributes, 200, 'ssh_key', callback);
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Delete the identified ssh key object.
+     *
+     * @param {number} id - The id of the ssh key to delete
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Account
+     */
     Account.prototype.deleteSshKey = function(id, callback) {
       var url = util.safeUrl('account', 'keys', id);
       return this.client.delete(url, {}, 204, [], callback);
@@ -65,21 +112,35 @@ module.exports = {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Action resource
+    * @class Action
+    */
   var Action = (function() {
     function Action(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List action objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Action
+     */
     Action.prototype.list = function() {
       var args = util.extractListArguments(arguments, 0);
       return this.client.get.apply(this.client, ['/actions', {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified action object.
+     *
+     * @param {number} id - The id of the action to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Action
+     */
     Action.prototype.get = function(id, callback) {
       var url = util.safeUrl('action', id);
       return this.client.get(url, {}, 200, 'action', callback);
@@ -146,6 +207,7 @@ module.exports = {
       this.tags = new Tag(this);
     }
 
+    /** @private */
     Client.prototype._buildUrl = function(path, urlParams) {
       if (path == null) {
         path = '/';
@@ -173,6 +235,7 @@ module.exports = {
     // successStatuses, required, number or array of numbers
     // successRootKeys, required, string or array of strings
     // callback, required, function
+    /** @private */
     Client.prototype._buildrequestPromiseHandler = function(successStatuses, successRootKeys, resolve, reject) {
       if (typeof successStatuses === 'number') {
         successStatuses = [successStatuses];
@@ -232,6 +295,7 @@ module.exports = {
       };
     };
 
+    /** @private */
     Client.prototype._callbackOrPromise = function(options, overrideOptions, successStatuses, successRootKeys, callback) {
       // Use a hierarchy of options to provide overrides:
       //  1. this.requestDefaults (specified by client)
@@ -318,6 +382,7 @@ module.exports = {
       );
     };
 
+    /** @private */
     Client.prototype._makeRequestWithBody = function(type, path, content, options, successStatuses, successRootKeys, callback) {
       // if `options` isn't passed, shift arguments back by one and set
       // default hash for options
@@ -396,43 +461,72 @@ module.exports = {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Domain resource
+    * @class Domain
+    */
   var Domain = (function() {
     function Domain(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List domain objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.list = function() {
       var args = util.extractListArguments(arguments, 0);
       return this.client.get.apply(this.client, ['/domains', {}].concat(slice.call(args.params), [200, 'domains', args.callback]));
     };
 
-    // attributes, required
-    // callback, optional
+    /**
+     * Create a domain object.
+     *
+     * @param {object} attributes - The attributes with which to create the domain. See the {@link https://developers.digitalocean.com/documentation/v2/#domains|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.create = function(attributes, callback) {
       return this.client.post('/domains', attributes, 201, 'domain', callback);
     };
 
-    // name, required
-    // callback, optional
+    /**
+     * Get the identified domain object.
+     *
+     * @param {string} name - The name of the domain to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.get = function(name, callback) {
       var url = util.safeUrl('domains', name);
       return this.client.get(url, {}, 200, 'domain', callback);
     };
 
-    // name, required
-    // callback, optional
+    /**
+     * Delete the identified domain object.
+     *
+     * @param {string} name - The name of the domain to delete
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.delete = function(name, callback) {
       var url = util.safeUrl('domains', name);
       return this.client.delete(url, {}, 204, [], callback);
     };
 
-    // domainName, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List domain record objects.
+     *
+     * @param {string} domainName - name of domain for which to retrieve records
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.listRecords = function() {
       var args = util.extractListArguments(arguments, 1);
       var url = util.safeUrl('domains', args.identifier, 'domain_records');
@@ -440,35 +534,54 @@ module.exports = {
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'domain_records', args.callback]));
     };
 
-    // domainName, rqeuired
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified domain record object.
+     *
+     * @param {string} domainName - The name of the domain for which to retrieve a record
+     * @param {number} id - The id of the domain record to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.getRecord = function(domainName, id, callback) {
       var url = util.safeUrl('domains', domainName, 'domain_records', id);
       return this.client.get(url, {}, 200, 'domain_record', callback);
     };
 
-    // domainName, required
-    // attributes, required
-    // callback, optional
+    /**
+     * Create a record object in a domain.
+     *
+     * @param {string} domainName - The name of the domain for which to create a record
+     * @param {object} attributes - The attributes with which to create the domain record. See the {@link https://developers.digitalocean.com/documentation/v2/#domain-records|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.createRecord = function(domainName, attributes, callback) {
-      // console.log(callback);
       var url = util.safeUrl('domains', domainName, 'domain_records');
       return this.client.post(url, attributes, 201, 'domain_record', callback);
     };
 
-    // domainName, required
-    // id, required
-    // attributes, required
-    // callback, optional
+    /**
+     * Update the identified record object in a domain.
+     *
+     * @param {string} domainName - The name of the domain for which to update the record
+     * @param {number} id - The id of the domain record to retrieve
+     * @param {object} attributes - The attributes with which to update the domain record. See the {@link https://developers.digitalocean.com/documentation/v2/#domain-records|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.updateRecord = function(domainName, id, attributes, callback) {
       var url = util.safeUrl('domains', domainName, 'domain_records', id);
       return this.client.put(url, attributes, 200, 'domain_record', callback);
     };
 
-    // domainName, required
-    // id, required
-    // callback, optional
+    /**
+     * Delete the identified domain record object.
+     *
+     * @param {string} domainName - The name of the domain for which to delete a record
+     * @param {number} id - The id of the domain record to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Domain
+     */
     Domain.prototype.deleteRecord = function(domainName, id, callback) {
       var url = util.safeUrl('domains', domainName, 'domain_records', id);
       return this.client.delete(url, {}, 204, [], callback);
@@ -484,37 +597,61 @@ module.exports = {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Droplet resource
+    * @class Droplet
+    */
   var Droplet = (function() {
     function Droplet(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List Droplet objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.list = function() {
       var args = util.extractListArguments(arguments, 0);
 
       return this.client.get.apply(this.client, ['/droplets', {}].concat(slice.call(args.params), [200, 'droplets', args.callback]));
     };
 
-    // attributes, required
-    // callback, optional
+    /**
+     * Create a Droplet object.
+     *
+     * @param {object} attributes - The attributes with which to create the Droplet. See the {@link https://developers.digitalocean.com/documentation/v2/#droplets|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.create = function(attributes, callback) {
       return this.client.post('/droplets', attributes, 202, ['droplet', 'droplets'], callback);
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified Droplet object.
+     *
+     * @param {number} id - The id of the Droplet to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.get = function(id, callback) {
       var url = util.safeUrl('droplets', id);
       return this.client.get(url, {}, 200, 'droplet', callback);
     };
 
-    // id, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List kernel objects.
+     *
+     * @param {number} id - ID of Droplet for which to retrieve kernels
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.kernels = function() {
       var args = util.extractListArguments(arguments, 1);
       var url = util.safeUrl('droplets', args.identifier, 'kernels');
@@ -522,10 +659,15 @@ module.exports = {
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'kernels', args.callback]));
     };
 
-    // id, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List of image objects that are snapshots of the Droplet.
+     *
+     * @param {number} id - ID of Droplet for which to retrieve snapshots
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.snapshots = function() {
       var args = util.extractListArguments(arguments, 1);
       var url = util.safeUrl('droplets', args.identifier, 'snapshots');
@@ -533,10 +675,15 @@ module.exports = {
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'snapshots', args.callback]));
     };
 
-    // id, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List backup objects that are backups of the Droplet.
+     *
+     * @param {number} id - ID of Droplet for which to retrieve backups
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.backups = function() {
       var args = util.extractListArguments(arguments, 1);
       var url = util.safeUrl('droplets', args.identifier, 'backups');
@@ -544,10 +691,15 @@ module.exports = {
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'backups', args.callback]));
     };
 
-    // id, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List of Droplet objects that are physically co-located with the Droplet.
+     *
+     * @param {number} id - ID of Droplet for which to retrieve neighbors
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.neighbors = function() {
       var args = util.extractListArguments(arguments, 1);
       var url = util.safeUrl('droplets', args.identifier, 'neighbors');
@@ -555,25 +707,40 @@ module.exports = {
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'droplets', args.callback]));
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Delete the identified Droplet object.
+     *
+     * @param {number} id - The id of the Droplet to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.delete = function(id, callback) {
       var url = util.safeUrl('droplets', id);
       return this.client.delete(url, {}, 204, [], callback);
     };
 
-    // name, required
-    // callback, optional
+    /**
+     * Delete the Droplets associated with the tag identified by the name.
+     *
+     * @param {string} name - The name of the tag for which to delete Droplets.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.deleteByTag = function(name, callback) {
       var url = util.safeUrl('droplets');
       var params = { tag_name: encodeURIComponent(name) };
       return this.client.delete(url, params, 204, [], callback);
     };
 
-    // id, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List of action objects.
+     *
+     * @param {number} id - ID of Droplet for which to retrieve actions
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.listActions = function() {
       var args = util.extractListArguments(arguments, 1);
       var url = util.safeUrl('droplets', args.identifier, 'actions');
@@ -581,17 +748,27 @@ module.exports = {
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
-    // dropletId, rqeuired
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified action object.
+     *
+     * @param {number} dropletId - The id of the droplet for which to retrieve the action
+     * @param {number} id - The id of the action to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.getAction = function(dropletId, id, callback) {
       var url = util.safeUrl('droplets', dropletId, 'actions', id);
       return this.client.get(url, {}, 200, 'action', callback);
     };
 
-    // dropletId, required
-    // parametersOrType, required
-    // callback, optional
+    /**
+     * Create an action on the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {string|object} parametersOrType - The name of the action to create or an object with key value pairs of parameters.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.action = function(dropletId, parametersOrType, callback) {
       var parameters;
 
@@ -605,9 +782,14 @@ module.exports = {
       return this.client.post(url, parameters, 201, 'action', callback);
     };
 
-    // tagName, required
-    // actionType, required
-    // callback, optional
+    /**
+     * Delete the Droplets associated with the tag identified by the name.
+     *
+     * @param {string} name - The name of the tag for which to delete Droplets.
+     * @param {string} actionType - The type of action to perform. See the {@link https://developers.digitalocean.com/documentation/v2/#acting-on-tagged-droplets|official docs} for accepted actions.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.actionByTag = function(tagName, actionType, callback) {
       var parameters = {
         tag_name: tagName,
@@ -617,69 +799,124 @@ module.exports = {
       return this.client.post('/droplets/actions', parameters, 201, 'actions', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Shutdown the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.shutdown = function(dropletId, callback) {
       return this.action(dropletId, 'shutdown', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Power off the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.powerOff = function(dropletId, callback) {
       return this.action(dropletId, 'power_off', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Power on the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.powerOn = function(dropletId, callback) {
       return this.action(dropletId, 'power_on', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Power cycle the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.powerCycle = function(dropletId, callback) {
       return this.action(dropletId, 'power_cycle', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Reboot the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.reboot = function(dropletId, callback) {
       return this.action(dropletId, 'reboot', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Enable backups on the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.enableBackups = function(dropletId, callback) {
       return this.action(dropletId, 'enable_backups', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Disable backups on the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.disableBackups = function(dropletId, callback) {
       return this.action(dropletId, 'disable_backups', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Reset the root user's password on the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.passwordReset = function(dropletId, callback) {
       return this.action(dropletId, 'password_reset', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Enable IPv6 networking on the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.enableIPv6 = function(dropletId, callback) {
       return this.action(dropletId, 'enable_ipv6', callback);
     };
 
-    // dropletId, required
-    // callback, optional
+    /**
+     * Enable private-to-the-datacenter networking on the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.enablePrivateNetworking = function(dropletId, callback) {
       return this.action(dropletId, 'enable_private_networking', callback);
     };
 
-    // dropletId, required
-    // parametersOrSizeSlug, required keys: size string; optional keys: disk bool
-    // callback, optional
+    /**
+     * Change the available resources for the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {string|object} parametersOrSizeSlug - If a string, the name of the size to change the Droplet to. Otherwise, an object with required keys of `size`. See the {@link https://developers.digitalocean.com/documentation/v2/#resize-a-droplet|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.resize = function(dropletId, parametersOrSizeSlug, callback) {
       var parameters;
 
@@ -695,9 +932,14 @@ module.exports = {
       return this.action(dropletId, parameters, callback);
     };
 
-    // dropletId, required
-    // parametersOrHostname, required keys: name string
-    // callback, optional
+    /**
+     * Change the hostname of the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {string|object} parametersOrHostname - If a string, the hostname to change the Droplet to. Otherwise, an object with required keys of `name`. See the {@link https://developers.digitalocean.com/documentation/v2/#rename-a-droplet|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.rename = function(dropletId, parametersOrHostname, callback) {
       var parameters;
 
@@ -713,9 +955,14 @@ module.exports = {
       return this.action(dropletId, parameters, callback);
     };
 
-    // dropletId, required
-    // parametersOrName, required keys: name string
-    // callback, optional
+    /**
+     * Create a snapshot image of the identified Droplet.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {string|object} parametersOrName - If a string, the name of the created image. Otherwise, an object with required keys of `name`. See the {@link https://developers.digitalocean.com/documentation/v2/#snapshot-a-droplet|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.snapshot = function(dropletId, parametersOrName, callback) {
       var parameters;
 
@@ -731,9 +978,14 @@ module.exports = {
       return this.action(dropletId, parameters, callback);
     };
 
-    // dropletId, required
-    // parametersOrImageId, required keys: image int
-    // callback, optional
+    /**
+     * Recreate the Droplet from the identified image snapshot or backup.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {number|object} parametersOrImageId - If a number, identifier of the image to use. Otherwise, an object with required keys of `image`. See the {@link https://developers.digitalocean.com/documentation/v2/#restore-a-droplet|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.restore = function(dropletId, parametersOrImageId, callback) {
       var parameters;
 
@@ -749,9 +1001,14 @@ module.exports = {
       return this.action(dropletId, parameters, callback);
     };
 
-    // dropletId, required
-    // parametersOrImage, required keys: image int (dropletId) or string (slug)
-    // callback, optional
+    /**
+     * Recreate the Droplet from the identified distribution image.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {string|number|object} parametersOrImage - If a string, the slug of the distribution image to use. If a number, the identifier of the distribution image to use. Otherwise, an object with required keys of `image`. See the {@link https://developers.digitalocean.com/documentation/v2/#rebuild-a-droplet|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.rebuild = function(dropletId, parametersOrImage, callback) {
       var parameters;
 
@@ -767,9 +1024,14 @@ module.exports = {
       return this.action(dropletId, parameters, callback);
     };
 
-    // dropletId, required
-    // parametersOrKernelId, required keys: kernel int (dropletId)
-    // callback, optional
+    /**
+     * Recreate the Droplet from the identified distribution image.
+     *
+     * @param {number} dropletId - The id of the droplet for which to create the action
+     * @param {number|object} parametersOrKernelId - If a number, the identifier of the kernel to use. Otherwise, an object with required keys of `kernel`. See the {@link https://developers.digitalocean.com/documentation/v2/#change-the-kernel|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Droplet
+     */
     Droplet.prototype.changeKernel = function(dropletId, parametersOrKernelId, callback) {
       var parameters;
 
@@ -828,44 +1090,73 @@ module.exports = {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Floating IP resource
+    * @class FloatingIp
+    */
   var FloatingIp = (function() {
     function FloatingIp(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List Floating IP objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.list = function() {
       var args = util.extractListArguments(arguments, 0);
 
       return this.client.get.apply(this.client, ['/floating_ips', {}].concat(slice.call(args.params), [200, 'floating_ips', args.callback]));
     };
 
-    // attributes, required
-    // callback, optional
+    /**
+     * Create a floating IP object.
+     *
+     * @param {object} attributes - The attributes with which to create the floating ip. See the {@link https://developers.digitalocean.com/documentation/v2/#floating-ips|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.create = function(attributes, callback) {
       return this.client.post('/floating_ips', attributes, 202, 'floating_ip', callback);
     };
 
-    // ip, required
-    // callback, optional
+    /**
+     * Get the identified floating ip object.
+     *
+     * @param {string} ip - The IP of the floating ip to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.get = function(ip, callback) {
       var url = util.safeUrl('floating_ips', ip);
       return this.client.get(url, {}, 200, 'floating_ip', callback);
     };
 
-    // ip, required
-    // callback, optional
+    /**
+     * Delete the identified floating ip object.
+     *
+     * @param {string} ip - The ip of the floating ip to delete
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.delete = function(ip, callback) {
       var url = util.safeUrl('floating_ips', ip);
       return this.client.delete(url, {}, 204, [], callback);
     };
 
-    // ip, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List of action objects.
+     *
+     * @param {string} ip - The IP of the floating ip for which to retrieve actions
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.listActions = function() {
       var args = util.extractListArguments(arguments, 1);
       var url = util.safeUrl('floating_ips', args.identifier, 'actions');
@@ -873,17 +1164,27 @@ module.exports = {
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
-    // ip, rqeuired
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified action object.
+     *
+     * @param {strint} ip - The IP of the floating ip for which to retrieve the action
+     * @param {number} id - The id of the action to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.getAction = function(ip, id, callback) {
       var url = util.safeUrl('floating_ips', ip, 'actions', id);
       return this.client.get(url, {}, 200, 'action', callback);
     };
 
-    // ip, required
-    // parametersOrType, required
-    // callback, optional
+    /**
+     * Create an action on the identified floating ip.
+     *
+     * @param {strint} ip - The IP of the floating ip for which to create the action
+     * @param {string|object} parametersOrType - The name of the action to create or an object with key value pairs of parameters.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.action = function(ip, parametersOrType, callback) {
       var parameters;
 
@@ -897,15 +1198,25 @@ module.exports = {
       return this.client.post(url, parameters, 201, 'action', callback);
     };
 
-    // ip, required
-    // callback, optional
+    /**
+     * If the identified floating IP is assigned to a Droplet, unassign it.
+     *
+     * @param {strint} ip - The IP of the floating ip for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.unassign = function(ip, callback) {
       return this.action(ip, 'unassign', callback);
     };
 
-    // ip, required
-    // parametersOrDropletId, required keys: region slug
-    // callback, optional
+    /**
+     * Assign the identified floating IP to a Droplet.
+     *
+     * @param {strint} ip - The IP of the floating ip for which to create the action
+     * @param {number|object} parametersOrDropletId - If a number, the identifier of the Droplet. Otherwise, an object with required keys of `droplet_id`. See the {@link https://developers.digitalocean.com/documentation/v2/#assign-a-floating-ip-to-a-droplet|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof FloatingIp
+     */
     FloatingIp.prototype.assign = function(ip, parametersOrDropletId, callback) {
       var parameters;
 
@@ -931,45 +1242,74 @@ module.exports = {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Image resource
+    * @class Image
+    */
   var Image = (function() {
     function Image(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List image objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.list = function() {
       var args = util.extractListArguments(arguments, 0);
       return this.client.get.apply(this.client, ['/images', {}].concat(slice.call(args.params), [200, 'images', args.callback]));
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified image object.
+     *
+     * @param {number} id - The id of the image to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.get = function(id, callback) {
       var url = util.safeUrl('images', id);
       return this.client.get(url, {}, 200, 'image', callback);
     };
 
-    // id, required
-    // image, required
-    // callback, optional
+    /**
+     * Update the identified image object.
+     *
+     * @param {number} id - The id of the image to update
+     * @param {object} attributes - The attributes with which to create the Droplet. See the {@link https://developers.digitalocean.com/documentation/v2/#images|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.update = function(id, attributes, callback) {
       var url = util.safeUrl('images', id);
       return this.client.put(url, attributes, 200, 'image', callback);
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Delete the identified image object.
+     *
+     * @param {number} id - The id of the image to delete
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.delete = function(id, callback) {
       var url = util.safeUrl('images', id);
       return this.client.delete(url, {}, 204, [], callback);
     };
 
-    // id, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List of action objects.
+     *
+     * @param {number} id - ID of Droplet for which to retrieve actions
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.listActions = function() {
       var args = util.extractListArguments(arguments, 1);
       var url = util.safeUrl('images', args.identifier, 'actions');
@@ -977,17 +1317,27 @@ module.exports = {
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
-    // imageId, rqeuired
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified action object.
+     *
+     * @param {number} imageId - The id of the image for which to retrieve the action
+     * @param {number} id - The id of the action to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.getAction = function(imageId, id, callback) {
       var url = util.safeUrl('images', imageId, 'actions', id);
       return this.client.get(url, {}, 200, 'action', callback);
     };
 
-    // imageId, required
-    // parametersOrType, required
-    // callback, optional
+    /**
+     * Create an action on the identified image.
+     *
+     * @param {number} imageId - The id of the image for which to create the action
+     * @param {string|object} parametersOrType - The name of the action to create or an object with key value pairs of parameters.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.action = function(imageId, parametersOrType, callback) {
       var parameters;
 
@@ -1001,15 +1351,25 @@ module.exports = {
       return this.client.post(url, parameters, 201, 'action', callback);
     };
 
-    // imageId, required
-    // callback, optional
+    /**
+     * If the image is a backup, wwitch the identified image from a backup to a snapshot.
+     *
+     * @param {number} dropletId - The id of the image for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.convert = function(imageId, callback) {
       return this.action(imageId, 'convert', callback);
     };
 
-    // imageId, required
-    // parametersOrRegionSlug, required keys: region slug
-    // callback, optional
+    /**
+     * Add the image to an additional region.
+     *
+     * @param {number} imageId - The id of the image for which to create the action
+     * @param {string|object} parametersOrRegionSlug - If a string, the identifier of the region. Otherwise, an object with required keys of `region`. See the {@link https://developers.digitalocean.com/documentation/v2/#transfer-an-image|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Image
+     */
     Image.prototype.transfer = function(imageId, parametersOrRegionSlug, callback) {
       var parameters;
 
@@ -1035,14 +1395,23 @@ module.exports = {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Region resource
+    * @class Region
+    */
   var Region = (function() {
     function Region(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List region objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof region
+     */
     Region.prototype.list = function() {
       var args = util.extractListArguments(arguments, 0);
       return this.client.get.apply(this.client, ['/regions', {}].concat(slice.call(args.params), [200, 'regions', args.callback]));
@@ -1057,15 +1426,23 @@ module.exports = {
 (function() {
   var slice = [].slice,
     util = require('./util');
-
+  /**
+    * Size resource
+    * @class Size
+    */
   var Size = (function() {
     function Size(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List size objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Size
+     */
     Size.prototype.list = function() {
       var args = util.extractListArguments(arguments, 0);
       return this.client.get.apply(this.client, ['/sizes', {}].concat(slice.call(args.params), [200, 'sizes', args.callback]));
@@ -1081,60 +1458,106 @@ module.exports = {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Tag resource
+    * @class Tag
+    */
   var Tag = (function() {
     function Tag(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List tag objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Tag
+     */
     Tag.prototype.list = function() {
       var args = util.extractListArguments(arguments, 0);
       return this.client.get.apply(this.client, ['/tags', {}].concat(slice.call(args.params), [200, 'tags', args.callback]));
     };
 
-    // attributes, required
-    // callback, optional
+    /**
+     * Create a tag object.
+     *
+     * @param {object} attributes - The attributes with which to create the tag. See the {@link https://developers.digitalocean.com/documentation/v2/#tags|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Tag
+     */
     Tag.prototype.create = function(attributes, callback) {
       return this.client.post('/tags', attributes, 201, 'tag', callback);
     };
 
-    // name, required
-    // callback, optional
+    /**
+     * Get the identified tag object.
+     *
+     * @param {string} name - The name of the tag to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Tag
+     */
     Tag.prototype.get = function(name, callback) {
       var url = util.safeUrl('tags', name);
       return this.client.get(url, {}, 200, 'tag', callback);
     };
 
-    // name, required
-    // attributes, required
-    // callback, optional
+    /**
+     * Update the identified tag object.
+     *
+     * @param {string} name - The name of the tag to udpate
+     * @param {object} attributes - The attributes with which to update the tag. See the {@link https://developers.digitalocean.com/documentation/v2/#tags|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Tag
+     */
     Tag.prototype.update = function(name, attributes, callback) {
       var url = util.safeUrl('tags', name);
       return this.client.put(url, attributes, 200, 'tag', callback);
     };
 
-    // name, required
-    // resources, array of objects with resource_id and resource_type, required
-    // callback, optional
+    /**
+     * @typedef Resources
+     * @type {object}
+     * @property {string} resource_id - a resource ID.
+     * @property {string} resource_type - a resource type.
+     */
+
+    /**
+     * Associate the identified tag with the identified resources.
+     *
+     * @param {string} name - The name of the tag to udpate
+     * @param {Resources[]} resources - An array of objects each with keys of resource_id and resource_type.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Tag
+     */
     Tag.prototype.tag = function(name, resources, callback) {
       var attributes = { "resources": resources };
       var url = util.safeUrl('tags', name, 'resources');
       return this.client.post(url, attributes, 204, [], callback);
     };
 
-    // name, required
-    // resources, array of objects with resource_id and resource_type, required
-    // callback, optional
+    /**
+     * Unassociate the identified tag with the identified resources.
+     *
+     * @param {string} name - The name of the tag to udpate
+     * @param {Resources[]} resources - An array of objects each with keys of resource_id and resource_type.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Tag
+     */
     Tag.prototype.untag = function(name, resources, callback) {
       var attributes = { "resources": resources };
       var url = util.safeUrl('tags', name, 'resources');
       return this.client.delete(url, attributes, 204, [], callback);
     };
 
-    // name, required
-    // callback, optional
+    /**
+     * Delete the identified tag object.
+     *
+     * @param {string} name - The name of the tag to delete
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Tag
+     */
     Tag.prototype.delete = function(name, callback) {
       var url = util.safeUrl('tags', name);
       return this.client.delete(url, {}, 204, [], callback);
@@ -66689,8 +67112,8 @@ module.exports = Request
 }).call(this,require('_process'),require("buffer").Buffer)
 },{"./lib/auth":268,"./lib/cookies":269,"./lib/getProxyFromURI":270,"./lib/har":271,"./lib/helpers":272,"./lib/multipart":273,"./lib/oauth":274,"./lib/querystring":275,"./lib/redirect":276,"./lib/tunnel":277,"_process":232,"aws-sign2":278,"aws4":279,"bl":281,"buffer":31,"caseless":292,"extend":295,"forever-agent":296,"form-data":297,"hawk":326,"http":252,"http-signature":327,"https":228,"is-typedarray":373,"isstream":374,"mime-types":376,"stream":251,"stringstream":385,"url":259,"util":262,"zlib":30}],395:[function(require,module,exports){
 module.exports={
-  "name": "digitalocean",
-  "version": "0.7.1",
+  "name": "digitalocean ",
+  "version": "0.7.2",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
@@ -66707,13 +67130,14 @@ module.exports={
     "test": "mocha --bail --recursive --reporter dot",
     "clean": "rm -r dist/*",
     "build:js": "browserify lib/digitalocean.js -o dist/digitalocean.js --standalone 'digitalocean'",
-    "build": "mkdir -p dist && npm run build:js",
+    "build": "mkdir -p dist && npm run build:js && npm run doc",
     "preversion": "npm test",
     "version": "npm run build && git add -A dist",
     "release": "git push --follow-tags && npm publish",
     "release:patch": "npm version patch -m 'Bump version to %s'",
     "release:minor": "npm version minor -m 'Bump version to %s'",
-    "release:major": "npm version major -m 'Bump version to %s'"
+    "release:major": "npm version major -m 'Bump version to %s'",
+    "doc": "jsdoc lib/ --configure jsdoc.conf.json"
   },
   "dependencies": {
     "bluebird": "^3.0",
@@ -66725,6 +67149,7 @@ module.exports={
     "browserify": "^13.0.0",
     "chai": "~1.10.0",
     "chai-shallow-deep-equal": "^1.4.0",
+    "jsdoc": "3.4.0",
     "mocha": "~2.1.0",
     "mocha-jshint": "^2.3.1",
     "nock": "0.57.x"
