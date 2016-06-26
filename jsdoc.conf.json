@@ -1,0 +1,13 @@
+{
+  "opts": {
+    "recurse": true,
+    "readme": "README.md",
+    "destination": "doc/"
+  },
+  "templates": {
+    "default": {
+      "includeDate": false
+    }
+  }
+
+}
