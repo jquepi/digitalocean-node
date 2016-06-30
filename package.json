@@ -1,6 +1,6 @@
 {
   "name": "digitalocean",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
