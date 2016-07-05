@@ -141,6 +141,15 @@ describe('digitalocean client', function() {
         done(err);
       });
     });
+
+    it('transforms keys of camel cased parameters', function() {
+      testUtils.api.get('/v2/foo?foo_bar=baz&foo_baz=fooBar').reply(200, '');
+
+      var queryParams = { fooBar: 'baz', foo_baz: 'fooBar' };
+      client.get('/foo', {}, queryParams, 200, [], function(err) {
+        expect(err).to.be.null;
+      });
+    });
   });
 
   describe('post', function() {
@@ -247,6 +256,24 @@ describe('digitalocean client', function() {
         done();
       }).catch(function(err) {
         done(err);
+      });
+    });
+
+    it('transforms keys of camel cased parameters', function() {
+      testUtils.api.post('/v2/foo?foo_bar=baz&foo_baz=fooBar').reply(200, '');
+
+      var queryParams = { fooBar: 'baz', foo_baz: 'fooBar' };
+      client.post('/foo', {}, { query: queryParams }, 200, [], function(err) {
+        expect(err).to.be.null;
+      });
+    });
+
+    it('transforms keys of content', function() {
+      testUtils.api.post('/v2/foo', { foo_bar: 'baz', foo_baz: 'fooBar' }).reply(200, '');
+
+      var body = { fooBar: 'baz', foo_baz: 'fooBar' };
+      client.post('/foo', body, {}, 200, [], function(err) {
+        expect(err).to.be.null;
       });
     });
   });
@@ -357,6 +384,24 @@ describe('digitalocean client', function() {
         done(err);
       });
     });
+
+    it('transforms keys of camel cased parameters', function() {
+      testUtils.api.put('/v2/foo?foo_bar=baz&foo_baz=fooBar').reply(200, '');
+
+      var queryParams = { fooBar: 'baz', foo_baz: 'fooBar' };
+      client.put('/foo', {}, { query: queryParams }, 200, [], function(err) {
+        expect(err).to.be.null;
+      });
+    });
+
+    it('transforms keys of content', function() {
+      testUtils.api.put('/v2/foo', { foo_bar: 'baz', foo_baz: 'fooBar' }).reply(200, '');
+
+      var body = { fooBar: 'baz', foo_baz: 'fooBar' };
+      client.put('/foo', body, {}, 200, [], function(err) {
+        expect(err).to.be.null;
+      });
+    });
   });
 
   describe('delete', function() {
@@ -463,6 +508,24 @@ describe('digitalocean client', function() {
         done();
       }).catch(function(err) {
         done(err);
+      });
+    });
+
+    it('transforms keys of camel cased parameters', function() {
+      testUtils.api.delete('/v2/foo?foo_bar=baz&foo_baz=fooBar').reply(200, '');
+
+      var queryParams = { fooBar: 'baz', foo_baz: 'fooBar' };
+      client.delete('/foo', {}, { query: queryParams }, 200, [], function(err) {
+        expect(err).to.be.null;
+      });
+    });
+
+    it('transforms keys of content', function() {
+      testUtils.api.delete('/v2/foo', { foo_bar: 'baz', foo_baz: 'fooBar' }).reply(200, '');
+
+      var body = { fooBar: 'baz', foo_baz: 'fooBar' };
+      client.delete('/foo', body, {}, 200, [], function(err) {
+        expect(err).to.be.null;
       });
     });
   });
