@@ -8,10 +8,10 @@ var digitalocean = require('../../lib/digitalocean');
 var token = testUtils.getUserDigitalOceanToken();
 var client = digitalocean.client(token);
 
-describe('drive endpoints', function() {
+describe('volume endpoints', function() {
   describe('list', function() {
     var data = {
-      "drives": [
+      "volumes": [
         {
           "id": "506f78a4-e098-11e5-ad9f-000f53306ae1",
           "region": {
@@ -50,35 +50,35 @@ describe('drive endpoints', function() {
       }
     };
 
-    it('returns drive', function() {
-      testUtils.api.get('/v2/drives').reply(200, JSON.stringify(data));
+    it('returns volume', function() {
+      testUtils.api.get('/v2/volumes').reply(200, JSON.stringify(data));
 
-      client.drives.list(function(err, drives, headers) {
-        expect(drives).to.shallowDeepEqual(data.drives);
+      client.volumes.list(function(err, volumes, headers) {
+        expect(volumes).to.shallowDeepEqual(data.volumes);
       });
     });
 
-    it('returns drive at page', function() {
-      testUtils.api.get('/v2/drives?page=2').reply(200, JSON.stringify(data));
+    it('returns volume at page', function() {
+      testUtils.api.get('/v2/volumes?page=2').reply(200, JSON.stringify(data));
 
-      client.drives.list(2, function(err, drives, headers) {
-        expect(drives).to.shallowDeepEqual(data.drives);
+      client.volumes.list(2, function(err, volumes, headers) {
+        expect(volumes).to.shallowDeepEqual(data.volumes);
       });
     });
 
-    it('returns drive at page with length', function() {
-      testUtils.api.get('/v2/drives?page=2&per_page=1').reply(200, JSON.stringify(data));
+    it('returns volume at page with length', function() {
+      testUtils.api.get('/v2/volumes?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.drives.list(2, 1, function(err, drives, headers) {
-        expect(drives).to.shallowDeepEqual(data.drives);
+      client.volumes.list(2, 1, function(err, volumes, headers) {
+        expect(volumes).to.shallowDeepEqual(data.volumes);
       });
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.get('/v2/drives').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes').reply(200, JSON.stringify(data));
 
-      client.drives.list().then(function(drives) {
-        expect(drives).to.shallowDeepEqual(data.drives);
+      client.volumes.list().then(function(volumes) {
+        expect(volumes).to.shallowDeepEqual(data.volumes);
         done();
       }).catch(function(err) {
         done(err);
@@ -88,7 +88,7 @@ describe('drive endpoints', function() {
 
   describe('create', function() {
     var data = {
-      "drive": {
+      "volume": {
         "id": "506f78a4-e098-11e5-ad9f-000f53306ae1",
         "region": {
           "name": "New York 1",
@@ -128,19 +128,19 @@ describe('drive endpoints', function() {
       "region": "nyc1"
     };
 
-    it('creates the drive', function() {
-      testUtils.api.post('/v2/drives', attributes).reply(202, data);
+    it('creates the volume', function() {
+      testUtils.api.post('/v2/volumes', attributes).reply(202, data);
 
-      client.drives.create(attributes, function(err, drive, headers) {
-        expect(drive).to.shallowDeepEqual(data.drive);
+      client.volumes.create(attributes, function(err, volume, headers) {
+        expect(volume).to.shallowDeepEqual(data.volume);
       });
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.post('/v2/drives', attributes).reply(202, data);
+      testUtils.api.post('/v2/volumes', attributes).reply(202, data);
 
-      client.drives.create(attributes).then(function(drive) {
-        expect(drive).to.shallowDeepEqual(data.drive);
+      client.volumes.create(attributes).then(function(volume) {
+        expect(volume).to.shallowDeepEqual(data.volume);
         done();
       }).catch(function(err) {
         done(err);
@@ -150,7 +150,7 @@ describe('drive endpoints', function() {
 
   describe('get', function() {
     var data = {
-      "drive": {
+      "volume": {
         "id": "506f78a4-e098-11e5-ad9f-000f53306ae1",
         "region": {
           "name": "New York 1",
@@ -184,27 +184,27 @@ describe('drive endpoints', function() {
       }
     };
 
-    it('returns the drive', function() {
-      testUtils.api.get('/v2/drives/123').reply(200, JSON.stringify(data));
+    it('returns the volume', function() {
+      testUtils.api.get('/v2/volumes/123').reply(200, JSON.stringify(data));
 
-      client.drives.get(123, function(err, drive, headers) {
-        expect(drive).to.shallowDeepEqual(data.drive);
+      client.volumes.get(123, function(err, volume, headers) {
+        expect(volume).to.shallowDeepEqual(data.volume);
       });
     });
 
     it('escapes the name', function() {
-      testUtils.api.get('/v2/drives/foo%2Fbar').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes/foo%2Fbar').reply(200, JSON.stringify(data));
 
-      client.drives.get('foo/bar', function(err, drive, headers) {
-        expect(drive).to.shallowDeepEqual(data.drive);
+      client.volumes.get('foo/bar', function(err, volume, headers) {
+        expect(volume).to.shallowDeepEqual(data.volume);
       });
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.get('/v2/drives/123').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes/123').reply(200, JSON.stringify(data));
 
-      client.drives.get(123).then(function(drive) {
-        expect(drive).to.shallowDeepEqual(data.drive);
+      client.volumes.get(123).then(function(volume) {
+        expect(volume).to.shallowDeepEqual(data.volume);
         done();
       }).catch(function(err) {
         done(err);
@@ -214,26 +214,26 @@ describe('drive endpoints', function() {
 
   describe('delete', function() {
     it('deletes the droplet', function() {
-      testUtils.api.delete('/v2/drives/123').reply(204, '');
+      testUtils.api.delete('/v2/volumes/123').reply(204, '');
 
-      client.drives.delete(123, function(err) {
+      client.volumes.delete(123, function(err) {
         expect(err).to.be.null;
       });
     });
 
     it('escapes the name', function() {
-      testUtils.api.delete('/v2/drives/foo%2Fbar').reply(204, '');
+      testUtils.api.delete('/v2/volumes/foo%2Fbar').reply(204, '');
 
-      client.drives.delete('foo/bar', function(err) {
+      client.volumes.delete('foo/bar', function(err) {
         expect(err).to.be.null;
       });
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.delete('/v2/drives/123').reply(204, '');
+      testUtils.api.delete('/v2/volumes/123').reply(204, '');
 
-      client.drives.delete(123).then(function(drive) {
-        expect(drive.ip).to.be.undefined;
+      client.volumes.delete(123).then(function(volume) {
+        expect(volume.ip).to.be.undefined;
         done();
       }).catch(function(err) {
         done(err);
@@ -267,34 +267,34 @@ describe('drive endpoints', function() {
       }
     };
 
-    it('lists drive actions', function() {
-      testUtils.api.get('/v2/drives/123/actions').reply(200, JSON.stringify(data));
+    it('lists volume actions', function() {
+      testUtils.api.get('/v2/volumes/123/actions').reply(200, JSON.stringify(data));
 
-      client.drives.listActions(123, function(err, actions, headers) {
+      client.volumes.listActions(123, function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
-    it('lists drive actions at page', function() {
-      testUtils.api.get('/v2/drives/123/actions?page=2').reply(200, JSON.stringify(data));
+    it('lists volume actions at page', function() {
+      testUtils.api.get('/v2/volumes/123/actions?page=2').reply(200, JSON.stringify(data));
 
-      client.drives.listActions(123, 2, function(err, actions, headers) {
+      client.volumes.listActions(123, 2, function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
-    it('lists drive actions at page with length', function() {
-      testUtils.api.get('/v2/drives/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
+    it('lists volume actions at page with length', function() {
+      testUtils.api.get('/v2/volumes/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.drives.listActions(123, 2, 1, function(err, actions, headers) {
+      client.volumes.listActions(123, 2, 1, function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
-    it('lists drive actions with a query object', function() {
-      testUtils.api.get('/v2/drives/123/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
+    it('lists volume actions with a query object', function() {
+      testUtils.api.get('/v2/volumes/123/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
 
-      client.drives.listActions(123, {
+      client.volumes.listActions(123, {
         page: 1,
         per_page: 2
       }, function(err, actions, headers) {
@@ -303,17 +303,17 @@ describe('drive endpoints', function() {
     });
 
     it('escapes the name', function() {
-      testUtils.api.get('/v2/drives/foo%2Fbar/actions').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes/foo%2Fbar/actions').reply(200, JSON.stringify(data));
 
-      client.drives.listActions('foo/bar', function(err, actions, headers) {
+      client.volumes.listActions('foo/bar', function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.get('/v2/drives/123/actions').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes/123/actions').reply(200, JSON.stringify(data));
 
-      client.drives.listActions(123).then(function(actions) {
+      client.volumes.listActions(123).then(function(actions) {
         expect(actions).to.shallowDeepEqual(data.actions);
         done();
       }).catch(function(err) {
@@ -344,25 +344,25 @@ describe('drive endpoints', function() {
     };
 
     it('returns the action', function() {
-      testUtils.api.get('/v2/drives/123/actions/456').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes/123/actions/456').reply(200, JSON.stringify(data));
 
-      client.drives.getAction(123, 456, function(err, action, headers) {
+      client.volumes.getAction(123, 456, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
     it('escapes the name', function() {
-      testUtils.api.get('/v2/drives/foo%2Fbar/actions/bar%2Fbaz').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes/foo%2Fbar/actions/bar%2Fbaz').reply(200, JSON.stringify(data));
 
-      client.drives.getAction('foo/bar', 'bar/baz', function(err, action, headers) {
+      client.volumes.getAction('foo/bar', 'bar/baz', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.get('/v2/drives/123/actions/456').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes/123/actions/456').reply(200, JSON.stringify(data));
 
-      client.drives.getAction(123, 456).then(function(action) {
+      client.volumes.getAction(123, 456).then(function(action) {
         expect(action).to.shallowDeepEqual(data.action);
         done();
       }).catch(function(err) {
@@ -376,11 +376,11 @@ describe('drive endpoints', function() {
       "action": {
         "id": 36804751,
         "status": "in-progress",
-        "type": "attach_drive",
+        "type": "attach_volume",
         "started_at": "2014-11-14T16:31:07Z",
         "completed_at": null,
         "resource_id": null,
-        "resource_type": "drive",
+        "resource_type": "volume",
         "region": "nyc3",
         "region_slug": "nyc3"
       }
@@ -391,41 +391,41 @@ describe('drive endpoints', function() {
         droplet_id: 123
       };
 
-      testUtils.api.post('/v2/drives/123/actions',
+      testUtils.api.post('/v2/volumes/123/actions',
         { type: 'attach', droplet_id: 123 }
       ).reply(201, data);
 
-      client.drives.attach(123, parameters, function(err, action, headers) {
+      client.volumes.attach(123, parameters, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
     it('creates the action with a droplet id', function() {
-      testUtils.api.post('/v2/drives/123/actions',
+      testUtils.api.post('/v2/volumes/123/actions',
         { type: 'attach', droplet_id: 456 }
       ).reply(201, data);
 
-      client.drives.attach(123, 456, function(err, action, headers) {
+      client.volumes.attach(123, 456, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
     it('escapes the name', function() {
-      testUtils.api.post('/v2/drives/foo%2Fbar/actions',
+      testUtils.api.post('/v2/volumes/foo%2Fbar/actions',
         { type: 'attach', droplet_id: 456 }
       ).reply(201, data);
 
-      client.drives.attach('foo/bar', 456, function(err, action, headers) {
+      client.volumes.attach('foo/bar', 456, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.post('/v2/drives/123/actions',
+      testUtils.api.post('/v2/volumes/123/actions',
         { type: 'attach', droplet_id: 456 }
       ).reply(201, data);
 
-      client.drives.attach(123, 456).then(function(action) {
+      client.volumes.attach(123, 456).then(function(action) {
         expect(action).to.shallowDeepEqual(data.action);
         done();
       }).catch(function(err) {
@@ -439,36 +439,36 @@ describe('drive endpoints', function() {
       "action": {
         "id": 36804751,
         "status": "in-progress",
-        "type": "detach_drive",
+        "type": "detach_volume",
         "started_at": "2014-11-14T16:31:07Z",
         "completed_at": null,
         "resource_id": null,
-        "resource_type": "drive",
+        "resource_type": "volume",
         "region": "nyc3",
         "region_slug": "nyc3"
       }
     };
 
     it('creates the action', function() {
-      testUtils.api.post('/v2/drives/123/actions', { type: 'detach' }).reply(201, data);
+      testUtils.api.post('/v2/volumes/123/actions', { type: 'detach' }).reply(201, data);
 
-      client.drives.detach(123, function(err, action, headers) {
+      client.volumes.detach(123, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
     it('escapes the name', function() {
-      testUtils.api.post('/v2/drives/foo%2Fbar/actions', { type: 'detach' }).reply(201, data);
+      testUtils.api.post('/v2/volumes/foo%2Fbar/actions', { type: 'detach' }).reply(201, data);
 
-      client.drives.detach('foo/bar', function(err, action, headers) {
+      client.volumes.detach('foo/bar', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
       });
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.post('/v2/drives/123/actions', { type: 'detach' }).reply(201, data);
+      testUtils.api.post('/v2/volumes/123/actions', { type: 'detach' }).reply(201, data);
 
-      client.drives.detach(123).then(function(action) {
+      client.volumes.detach(123).then(function(action) {
         expect(action).to.shallowDeepEqual(data.action);
         done();
       }).catch(function(err) {
