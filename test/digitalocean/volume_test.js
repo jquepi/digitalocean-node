@@ -476,4 +476,68 @@ describe('volume endpoints', function() {
       });
     });
   });
+
+  describe('resize', function() {
+    var data = {
+      "action": {
+        "id": 36804751,
+        "status": "in-progress",
+        "type": "resize_volume",
+        "started_at": "2014-11-14T16:31:07Z",
+        "completed_at": null,
+        "resource_id": null,
+        "resource_type": "volume",
+        "region": "nyc3",
+        "region_slug": "nyc3"
+      }
+    };
+
+    it('creates the action with a parameters hash', function() {
+      var parameters = {
+        region: 'nyc3',
+        size_gigabytes: 100
+      };
+
+      testUtils.api.post('/v2/volumes/123/actions',
+        { type: 'resize', region: 'nyc3', size_gigabytes: 100 }
+      ).reply(201, data);
+
+      client.volumes.resize(123, parameters, function(err, action, headers) {
+        expect(action).to.shallowDeepEqual(data.action);
+      });
+    });
+
+    it('creates the action with explicit arguments', function() {
+      testUtils.api.post('/v2/volumes/123/actions',
+        { type: 'resize', region: 'nyc3', size_gigabytes: 100 }
+      ).reply(201, data);
+
+      client.volumes.resize(123, 100, 'nyc3', function(err, action, headers) {
+        expect(action).to.shallowDeepEqual(data.action);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.post('/v2/volumes/foo%2Fbar/actions',
+        { type: 'resize', region: 'nyc3', size_gigabytes: 100 }
+      ).reply(201, data);
+
+      client.volumes.resize('foo/bar', 100, 'nyc3', function(err, action, headers) {
+        expect(action).to.shallowDeepEqual(data.action);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/volumes/123/actions',
+        { type: 'resize', region: 'nyc3', size_gigabytes: 100 }
+      ).reply(201, data);
+
+      client.volumes.resize(123, 100, 'nyc3').then(function(action) {
+        expect(action).to.shallowDeepEqual(data.action);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+  });
 });
