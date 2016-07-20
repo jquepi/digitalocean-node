@@ -442,8 +442,33 @@ For the latest valid attributes, [see the official docs](https://developers.digi
 
 Methods resulting in an `action`:
 
-* `client.floatingIpActions.assign(floatingIp.ip, parametersOrDropletId, [callback])`
-* `client.floatingIpActions.unassign(floatingIp.ip, [callback])`
+* `client.floatingIps.assign(floatingIp.ip, parametersOrDropletId, [callback])`
+* `client.floatingIps.unassign(floatingIp.ip, [callback])`
+
+### Volume resource
+
+```js
+var digitalocean = require('digitalocean');
+var client = digitalocean.client('TOKEN');
+client.volumes
+```
+
+* `client.volumes.list([page, perPage,] [callback])`
+* `client.volumes.list([queryObject] [callback])`
+* `client.volumes.get(floatingIp.ip, [callback])`
+* `client.volumes.create(attributes, [callback])`
+* `client.volumes.delete(floatingIp.ip, [callback])`
+* `client.volumes.listActions([page, perPage,] [callback])`
+* `client.volumes.listActions([queryObject] [callback])`
+* `client.volumes.getAction(floatingIp.ip, [callback])`
+
+For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#volumes).
+
+Methods resulting in an `action`:
+
+* `client.volumes.attach(volume.id, parametersOrDropletId, [callback])`
+* `client.volumes.detach(volume.id, [callback])`
+* `client.volumes.resize(volume.id, parametersOrSizeGibabytes, region, [callback])`
 
 ### Tag resource
 
