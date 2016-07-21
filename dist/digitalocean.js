@@ -1614,68 +1614,101 @@ module.exports = {
   var slice = [].slice,
     util = require('./util');
 
+  /**
+    * Volume resource
+    * @class Volume
+    */
   var Volume = (function() {
     function Volume(client) {
       this.client = client;
     }
 
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List Volume objects.
+     *
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
     Volume.prototype.list = function() {
-      var i,
-          params = 2 <= arguments.length ? slice.call(arguments, 0, i = arguments.length - 1) : (i = 0, []),
-          callback = arguments[i++];
+      var args = util.extractListArguments(arguments, 0);
 
-      return this.client.get.apply(this.client, ['/volumes', {}].concat(slice.call(params), [200, 'volumes', callback]));
+      return this.client.get.apply(this.client, ['/volumes', {}].concat(slice.call(args.params), [200, 'volumes', args.callback]));
     };
 
-    // attributes, required
-    // callback, optional
+    /**
+     * Create a Volume object.
+     *
+     * @param {object} attributes - The attributes with which to create the Volume. See the {@link https://developers.digitalocean.com/documentation/v2/#volumes|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
     Volume.prototype.create = function(attributes, callback) {
       return this.client.post('/volumes', attributes, 202, 'volume', callback);
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified Volume object.
+     *
+     * @param {string} id - The id of the Volume to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
     Volume.prototype.get = function(id, callback) {
       var url = util.safeUrl('volumes', id);
       return this.client.get(url, {}, 200, 'volume', callback);
     };
 
-    // id, required
-    // callback, optional
+    /**
+     * Delete the identified Volume object.
+     *
+     * @param {string} id - The id of the Volume to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
     Volume.prototype.delete = function(id, callback) {
       var url = util.safeUrl('volumes', id);
       return this.client.delete(url, {}, 204, [], callback);
     };
 
-    // id, required
-    // page or query object, optional
-    // perPage, optional
-    // callback, optional
+    /**
+     * List of action objects.
+     *
+     * @param {string} id - ID of Volume for which to retrieve actions
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
     Volume.prototype.listActions = function() {
-      var id = arguments[0],
-          i,
-          params = 2 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []),
-          callback = arguments[i++];
-
-      var url = util.safeUrl('volumes', id, 'actions');
-      return this.client.get.apply(this.client, [url, {}].concat(slice.call(params), [200, 'actions', callback]));
+      var args = util.extractListArguments(arguments, 1);
+      var url = util.safeUrl('volumes', args.identifier, 'actions');
+      return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'actions', args.callback]));
     };
 
-    // id, rqeuired
-    // id, required
-    // callback, optional
+    /**
+     * Get the identified action object.
+     *
+     * @param {string} volumeId - The id of the volume for which to retrieve the action
+     * @param {number} id - The id of the action to retrieve
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
     Volume.prototype.getAction = function(volumeId, id, callback) {
       var url = util.safeUrl('volumes', volumeId, 'actions', id);
       return this.client.get(url, {}, 200, 'action', callback);
     };
 
-    // id, required
-    // parametersOrType, required
-    // callback, optional
-    Volume.prototype.action = function(id, parametersOrType, callback) {
+    /**
+     * Create an action on the identified volume.
+     *
+     * @param {string} volumeId - The id of the volume for which to create the action
+     * @param {string|object} parametersOrType - The name of the action to create or an object with key value pairs of parameters.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
+    Volume.prototype.action = function(volumeId, parametersOrType, callback) {
       var parameters;
 
       if(typeof parametersOrType === 'string') {
@@ -1684,20 +1717,30 @@ module.exports = {
         parameters = parametersOrType;
       }
 
-      var url = util.safeUrl('volumes', id, 'actions');
+      var url = util.safeUrl('volumes', volumeId, 'actions');
       return this.client.post(url, parameters, 201, 'action', callback);
     };
 
-    // id, required
-    // callback, optional
-    Volume.prototype.detach = function(id, callback) {
-      return this.action(id, 'detach', callback);
+    /**
+     * Detach the identified volume if it is attached to a Droplet.
+     *
+     * @param {string} volumeId - The id of the volume for which to create the action
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
+    Volume.prototype.detach = function(volumeId, callback) {
+      return this.action(volumeId, 'detach', callback);
     };
 
-    // id, required
-    // parametersOrDropletId, required keys: region slug
-    // callback, optional
-    Volume.prototype.attach = function(id, parametersOrDropletId, callback) {
+    /**
+     * Attach the identified volume to a given Droplet.
+     *
+     * @param {string} volumeId - The id of the volume for which to create the action
+     * @param {number|object} parametersOrDropletId - If a number, the id of the droplet to which to attach the volume. Otherwise, an object with required keys of `droplet_id`. See the {@link https://developers.digitalocean.com/documentation/v2/#attach-a-block-storage-volume-to-a-droplet|official docs} for valid attributes.
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
+    Volume.prototype.attach = function(volumeId, parametersOrDropletId, callback) {
       var parameters;
 
       if(typeof parametersOrDropletId !== 'object') {
@@ -1709,7 +1752,33 @@ module.exports = {
       }
       parameters.type = 'attach';
 
-      return this.action(id, parameters, callback);
+      return this.action(volumeId, parameters, callback);
+    };
+
+    /**
+     * Increase the size of the identified volume.
+     *
+     * @param {string} volumeId - The id of the volume for which to create the action
+     * @param {number|object} parametersOrSizeGibabytes - If a number, the size in gigabytes to which the volume should be resized. Otherwise, an object with required keys of `size_gigabytes` and `region`. See the {@link https://developers.digitalocean.com/documentation/v2/#resize-a-volume|official docs} for valid attributes.
+     * @param {string} region - The slug of the region in which the drive was created
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Volume
+     */
+    Volume.prototype.resize = function(volumeId, parametersOrSizeGibabytes, region, callback) {
+      var parameters;
+
+      if(typeof parametersOrSizeGibabytes !== 'object') {
+        parameters = {
+          size_gigabytes: parametersOrSizeGibabytes,
+          region: region
+        };
+      } else {
+        parameters = parametersOrSizeGibabytes;
+        callback = region;
+      }
+      parameters.type = 'resize';
+
+      return this.action(volumeId, parameters, callback);
     };
 
     return Volume;
@@ -67222,8 +67291,8 @@ module.exports = Request
 }).call(this,require('_process'),require("buffer").Buffer)
 },{"./lib/auth":269,"./lib/cookies":270,"./lib/getProxyFromURI":271,"./lib/har":272,"./lib/helpers":273,"./lib/multipart":274,"./lib/oauth":275,"./lib/querystring":276,"./lib/redirect":277,"./lib/tunnel":278,"_process":233,"aws-sign2":279,"aws4":280,"bl":282,"buffer":32,"caseless":293,"extend":296,"forever-agent":297,"form-data":298,"hawk":327,"http":253,"http-signature":328,"https":229,"is-typedarray":374,"isstream":375,"mime-types":377,"stream":252,"stringstream":386,"url":260,"util":263,"zlib":31}],396:[function(require,module,exports){
 module.exports={
-  "name": "digitalocean ",
-  "version": "0.7.3",
+  "name": "digitalocean",
+  "version": "0.7.4",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
