@@ -173,11 +173,33 @@ module.exports = {
 
   // Utilities
   var slice = [].slice,
+    util = require('./util'),
     DigitalOceanError = require('./error');
 
+  /**
+    * Client resource
+    * @class Client
+    */
   var Client = (function() {
-    // token, required, string
-    // options, optional
+    /**
+     * @typedef ClientOptions
+     * @type {object}
+     * @property {object} [request] - pass in a specific version of the request library.
+     * @property {object} [promise] - pass in a specific version of promise library.
+     * @property {object} [requestOptions] - a base set of options provided to Request, overridden by options passed to a specific API method. defaults to empty object.
+     * @property {boolean} [decamelizeKeys] - whether to automagically translate query and JSON body keys to use underscore separated names.
+     * @property {string} [protocol] - defaults to https.
+     * @property {string} [hostname] - defaults to api.digitalocean.com.
+     * @property {string} [port] - defaults to protocol default (e.g. with a protocol of https defaults to 443).
+     */
+
+    /**
+     * Create a new Client instance.
+     *
+     * @param {string} token - The DigitalOcean token used for authorization.
+     * @param {ClientOptions} [options] - An object whose values are used to configure a client instance.
+     * @memberof Client
+     */
     function Client(token, options) {
       this.token = token;
       this.options = options;
@@ -185,6 +207,7 @@ module.exports = {
       this.requestOptions = this.options && this.options.requestOptions || {};
       this.request = this.options && this.options.request || request;
       this.promise = this.options && this.options.promise || Promise;
+      this.decamelizeKeys = this.options ? this.options.decamelizeKeys : true;
 
       var version = require('../../package.json').version;
       this.requestDefaults = {
@@ -220,6 +243,10 @@ module.exports = {
       }
 
       var urlFromPath = url.parse(this.version + path);
+
+      if (!!this.decamelizeKeys) {
+        urlParams = util.decamelizeKeys(urlParams);
+      }
 
       return url.format({
         protocol: urlFromPath.protocol || this.options && this.options.protocol || "https:",
@@ -338,13 +365,18 @@ module.exports = {
       return deferred;
     };
 
-    // path, required, string
-    // options, required
-    // page or query object, optional
-    // perPage, optional
-    // successStatuses, required, number or array of numbers
-    // successRootKeys, required, string or array of strings
-    // callback, required, function
+    /**
+     * Send a HTTP GET request with the specified parameters.
+     *
+     * @param {string} path - the URL escaped route
+     * @param {object} options - an object passed to the request library  See the {@link https://github.com/request/request#requestoptions-callback|request docs} for valid attributes, e.g. a proxy or user agent
+     * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
+     * @param {number} [perPage] - number of result per page to retrieve
+     * @param {number|number[]} successStatuses - number or array of numbers corresponding to successful HTTP status codes
+     * @param {string|string[]} successRootKeys - string or array of strings corresponding to the root objects containing successful responses
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Client
+     */
     Client.prototype.get = function() {
       var i;
       var path = arguments[0],
@@ -395,6 +427,10 @@ module.exports = {
         options = {};
       }
 
+      if (!!this.decamelizeKeys) {
+        content = util.decamelizeKeys(content);
+      }
+
       return this._callbackOrPromise(
         {
           uri: this._buildUrl(path, options.query),
@@ -411,42 +447,63 @@ module.exports = {
       );
     };
 
-    // path, required, string
-    // content, required, object
-    // options, optional, object
-    // successStatuses, required, number or array of numbers
-    // successRootKeys, required, string or array of strings
-    // callback, required, function
+
+    /**
+     * Send a HTTP POST request with the specified parameters.
+     *
+     * @param {string} path - the URL escaped route
+     * @param {object} content - an object serialized to json
+     * @param {object} options - an object passed to the request library  See the {@link https://github.com/request/request#requestoptions-callback|request docs} for valid attributes, e.g. a proxy or user agent
+     * @param {number|number[]} successStatuses - number or array of numbers corresponding to successful HTTP status codes
+     * @param {string|string[]} successRootKeys - string or array of strings corresponding to the root objects containing successful responses
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Client
+     */
     Client.prototype.post = function(path, content, options, successStatuses, successRootKeys, callback) {
       return this._makeRequestWithBody('POST', path, content, options, successStatuses, successRootKeys, callback);
     };
 
-    // path, required, string
-    // content, required, object
-    // options, optional, object
-    // successStatuses, required, number or array of numbers
-    // successRootKeys, required, string or array of strings
-    // callback, required, function
+    /**
+     * Send a HTTP PATCH request with the specified parameters.
+     *
+     * @param {string} path - the URL escaped route
+     * @param {object} content - an object serialized to json
+     * @param {object} options - an object passed to the request library  See the {@link https://github.com/request/request#requestoptions-callback|request docs} for valid attributes, e.g. a proxy or user agent
+     * @param {number|number[]} successStatuses - number or array of numbers corresponding to successful HTTP status codes
+     * @param {string|string[]} successRootKeys - string or array of strings corresponding to the root objects containing successful responses
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Client
+     */
     Client.prototype.patch = function(path, content, options, successStatuses, successRootKeys, callback) {
       return this._makeRequestWithBody('PATCH', path, content, options, successStatuses, successRootKeys, callback);
     };
 
-    // path, required, string
-    // content, required, object
-    // options, optional, object
-    // successStatuses, required, number or array of numbers
-    // successRootKeys, required, string or array of strings
-    // callback, required, function
+    /**
+     * Send a HTTP PUT request with the specified parameters.
+     *
+     * @param {string} path - the URL escaped route
+     * @param {object} content - an object serialized to json
+     * @param {object} options - an object passed to the request library  See the {@link https://github.com/request/request#requestoptions-callback|request docs} for valid attributes, e.g. a proxy or user agent
+     * @param {number|number[]} successStatuses - number or array of numbers corresponding to successful HTTP status codes
+     * @param {string|string[]} successRootKeys - string or array of strings corresponding to the root objects containing successful responses
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Client
+     */
     Client.prototype.put = function(path, content, options, successStatuses, successRootKeys, callback) {
       return this._makeRequestWithBody('PUT', path, content, options, successStatuses, successRootKeys, callback);
     };
 
-    // path, required, string
-    // content, required, object
-    // options, optional, object
-    // successStatuses, required, number or array of numbers
-    // successRootKeys, required, string or array of strings
-    // callback, required, function
+    /**
+     * Send a HTTP DELETE request with the specified parameters.
+     *
+     * @param {string} path - the URL escaped route
+     * @param {object} content - an object serialized to json
+     * @param {object} options - an object passed to the request library  See the {@link https://github.com/request/request#requestoptions-callback|request docs} for valid attributes, e.g. a proxy or user agent
+     * @param {number|number[]} successStatuses - number or array of numbers corresponding to successful HTTP status codes
+     * @param {string|string[]} successRootKeys - string or array of strings corresponding to the root objects containing successful responses
+     * @param {requestCallback} [callback] - callback that handles the response
+     * @memberof Client
+     */
     Client.prototype.delete = function(path, content, options, successStatuses, successRootKeys, callback) {
       return this._makeRequestWithBody('DELETE', path, content, options, successStatuses, successRootKeys, callback);
     };
@@ -458,7 +515,7 @@ module.exports = {
     return new Client(token, options);
   };
 }).call(this);
-},{"../../package.json":396,"./account":2,"./action":3,"./domain":5,"./droplet":6,"./error":7,"./floating_ip":8,"./image":9,"./region":10,"./size":11,"./tag":12,"./volume":14,"bluebird":15,"deep-extend":267,"request":268,"url":260}],5:[function(require,module,exports){
+},{"../../package.json":396,"./account":2,"./action":3,"./domain":5,"./droplet":6,"./error":7,"./floating_ip":8,"./image":9,"./region":10,"./size":11,"./tag":12,"./util":13,"./volume":14,"bluebird":15,"deep-extend":267,"request":268,"url":260}],5:[function(require,module,exports){
 (function() {
   var slice = [].slice,
     util = require('./util');
@@ -1580,6 +1637,40 @@ module.exports = {
       return accum + '/' + encodeURIComponent(fragment);
     }, '');
   };
+
+  // Based on Humps by Dom Christie
+  var decamelizeKeys = function(object) {
+    // if we're not an array or object, return the primative
+    if (object !== Object(object)) {
+      return object;
+    }
+
+    var decamelizeString = function(string) {
+      var separator = '_';
+      var split = /(?=[A-Z])/;
+
+      return string.split(split).join(separator).toLowerCase();
+    };
+
+
+    var output;
+    if (object instanceof Array) {
+      output = [];
+      for(var i = 0, l = object.length; i < l; i++) {
+        output.push(decamelizeKeys(object[i]));
+      }
+    } else {
+      output = {};
+      for (var key in object) {
+        if (object.hasOwnProperty(key)) {
+          output[decamelizeString(key)] = decamelizeKeys(object[key]);
+        }
+      }
+    }
+
+    return output;
+  };
+  module.exports.decamelizeKeys = decamelizeKeys;
 
   module.exports.extractListArguments = function(args, countPrependedArgs) {
     var startIndex, endIndex, id, params, callback;
@@ -67291,8 +67382,8 @@ module.exports = Request
 }).call(this,require('_process'),require("buffer").Buffer)
 },{"./lib/auth":269,"./lib/cookies":270,"./lib/getProxyFromURI":271,"./lib/har":272,"./lib/helpers":273,"./lib/multipart":274,"./lib/oauth":275,"./lib/querystring":276,"./lib/redirect":277,"./lib/tunnel":278,"_process":233,"aws-sign2":279,"aws4":280,"bl":282,"buffer":32,"caseless":293,"extend":296,"forever-agent":297,"form-data":298,"hawk":327,"http":253,"http-signature":328,"https":229,"is-typedarray":374,"isstream":375,"mime-types":377,"stream":252,"stringstream":386,"url":260,"util":263,"zlib":31}],396:[function(require,module,exports){
 module.exports={
-  "name": "digitalocean",
-  "version": "0.7.4",
+  "name": "digitalocean ",
+  "version": "0.8.0",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
