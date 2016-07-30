@@ -57,7 +57,7 @@ client.droplets.getAction(123, 456, callback);
 ```
 ## Client Options
 
-The DigitalOcean client depends on [`request`](https://github.com/request/request), and [options can be passed through](https://github.com/request/request#requestoptions-callback) (e.g. a proxy or user agent).
+The DigitalOcean client depends on [`request`](https://github.com/request/request), and [options can be passed through](https://github.com/request/request#requestoptions-callback) (e.g. a proxy or user agent). For example:
 
 ```js
 var client = digitalocean.client('TOKEN', {
@@ -68,6 +68,15 @@ var client = digitalocean.client('TOKEN', {
       'User-Agent': 'foo'
     }
   }
+});
+```
+
+Other options include:
+
+```js
+var client = digitalocean.client('TOKEN', {
+  promise: MySpecialPromiseVersion, // defaults to Promise
+  decamelizeKeys: false // defaults to true
 });
 ```
 
