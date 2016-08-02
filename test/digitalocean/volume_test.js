@@ -74,10 +74,29 @@ describe('volume endpoints', function() {
       });
     });
 
+    it('returns volumes with a query object', function() {
+      testUtils.api.get('/v2/volumes?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.volumes.list({ page: 2, per_page: 1 }, function(err, volumes, headers) {
+        expect(volumes).to.shallowDeepEqual(data.volumes);
+      });
+    });
+
     it('returns a promisable', function(done) {
       testUtils.api.get('/v2/volumes').reply(200, JSON.stringify(data));
 
       client.volumes.list().then(function(volumes) {
+        expect(volumes).to.shallowDeepEqual(data.volumes);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/volumes?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.volumes.list({ page: 2, per_page: 1 }).then(function(volumes) {
         expect(volumes).to.shallowDeepEqual(data.volumes);
         done();
       }).catch(function(err) {
@@ -292,12 +311,9 @@ describe('volume endpoints', function() {
     });
 
     it('lists volume actions with a query object', function() {
-      testUtils.api.get('/v2/volumes/123/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/volumes/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.volumes.listActions(123, {
-        page: 1,
-        per_page: 2
-      }, function(err, actions, headers) {
+      client.volumes.listActions(123, { page: 2, per_page: 1 }, function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });

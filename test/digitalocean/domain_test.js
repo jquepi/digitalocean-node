@@ -59,9 +59,9 @@ describe('domain endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/domains').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.domains.list({ tagName: 'foo' }).then(function(domains) {
+      client.domains.list({ page: 2, per_page: 1 }).then(function(domains) {
         expect(domains).to.shallowDeepEqual(data.domains);
         done();
       }).catch(function(err) {
@@ -233,9 +233,9 @@ describe('domain endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/domains/example.com/domain_records').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/example.com/domain_records?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.domains.listRecords('example.com', { tagName: 'foo' }).then(function(domainRecords) {
+      client.domains.listRecords('example.com', { page: 2, per_page: 1 }).then(function(domainRecords) {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
         done();
       }).catch(function(err) {

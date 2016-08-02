@@ -60,6 +60,14 @@ describe('tag endpoints', function() {
       });
     });
 
+    it('returns tags with a query object', function() {
+      testUtils.api.get('/v2/tags?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.tags.list({ page: 2, per_page: 1 }, function(err, tags, headers) {
+        expect(tags).to.shallowDeepEqual(data.tags);
+      });
+    });
+
     it('returns a promisable', function(done) {
       testUtils.api.get('/v2/tags').reply(200, JSON.stringify(data));
 
@@ -72,9 +80,9 @@ describe('tag endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/tags').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/tags?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.tags.list({ tagName: 'foo' }).then(function(tags) {
+      client.tags.list({ page: 2, per_page: 1 }).then(function(tags) {
         expect(tags).to.shallowDeepEqual(data.tags);
         done();
       }).catch(function(err) {

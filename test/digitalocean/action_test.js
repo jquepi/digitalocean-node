@@ -48,12 +48,9 @@ describe('action endpoints', function() {
     });
 
     it('returns actions with a query object', function() {
-      testUtils.api.get('/v2/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.actions.list({
-        page: 1,
-        per_page: 2
-      }, function(err, actions, headers) {
+      client.actions.list({ page: 2, per_page: 1 }, function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
@@ -70,9 +67,9 @@ describe('action endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/actions').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.actions.list({ tagName: 'foo' }).then(function(actions) {
+      client.actions.list({ page: 2, per_page: 1 }).then(function(actions) {
         expect(actions).to.shallowDeepEqual(data.actions);
         done();
       }).catch(function(err) {

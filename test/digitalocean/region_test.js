@@ -81,12 +81,9 @@ describe('region endpoints', function() {
     });
 
     it('returns regions with a query object', function() {
-      testUtils.api.get('/v2/regions?page=1&per_page=2').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/regions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.regions.list({
-        page: 1,
-        per_page: 2
-      }, function(err, regions, headers) {
+      client.regions.list({ page: 2, per_page: 1 }, function(err, regions, headers) {
         expect(regions).to.shallowDeepEqual(data.regions);
       });
     });
@@ -103,9 +100,9 @@ describe('region endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/regions').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/regions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.regions.list({ tagName: 'foo' }).then(function(regions) {
+      client.regions.list({ page: 2, per_page: 1 }).then(function(regions) {
         expect(regions).to.shallowDeepEqual(data.regions);
         done();
       }).catch(function(err) {

@@ -73,12 +73,9 @@ describe('size endpoints', function() {
     });
 
     it('returns sizes with a query object', function() {
-      testUtils.api.get('/v2/sizes?page=1&per_page=2').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/sizes?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.sizes.list({
-        page: 1,
-        per_page: 2
-      }, function(err, sizes, headers) {
+      client.sizes.list({ page: 2, per_page: 1 }, function(err, sizes, headers) {
         expect(sizes).to.shallowDeepEqual(data.sizes);
       });
     });
@@ -95,9 +92,9 @@ describe('size endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/sizes').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/sizes?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.sizes.list({ tagName: 'foo' }).then(function(sizes) {
+      client.sizes.list({ page: 2, per_page: 1 }).then(function(sizes) {
         expect(sizes).to.shallowDeepEqual(data.sizes);
         done();
       }).catch(function(err) {

@@ -131,10 +131,18 @@ describe('droplet endpoints', function() {
       });
     });
 
-    it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/droplets').reply(200, JSON.stringify(data));
+    // it('calls a callback', function(done) {
+    //   testUtils.api.get('/v2/droplets').reply(200, JSON.stringify(data));
 
-      client.droplets.list({ tagName: 'foo' }).then(function(droplets) {
+    //   client.droplets.list(function() {
+    //     done();
+    //   });
+    // });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/droplets?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.droplets.list({ page: 2, per_page: 1 }).then(function(droplets) {
         expect(droplets).to.shallowDeepEqual(data.droplets);
         done();
       }).catch(function(err) {
@@ -489,12 +497,9 @@ describe('droplet endpoints', function() {
     });
 
     it('lists droplet kernels with a query object', function() {
-      testUtils.api.get('/v2/droplets/123/kernels?page=1&per_page=1').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/kernels?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.kernels(123, {
-        page: 1,
-        per_page: 1
-      }, function(err, kernels, headers) {
+      client.droplets.kernels(123, { page: 2, per_page: 1 }, function(err, kernels, headers) {
         expect(kernels).to.shallowDeepEqual(data.kernels);
       });
     });
@@ -511,9 +516,9 @@ describe('droplet endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/droplets/123/kernels').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/kernels?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.kernels(123, { tagName: 'foo' }).then(function(kernels) {
+      client.droplets.kernels(123, { page: 2, per_page: 1 }).then(function(kernels) {
         expect(kernels).to.shallowDeepEqual(data.kernels);
         done();
       }).catch(function(err) {
@@ -568,12 +573,9 @@ describe('droplet endpoints', function() {
     });
 
     it('lists droplet snapshots with a query object', function() {
-      testUtils.api.get('/v2/droplets/123/snapshots?page=1&per_page=1').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/snapshots?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.snapshots(123, {
-        page: 1,
-        per_page: 1
-      }, function(err, snapshots, headers) {
+      client.droplets.snapshots(123, { page: 2, per_page: 1 }, function(err, snapshots, headers) {
         expect(snapshots).to.shallowDeepEqual(data.snapshots);
       });
     });
@@ -598,9 +600,9 @@ describe('droplet endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/droplets/123/snapshots').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/snapshots?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.snapshots(123, { tagName: 'foo' }).then(function(snapshots) {
+      client.droplets.snapshots(123, { page: 2, per_page: 1 }).then(function(snapshots) {
         expect(snapshots).to.shallowDeepEqual(data.snapshots);
         done();
       }).catch(function(err) {
@@ -655,12 +657,9 @@ describe('droplet endpoints', function() {
     });
 
     it('lists droplet backups with a query object', function() {
-      testUtils.api.get('/v2/droplets/123/backups?page=1&per_page=1').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/backups?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.backups(123, {
-        page: 1,
-        per_page: 1
-      }, function(err, backups, headers) {
+      client.droplets.backups(123, { page: 2, per_page: 1 }, function(err, backups, headers) {
         expect(backups).to.shallowDeepEqual(data.backups);
       });
     });
@@ -685,9 +684,9 @@ describe('droplet endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/droplets/123/backups').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/backups?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.backups(123, { tagName: 'foo' }).then(function(backups) {
+      client.droplets.backups(123, { page: 2, per_page: 1 }).then(function(backups) {
         expect(backups).to.shallowDeepEqual(data.backups);
         done();
       }).catch(function(err) {
@@ -808,12 +807,9 @@ describe('droplet endpoints', function() {
     });
 
     it('lists droplet neighbors with a query object', function() {
-      testUtils.api.get('/v2/droplets/123/neighbors?page=1&per_page=1').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/neighbors?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.neighbors(123, {
-        page: 1,
-        per_page: 1
-      }, function(err, droplets, headers) {
+      client.droplets.neighbors(123, { page: 2, per_page: 1 }, function(err, droplets, headers) {
         expect(droplets).to.shallowDeepEqual(data.droplets);
       });
     });
@@ -838,9 +834,9 @@ describe('droplet endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/droplets/123/neighbors').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/neighbors?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.neighbors(123, { tagName: 'foo' }).then(function(droplets) {
+      client.droplets.neighbors(123, { page: 2, per_page: 1 }).then(function(droplets) {
         expect(droplets).to.shallowDeepEqual(data.droplets);
         done();
       }).catch(function(err) {
@@ -950,12 +946,9 @@ describe('droplet endpoints', function() {
     });
 
     it('lists droplet actions with a query object', function() {
-      testUtils.api.get('/v2/droplets/123/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.listActions(123, {
-        page: 1,
-        per_page: 2
-      }, function(err, actions, headers) {
+      client.droplets.listActions(123, { page: 2, per_page: 1 }, function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
@@ -980,9 +973,9 @@ describe('droplet endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/droplets/123/actions').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/droplets/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.droplets.listActions(123, { tagName: 'foo' }).then(function(actions) {
+      client.droplets.listActions(123, { page: 2, per_page: 1 }).then(function(actions) {
         expect(actions).to.shallowDeepEqual(data.actions);
         done();
       }).catch(function(err) {

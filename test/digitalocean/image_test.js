@@ -78,9 +78,9 @@ describe('image endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/images').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/images?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.images.list({ tagName: 'foo' }).then(function(images) {
+      client.images.list({ page: 2, per_page: 1 }).then(function(images) {
         expect(images).to.shallowDeepEqual(data.images);
         done();
       }).catch(function(err) {
@@ -261,12 +261,9 @@ describe('image endpoints', function() {
     });
 
     it('lists image actions with a query object', function() {
-      testUtils.api.get('/v2/images/123/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/images/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.images.listActions(123, {
-        page: 1,
-        per_page: 2
-      }, function(err, actions, headers) {
+      client.images.listActions(123, { page: 2, per_page: 1 }, function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
@@ -291,9 +288,9 @@ describe('image endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/images/123/actions').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/images/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.images.listActions(123, { tagName: 'foo' }).then(function(actions) {
+      client.images.listActions(123, { page: 2, per_page: 1 }).then(function(actions) {
         expect(actions).to.shallowDeepEqual(data.actions);
         done();
       }).catch(function(err) {

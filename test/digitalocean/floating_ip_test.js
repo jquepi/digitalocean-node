@@ -107,9 +107,9 @@ describe('floating ip endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/floating_ips').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/floating_ips?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.floatingIps.list({ tagName: 'foo' }).then(function(floatingIps) {
+      client.floatingIps.list({ page: 2, per_page: 1 }).then(function(floatingIps) {
         expect(floatingIps).to.shallowDeepEqual(data.floating_ips);
         done();
       }).catch(function(err) {
@@ -310,12 +310,9 @@ describe('floating ip endpoints', function() {
     });
 
     it('lists floating ip actions with a query object', function() {
-      testUtils.api.get('/v2/floating_ips/123/actions?page=1&per_page=2').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/floating_ips/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.floatingIps.listActions(123, {
-        page: 1,
-        per_page: 2
-      }, function(err, actions, headers) {
+      client.floatingIps.listActions(123, { page: 2, per_page: 1 }, function(err, actions, headers) {
         expect(actions).to.shallowDeepEqual(data.actions);
       });
     });
@@ -340,9 +337,9 @@ describe('floating ip endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/floating_ips/123/actions').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/floating_ips/123/actions?page=2&per_page=1').reply(200, JSON.stringify(data));
 
-      client.floatingIps.listActions(123, { tagName: 'foo' }).then(function(actions) {
+      client.floatingIps.listActions(123, { page: 2, per_page: 1 }).then(function(actions) {
         expect(actions).to.shallowDeepEqual(data.actions);
         done();
       }).catch(function(err) {
