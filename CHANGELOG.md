@@ -15,12 +15,11 @@ project adheres to [Semantic Versioning](http://semver.org/) and documents chang
 - N/a.
 
 
+## [0.8.1] - 2016-08-03
+### Fixed
+- Extracting callback argument when there are no other arguments. (#5)
+
+
 ## [0.8.0] - 2016-08-01
 ### Added
 - Client option for decamelizeKeys and de-camelcasing for query and body params for client-niceness.
-
-### Changed
-- N/a.
-
-### Fixed
-- N/a.
