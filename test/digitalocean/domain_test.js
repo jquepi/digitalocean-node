@@ -190,7 +190,7 @@ describe('domain endpoints', function() {
     };
 
     it('returns domain records', function() {
-      testUtils.api.get('/v2/domains/example.com/domain_records').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/example.com/records').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com', function(err, domainRecords, headers) {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
@@ -198,7 +198,7 @@ describe('domain endpoints', function() {
     });
 
     it('returns domain records at page', function() {
-      testUtils.api.get('/v2/domains/example.com/domain_records?page=2').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/example.com/records?page=2').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com', 2, function(err, domainRecords, headers) {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
@@ -206,7 +206,7 @@ describe('domain endpoints', function() {
     });
 
     it('returns domain records at page with length', function() {
-      testUtils.api.get('/v2/domains/example.com/domain_records?page=2&per_page=1').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/example.com/records?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com', 2, 1, function(err, domainRecords, headers) {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
@@ -214,7 +214,7 @@ describe('domain endpoints', function() {
     });
 
     it('escapes the name', function() {
-      testUtils.api.get('/v2/domains/foo%2Fbar.com/domain_records').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/foo%2Fbar.com/records').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('foo/bar.com', function(err, domainRecords, headers) {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
@@ -222,7 +222,7 @@ describe('domain endpoints', function() {
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.get('/v2/domains/example.com/domain_records').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/example.com/records').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com').then(function(domainRecords) {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
@@ -233,7 +233,7 @@ describe('domain endpoints', function() {
     });
 
     it('returns a promisable with a query object', function(done) {
-      testUtils.api.get('/v2/domains/example.com/domain_records?page=2&per_page=1').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/example.com/records?page=2&per_page=1').reply(200, JSON.stringify(data));
 
       client.domains.listRecords('example.com', { page: 2, per_page: 1 }).then(function(domainRecords) {
         expect(domainRecords).to.shallowDeepEqual(data.domain_records);
@@ -263,7 +263,7 @@ describe('domain endpoints', function() {
     };
 
     it('creates the domain record', function() {
-      testUtils.api.post('/v2/domains/example.com/domain_records', attributes).reply(201, data);
+      testUtils.api.post('/v2/domains/example.com/records', attributes).reply(201, data);
 
       client.domains.createRecord('example.com', attributes, function(err, domainRecord, headers) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -271,7 +271,7 @@ describe('domain endpoints', function() {
     });
 
     it('escapes the name', function() {
-      testUtils.api.post('/v2/domains/foo%2Fbar.com/domain_records', attributes).reply(201, data);
+      testUtils.api.post('/v2/domains/foo%2Fbar.com/records', attributes).reply(201, data);
 
       client.domains.createRecord('foo/bar.com', attributes, function(err, domainRecord, headers) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -279,7 +279,7 @@ describe('domain endpoints', function() {
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.post('/v2/domains/example.com/domain_records', attributes).reply(201, data);
+      testUtils.api.post('/v2/domains/example.com/records', attributes).reply(201, data);
 
       client.domains.createRecord('example.com', attributes).then(function(domainRecord) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -304,7 +304,7 @@ describe('domain endpoints', function() {
     };
 
     it('returns the domain record', function() {
-      testUtils.api.get('/v2/domains/example.com/domain_records/123').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/example.com/records/123').reply(200, JSON.stringify(data));
 
       client.domains.getRecord('example.com', 123, function(err, domainRecord, headers) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -312,7 +312,7 @@ describe('domain endpoints', function() {
     });
 
     it('escapes the name', function() {
-      testUtils.api.get('/v2/domains/foo%2Fbar.com/domain_records/123').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/foo%2Fbar.com/records/123').reply(200, JSON.stringify(data));
 
       client.domains.getRecord('foo/bar.com', 123, function(err, domainRecord, headers) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -320,7 +320,7 @@ describe('domain endpoints', function() {
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.get('/v2/domains/example.com/domain_records/123').reply(200, JSON.stringify(data));
+      testUtils.api.get('/v2/domains/example.com/records/123').reply(200, JSON.stringify(data));
 
       client.domains.getRecord('example.com', 123).then(function(domainRecord) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -349,7 +349,7 @@ describe('domain endpoints', function() {
     };
 
     it('returns the domain record', function() {
-      testUtils.api.put('/v2/domains/example.com/domain_records/123', attributes).reply(200, JSON.stringify(data));
+      testUtils.api.put('/v2/domains/example.com/records/123', attributes).reply(200, JSON.stringify(data));
 
       client.domains.updateRecord('example.com', 123, attributes, function(err, domainRecord, headers) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -357,7 +357,7 @@ describe('domain endpoints', function() {
     });
 
     it('escapes the name', function() {
-      testUtils.api.put('/v2/domains/foo%2Fbar.com/domain_records/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
+      testUtils.api.put('/v2/domains/foo%2Fbar.com/records/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
 
       client.domains.updateRecord('foo/bar.com', 'foo/bar', attributes, function(err, domainRecord, headers) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -365,7 +365,7 @@ describe('domain endpoints', function() {
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.put('/v2/domains/example.com/domain_records/123', attributes).reply(200, JSON.stringify(data));
+      testUtils.api.put('/v2/domains/example.com/records/123', attributes).reply(200, JSON.stringify(data));
 
       client.domains.updateRecord('example.com', 123, attributes).then(function(domainRecord) {
         expect(domainRecord).to.shallowDeepEqual(data.domain_record);
@@ -378,7 +378,7 @@ describe('domain endpoints', function() {
 
   describe('delete domain record', function() {
     it('deletes the domain record', function() {
-      testUtils.api.delete('/v2/domains/example.com/domain_records/123').reply(204, '');
+      testUtils.api.delete('/v2/domains/example.com/records/123').reply(204, '');
 
       client.domains.deleteRecord('example.com', 123, function(err) {
         expect(err).to.be.null;
@@ -386,7 +386,7 @@ describe('domain endpoints', function() {
     });
 
     it('escapes the name', function() {
-      testUtils.api.delete('/v2/domains/foo%2Fbar.com/domain_records/foo%2Fbar').reply(204, '');
+      testUtils.api.delete('/v2/domains/foo%2Fbar.com/records/foo%2Fbar').reply(204, '');
 
       client.domains.deleteRecord('foo/bar.com', 'foo/bar', function(err) {
         expect(err).to.be.null;
@@ -394,7 +394,7 @@ describe('domain endpoints', function() {
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.delete('/v2/domains/example.com/domain_records/123').reply(204, '');
+      testUtils.api.delete('/v2/domains/example.com/records/123').reply(204, '');
 
       client.domains.deleteRecord('example.com', 123).then(function(domainRecord) {
         expect(domainRecord.id).to.be.undefined;
