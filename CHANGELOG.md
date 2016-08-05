@@ -14,6 +14,9 @@ project adheres to [Semantic Versioning](http://semver.org/) and documents chang
 ### Fixed
 - N/a.
 
+## [0.8.2] - 2016-08-05
+### Fixed
+- Incorrect route for domain record calls.
 
 ## [0.8.1] - 2016-08-03
 ### Fixed

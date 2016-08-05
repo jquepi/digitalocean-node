@@ -588,7 +588,7 @@ module.exports = {
      */
     Domain.prototype.listRecords = function() {
       var args = util.extractListArguments(arguments, 1);
-      var url = util.safeUrl('domains', args.identifier, 'domain_records');
+      var url = util.safeUrl('domains', args.identifier, 'records');
 
       return this.client.get.apply(this.client, [url, {}].concat(slice.call(args.params), [200, 'domain_records', args.callback]));
     };
@@ -602,7 +602,7 @@ module.exports = {
      * @memberof Domain
      */
     Domain.prototype.getRecord = function(domainName, id, callback) {
-      var url = util.safeUrl('domains', domainName, 'domain_records', id);
+      var url = util.safeUrl('domains', domainName, 'records', id);
       return this.client.get(url, {}, 200, 'domain_record', callback);
     };
 
@@ -615,7 +615,7 @@ module.exports = {
      * @memberof Domain
      */
     Domain.prototype.createRecord = function(domainName, attributes, callback) {
-      var url = util.safeUrl('domains', domainName, 'domain_records');
+      var url = util.safeUrl('domains', domainName, 'records');
       return this.client.post(url, attributes, 201, 'domain_record', callback);
     };
 
@@ -629,7 +629,7 @@ module.exports = {
      * @memberof Domain
      */
     Domain.prototype.updateRecord = function(domainName, id, attributes, callback) {
-      var url = util.safeUrl('domains', domainName, 'domain_records', id);
+      var url = util.safeUrl('domains', domainName, 'records', id);
       return this.client.put(url, attributes, 200, 'domain_record', callback);
     };
 
@@ -642,7 +642,7 @@ module.exports = {
      * @memberof Domain
      */
     Domain.prototype.deleteRecord = function(domainName, id, callback) {
-      var url = util.safeUrl('domains', domainName, 'domain_records', id);
+      var url = util.safeUrl('domains', domainName, 'records', id);
       return this.client.delete(url, {}, 204, [], callback);
     };
 
@@ -67388,7 +67388,7 @@ module.exports = Request
 },{"./lib/auth":269,"./lib/cookies":270,"./lib/getProxyFromURI":271,"./lib/har":272,"./lib/helpers":273,"./lib/multipart":274,"./lib/oauth":275,"./lib/querystring":276,"./lib/redirect":277,"./lib/tunnel":278,"_process":233,"aws-sign2":279,"aws4":280,"bl":282,"buffer":32,"caseless":293,"extend":296,"forever-agent":297,"form-data":298,"hawk":327,"http":253,"http-signature":328,"https":229,"is-typedarray":374,"isstream":375,"mime-types":377,"stream":252,"stringstream":386,"url":260,"util":263,"zlib":31}],396:[function(require,module,exports){
 module.exports={
   "name": "digitalocean",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
