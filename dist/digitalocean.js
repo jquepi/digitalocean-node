@@ -1741,7 +1741,7 @@ module.exports = {
      * @memberof Volume
      */
     Volume.prototype.create = function(attributes, callback) {
-      return this.client.post('/volumes', attributes, 202, 'volume', callback);
+      return this.client.post('/volumes', attributes, 201, 'volume', callback);
     };
 
     /**
@@ -67387,8 +67387,8 @@ module.exports = Request
 }).call(this,require('_process'),require("buffer").Buffer)
 },{"./lib/auth":269,"./lib/cookies":270,"./lib/getProxyFromURI":271,"./lib/har":272,"./lib/helpers":273,"./lib/multipart":274,"./lib/oauth":275,"./lib/querystring":276,"./lib/redirect":277,"./lib/tunnel":278,"_process":233,"aws-sign2":279,"aws4":280,"bl":282,"buffer":32,"caseless":293,"extend":296,"forever-agent":297,"form-data":298,"hawk":327,"http":253,"http-signature":328,"https":229,"is-typedarray":374,"isstream":375,"mime-types":377,"stream":252,"stringstream":386,"url":260,"util":263,"zlib":31}],396:[function(require,module,exports){
 module.exports={
-  "name": "digitalocean",
-  "version": "0.8.2",
+  "name": "digitalocean ",
+  "version": "0.8.3",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
