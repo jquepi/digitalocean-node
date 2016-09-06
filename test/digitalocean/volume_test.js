@@ -148,7 +148,7 @@ describe('volume endpoints', function() {
     };
 
     it('creates the volume', function() {
-      testUtils.api.post('/v2/volumes', attributes).reply(202, data);
+      testUtils.api.post('/v2/volumes', attributes).reply(201, data);
 
       client.volumes.create(attributes, function(err, volume, headers) {
         expect(volume).to.shallowDeepEqual(data.volume);
@@ -156,7 +156,7 @@ describe('volume endpoints', function() {
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.post('/v2/volumes', attributes).reply(202, data);
+      testUtils.api.post('/v2/volumes', attributes).reply(201, data);
 
       client.volumes.create(attributes).then(function(volume) {
         expect(volume).to.shallowDeepEqual(data.volume);

@@ -1,5 +1,5 @@
 {
-  "name": "digitalocean",
+  "name": "digitalocean ",
   "version": "0.8.2",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
