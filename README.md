@@ -421,8 +421,8 @@ client.account
 ```
 
 * `client.account.get([callback])`
-* `client.account.listSshKey([page, perPage,] [callback])`
-* `client.account.listSshKey([queryObject] [callback])`
+* `client.account.listSshKeys([page, perPage,] [callback])`
+* `client.account.listSshKeys([queryObject] [callback])`
 * `client.account.createSshKey(attributes, [callback])`
 * `client.account.getSshKey(sshKey.id, [callback])`
 * `client.account.deleteSshKey(sshKey.id, [callback])`
