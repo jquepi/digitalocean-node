@@ -167,6 +167,131 @@ describe('volume endpoints', function() {
     });
   });
 
+  describe('snapshot', function() {
+    var data = {
+      "snapshot": {
+        "id": "7724db7c-e098-11e5-b522-000f53304e51",
+        "name": "Ubuntu Foo",
+        "regions": [
+          "nyc1"
+        ],
+        "created_at": "2014-07-29T14:35:40Z",
+        "resource_type": "volume",
+        "resource_id": "7724db7c-e098-11e5-b522-000f53304e51",
+        "min_disk_size": 10,
+        "size_gigabytes": 0.4
+      }
+    };
+    var attributes = {
+      "name": "name"
+    };
+
+    it('creates the volume', function() {
+      testUtils.api.post('/v2/volumes/7724db7c-e098-11e5-b522-000f53304e51/snapshots', attributes).reply(201, data);
+
+      client.volumes.snapshot("7724db7c-e098-11e5-b522-000f53304e51", "name", function(err, snapshot, headers) {
+        expect(snapshot).to.shallowDeepEqual(data.snapshot);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.post('/v2/volumes/7724db7c-e098-11e5-b522-000f53304e51/snapshots', attributes).reply(201, data);
+
+      client.volumes.snapshot("7724db7c-e098-11e5-b522-000f53304e51", attributes).then(function(snapshot) {
+        expect(snapshot).to.shallowDeepEqual(data.snapshot);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+  });
+
+  describe('snapshots', function() {
+    var data = {
+      "snapshots": [
+        {
+          "id": "7724db7c-e098-11e5-b522-000f53304e51",
+          "name": "Ubuntu Foo",
+          "regions": [
+            "nyc1"
+          ],
+          "created_at": "2014-07-29T14:35:40Z",
+          "resource_type": "volume",
+          "resource_id": "123",
+          "min_disk_size": 10,
+          "size_gigabytes": 0.4
+        }
+      ],
+      "links": {
+      },
+      "meta": {
+        "total": 1
+      }
+    };
+
+    it('returns snapshot', function() {
+      testUtils.api.get('/v2/volumes/123/snapshots').reply(200, JSON.stringify(data));
+
+      client.volumes.snapshots("123", function(err, snapshots, headers) {
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
+      });
+    });
+
+    it('returns snapshot at page', function() {
+      testUtils.api.get('/v2/volumes/123/snapshots?page=2').reply(200, JSON.stringify(data));
+
+      client.volumes.snapshots("123", 2, function(err, snapshots, headers) {
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
+      });
+    });
+
+    it('returns snapshot at page with length', function() {
+      testUtils.api.get('/v2/volumes/123/snapshots?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.volumes.snapshots("123", 2, 1, function(err, snapshots, headers) {
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
+      });
+    });
+
+    it('returns snapshots with a query object', function() {
+      testUtils.api.get('/v2/volumes/123/snapshots?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.volumes.snapshots("123", { page: 2, per_page: 1 }, function(err, snapshots, headers) {
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
+      });
+    });
+
+    it('escapes the name', function() {
+      testUtils.api.get('/v2/volumes/foo%2Fbar/snapshots').reply(200, JSON.stringify(data));
+
+      client.volumes.snapshots("foo/bar", function(err, snapshots, headers) {
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
+      });
+    });
+
+    it('returns a promisable', function(done) {
+      testUtils.api.get('/v2/volumes/123/snapshots').reply(200, JSON.stringify(data));
+
+      client.volumes.snapshots("123").then(function(snapshots) {
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('returns a promisable with a query object', function(done) {
+      testUtils.api.get('/v2/volumes/123/snapshots?page=2&per_page=1').reply(200, JSON.stringify(data));
+
+      client.volumes.snapshots("123", { page: 2, per_page: 1 }).then(function(snapshots) {
+        expect(snapshots).to.shallowDeepEqual(data.snapshots);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+  });
+
   describe('get', function() {
     var data = {
       "volume": {
