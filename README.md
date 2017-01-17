@@ -411,6 +411,18 @@ client.sizes
 
 * `client.sizes.list([callback])`
 
+### Snapshot resource
+
+```js
+var digitalocean = require('digitalocean');
+var client = digitalocean.client('TOKEN');
+client.snapshots
+```
+
+* `client.snapshots.list([page, perPage,] [callback])`
+* `client.snapshots.list([queryObject,] [callback])`
+* `client.snapshots.get(snapshots.id, [callback])`
+* `client.snapshots.delete(snapshot.id, [callback])`
 
 ### Account resource
 
@@ -422,7 +434,7 @@ client.account
 
 * `client.account.get([callback])`
 * `client.account.listSshKeys([page, perPage,] [callback])`
-* `client.account.listSshKeys([queryObject] [callback])`
+* `client.account.listSshKeys([queryObject,] [callback])`
 * `client.account.createSshKey(attributes, [callback])`
 * `client.account.getSshKey(sshKey.id, [callback])`
 * `client.account.deleteSshKey(sshKey.id, [callback])`
@@ -464,12 +476,12 @@ client.volumes
 
 * `client.volumes.list([page, perPage,] [callback])`
 * `client.volumes.list([queryObject] [callback])`
-* `client.volumes.get(floatingIp.ip, [callback])`
+* `client.volumes.get(volume.id, [callback])`
 * `client.volumes.create(attributes, [callback])`
-* `client.volumes.delete(floatingIp.ip, [callback])`
+* `client.volumes.delete(volume.id, [callback])`
 * `client.volumes.listActions([page, perPage,] [callback])`
 * `client.volumes.listActions([queryObject] [callback])`
-* `client.volumes.getAction(floatingIp.ip, [callback])`
+* `client.volumes.getAction(volume.id, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#volumes).
 
