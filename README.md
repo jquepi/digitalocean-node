@@ -279,15 +279,15 @@ client.droplets
 * `client.droplets.delete(droplet.id, [callback])`
 * `client.droplets.deleteByTag(tag.name, [callback])`
 * `client.droplets.kernels(droplet.id, [page, perPage,] [callback])`
-* `client.droplets.kernels(droplet.id, [queryObject] [callback])`
+* `client.droplets.kernels(droplet.id, [queryObject,] [callback])`
 * `client.droplets.snapshots(droplet.id, [page, perPage,] [callback])`
-* `client.droplets.snapshots(droplet.id, [queryObject] [callback])`
+* `client.droplets.snapshots(droplet.id, [queryObject,] [callback])`
 * `client.droplets.backups(droplet.id, [page, perPage,] [callback])`
-* `client.droplets.backups(droplet.id, [queryObject] [callback])`
+* `client.droplets.backups(droplet.id, [queryObject,] [callback])`
 * `client.droplets.neighbors(droplet.id, [page, perPage,] [callback])`
-* `client.droplets.neighbors(droplet.id, [queryObject] [callback])`
+* `client.droplets.neighbors(droplet.id, [queryObject,] [callback])`
 * `client.droplets.listActions(droplet.id, [page, perPage,] [callback])`
-* `client.droplets.listActions(droplet.id, [queryObject] [callback])`
+* `client.droplets.listActions(droplet.id, [queryObject,] [callback])`
 * `client.droplets.getAction(droplet.id, action.id, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#droplets).
@@ -321,7 +321,7 @@ client.drives
 ```
 
 * `client.drives.list([page, perPage,] [callback])`
-* `client.drives.list([queryObject] [callback])`
+* `client.drives.list([queryObject,] [callback])`
 
 [See the official docs](https://developers.digitalocean.com/documentation/v2/block-storage-beta/#retrieve-an-existing-block-storage-drive-by-name) on different parameters to pass via the query object to filter the drives.
 
@@ -337,7 +337,7 @@ Methods resulting in an `action`:
 * `client.drives.attach(drive.id, parametersOrDropletId, [callback])`
 * `client.drives.detach(drive.id, [callback])`
 * `client.drives.listActions(drive.id, [page, perPage,] [callback])`
-* `client.drives.listActions(drive.id, [queryObject] [callback])`
+* `client.drives.listActions(drive.id, [queryObject,] [callback])`
 * `client.drives.getAction(drive.id, action.id, [callback])`
 
 ### Domain resource
@@ -380,9 +380,9 @@ client.images
 * `client.images.delete(image.id, [callback])`
 * `client.images.update(image.id, attributes, [callback])`
 * `client.image.listActions([page, perPage,] image.id, [callback])`
-* `client.image.listActions([queryObject] image.id, [callback])`
+* `client.image.listActions([queryObject,] image.id, [callback])`
 * `client.image.getAction([page, perPage,] image.id, action.id, [callback])`
-* `client.image.getAction([queryObject] image.id, action.id, [callback])`
+* `client.image.getAction([queryObject,] image.id, action.id, [callback])`
 
 Methods resulting in an `action`:
 
@@ -411,6 +411,18 @@ client.sizes
 
 * `client.sizes.list([callback])`
 
+### Snapshot resource
+
+```js
+var digitalocean = require('digitalocean');
+var client = digitalocean.client('TOKEN');
+client.snapshots
+```
+
+* `client.snapshots.list([page, perPage,] [callback])`
+* `client.snapshots.list([queryObject,] [callback])`
+* `client.snapshots.get(snapshots.id, [callback])`
+* `client.snapshots.delete(snapshot.id, [callback])`
 
 ### Account resource
 
@@ -422,7 +434,7 @@ client.account
 
 * `client.account.get([callback])`
 * `client.account.listSshKeys([page, perPage,] [callback])`
-* `client.account.listSshKeys([queryObject] [callback])`
+* `client.account.listSshKeys([queryObject,] [callback])`
 * `client.account.createSshKey(attributes, [callback])`
 * `client.account.getSshKey(sshKey.id, [callback])`
 * `client.account.deleteSshKey(sshKey.id, [callback])`
@@ -439,12 +451,12 @@ client.floatingIps
 ```
 
 * `client.floatingIps.list([page, perPage,] [callback])`
-* `client.floatingIps.list([queryObject] [callback])`
+* `client.floatingIps.list([queryObject,] [callback])`
 * `client.floatingIps.get(floatingIp.ip, [callback])`
 * `client.floatingIps.create(attributes, [callback])`
 * `client.floatingIps.delete(floatingIp.ip, [callback])`
 * `client.floatingIps.listActions([page, perPage,] [callback])`
-* `client.floatingIps.listActions([queryObject] [callback])`
+* `client.floatingIps.listActions([queryObject,] [callback])`
 * `client.floatingIps.getAction(floatingIp.ip, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#floating-ips).
@@ -463,13 +475,13 @@ client.volumes
 ```
 
 * `client.volumes.list([page, perPage,] [callback])`
-* `client.volumes.list([queryObject] [callback])`
-* `client.volumes.get(floatingIp.ip, [callback])`
+* `client.volumes.list([queryObject,] [callback])`
+* `client.volumes.get(volume.id, [callback])`
 * `client.volumes.create(attributes, [callback])`
-* `client.volumes.delete(floatingIp.ip, [callback])`
+* `client.volumes.delete(volume.id, [callback])`
 * `client.volumes.listActions([page, perPage,] [callback])`
-* `client.volumes.listActions([queryObject] [callback])`
-* `client.volumes.getAction(floatingIp.ip, [callback])`
+* `client.volumes.listActions([queryObject,] [callback])`
+* `client.volumes.getAction(volume.id, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#volumes).
 
@@ -488,7 +500,7 @@ client.tags
 ```
 
 * `client.tags.list([page, perPage,] [callback])`
-* `client.tags.list([queryObject] [callback])`
+* `client.tags.list([queryObject,] [callback])`
 * `client.tags.get(tag.name, [callback])`
 * `client.tags.create(attributes, [callback])`
 * `client.tags.update(tag.name, attributes, [callback])`
