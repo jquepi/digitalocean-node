@@ -534,7 +534,7 @@ describe('volume endpoints', function() {
 
       testUtils.api.post('/v2/volumes/123/actions',
         { type: 'attach', droplet_id: 123 }
-      ).reply(201, data);
+      ).reply(202, data);
 
       client.volumes.attach(123, parameters, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -544,7 +544,7 @@ describe('volume endpoints', function() {
     it('creates the action with a droplet id', function() {
       testUtils.api.post('/v2/volumes/123/actions',
         { type: 'attach', droplet_id: 456 }
-      ).reply(201, data);
+      ).reply(202, data);
 
       client.volumes.attach(123, 456, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -554,7 +554,7 @@ describe('volume endpoints', function() {
     it('escapes the name', function() {
       testUtils.api.post('/v2/volumes/foo%2Fbar/actions',
         { type: 'attach', droplet_id: 456 }
-      ).reply(201, data);
+      ).reply(202, data);
 
       client.volumes.attach('foo/bar', 456, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -564,7 +564,7 @@ describe('volume endpoints', function() {
     it('returns a promisable', function(done) {
       testUtils.api.post('/v2/volumes/123/actions',
         { type: 'attach', droplet_id: 456 }
-      ).reply(201, data);
+      ).reply(202, data);
 
       client.volumes.attach(123, 456).then(function(action) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -591,7 +591,7 @@ describe('volume endpoints', function() {
     };
 
     it('creates the action', function() {
-      testUtils.api.post('/v2/volumes/123/actions', { type: 'detach' }).reply(201, data);
+      testUtils.api.post('/v2/volumes/123/actions', { type: 'detach' }).reply(202, data);
 
       client.volumes.detach(123, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -599,7 +599,7 @@ describe('volume endpoints', function() {
     });
 
     it('escapes the name', function() {
-      testUtils.api.post('/v2/volumes/foo%2Fbar/actions', { type: 'detach' }).reply(201, data);
+      testUtils.api.post('/v2/volumes/foo%2Fbar/actions', { type: 'detach' }).reply(202, data);
 
       client.volumes.detach('foo/bar', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -607,7 +607,7 @@ describe('volume endpoints', function() {
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.post('/v2/volumes/123/actions', { type: 'detach' }).reply(201, data);
+      testUtils.api.post('/v2/volumes/123/actions', { type: 'detach' }).reply(202, data);
 
       client.volumes.detach(123).then(function(action) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -641,7 +641,7 @@ describe('volume endpoints', function() {
 
       testUtils.api.post('/v2/volumes/123/actions',
         { type: 'resize', region: 'nyc3', size_gigabytes: 100 }
-      ).reply(201, data);
+      ).reply(202, data);
 
       client.volumes.resize(123, parameters, function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -651,7 +651,7 @@ describe('volume endpoints', function() {
     it('creates the action with explicit arguments', function() {
       testUtils.api.post('/v2/volumes/123/actions',
         { type: 'resize', region: 'nyc3', size_gigabytes: 100 }
-      ).reply(201, data);
+      ).reply(202, data);
 
       client.volumes.resize(123, 100, 'nyc3', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -661,7 +661,7 @@ describe('volume endpoints', function() {
     it('escapes the name', function() {
       testUtils.api.post('/v2/volumes/foo%2Fbar/actions',
         { type: 'resize', region: 'nyc3', size_gigabytes: 100 }
-      ).reply(201, data);
+      ).reply(202, data);
 
       client.volumes.resize('foo/bar', 100, 'nyc3', function(err, action, headers) {
         expect(action).to.shallowDeepEqual(data.action);
@@ -671,7 +671,7 @@ describe('volume endpoints', function() {
     it('returns a promisable', function(done) {
       testUtils.api.post('/v2/volumes/123/actions',
         { type: 'resize', region: 'nyc3', size_gigabytes: 100 }
-      ).reply(201, data);
+      ).reply(202, data);
 
       client.volumes.resize(123, 100, 'nyc3').then(function(action) {
         expect(action).to.shallowDeepEqual(data.action);
