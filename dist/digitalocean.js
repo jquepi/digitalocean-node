@@ -1911,7 +1911,7 @@ module.exports = {
       }
 
       var url = util.safeUrl('volumes', volumeId, 'actions');
-      return this.client.post(url, parameters, 201, 'action', callback);
+      return this.client.post(url, parameters, 202, 'action', callback);
     };
 
     /**
@@ -1979,6 +1979,7 @@ module.exports = {
 
   module.exports = Volume;
 }).call(this);
+
 },{"./util":14}],16:[function(require,module,exports){
 (function (process,global){
 /* @preserve
@@ -70513,7 +70514,7 @@ module.exports = Request
 },{"./lib/auth":274,"./lib/cookies":275,"./lib/getProxyFromURI":276,"./lib/har":277,"./lib/helpers":278,"./lib/multipart":279,"./lib/oauth":280,"./lib/querystring":281,"./lib/redirect":282,"./lib/tunnel":283,"_process":235,"aws-sign2":284,"aws4":285,"buffer":33,"caseless":287,"extend":290,"forever-agent":291,"form-data":292,"hawk":321,"http":257,"http-signature":322,"https":231,"is-typedarray":374,"isstream":375,"mime-types":377,"stream":256,"stringstream":386,"url":264,"util":268,"zlib":32}],401:[function(require,module,exports){
 module.exports={
   "name": "digitalocean",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
