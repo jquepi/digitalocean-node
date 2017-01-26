@@ -481,7 +481,7 @@ client.volumes
 * `client.volumes.delete(volume.id, [callback])`
 * `client.volumes.listActions([page, perPage,] [callback])`
 * `client.volumes.listActions([queryObject,] [callback])`
-* `client.volumes.getAction(volume.id, [callback])`
+* `client.volumes.getAction(volume.id, action.id, [callback])`
 
 For the latest valid attributes, [see the official docs](https://developers.digitalocean.com/documentation/v2/#volumes).
 
