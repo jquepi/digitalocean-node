@@ -381,8 +381,7 @@ client.images
 * `client.images.update(image.id, attributes, [callback])`
 * `client.image.listActions([page, perPage,] image.id, [callback])`
 * `client.image.listActions([queryObject,] image.id, [callback])`
-* `client.image.getAction([page, perPage,] image.id, action.id, [callback])`
-* `client.image.getAction([queryObject,] image.id, action.id, [callback])`
+* `client.image.getAction(image.id, action.id, [callback])`
 
 Methods resulting in an `action`:
 
