@@ -168,50 +168,6 @@ describe('tag endpoints', function() {
     });
   });
 
-  describe('update', function() {
-    var data = {
-      "tag": {
-        "name": "awesome",
-        "resources": {
-          "droplets": {
-            "count": 0,
-            "last_tagged": null
-          }
-        }
-      }
-    };
-    var attributes = {
-      "name": "awesome"
-    };
-
-    it('returns the tag', function() {
-      testUtils.api.put('/v2/tags/foo', attributes).reply(200, JSON.stringify(data));
-
-      client.tags.update('foo', attributes, function(err, tag, headers) {
-        expect(tag).to.shallowDeepEqual(data.tag);
-      });
-    });
-
-    it('escapes the name', function() {
-      testUtils.api.put('/v2/tags/foo%2Fbar', attributes).reply(200, JSON.stringify(data));
-
-      client.tags.update('foo/bar', attributes, function(err, tag, headers) {
-        expect(tag).to.shallowDeepEqual(data.tag);
-      });
-    });
-
-    it('returns a promisable', function(done) {
-      testUtils.api.put('/v2/tags/foo', attributes).reply(200, JSON.stringify(data));
-
-      client.tags.update('foo', attributes).then(function(tag) {
-        expect(tag).to.shallowDeepEqual(data.tag);
-        done();
-      }).catch(function(err) {
-        done(err);
-      });
-    });
-  });
-
   describe('tag', function() {
     var resources = [
       {
