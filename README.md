@@ -55,6 +55,26 @@ client.droplets.delete(123, callback);
 client.droplets.powerOff(123, callback);
 client.droplets.getAction(123, 456, callback);
 ```
+
+### Spaces support
+
+[DigitalOcean's Spaces](https://developers.digitalocean.com/documentation/spaces/) is an S3-compatible object storage service. The API for spaces is a different schema at a different abstraction level (XML and actual file objects) than the normal "control" API. The good news is that it's interopable with lots of existing S3 clients, [this is a node one](https://github.com/andrewrk/node-s3-client).
+
+You should be able to use Spaces similarly to:
+
+```
+var s3 = require('s3');
+
+var client = s3.createClient({
+  s3Options: {
+    accessKeyId: "your spaces key from https://cloud.digitalocean.com/settings/api/tokens",
+    secretAccessKey: "your spaces secret from https://cloud.digitalocean.com/settings/api/tokens",
+    region: "nyc3",
+    endpoint: 'nyc3.digitaloceanspaces.com',
+  },
+});
+```
+
 ## Client Options
 
 The DigitalOcean client depends on [`request`](https://github.com/request/request), and [options can be passed through](https://github.com/request/request#requestoptions-callback) (e.g. a proxy or user agent). For example:
