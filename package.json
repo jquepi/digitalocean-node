@@ -42,7 +42,7 @@
     "nock": "0.57.x"
   },
   "engines": {
-    "node": ">0.4.11",
+    "node": ">= 4",
     "npm": ">= 2.13.1"
   },
   "tonicExampleFilename": "examples/make_droplet.js",
