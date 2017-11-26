@@ -17,6 +17,17 @@ module.exports = {
  * @param {object} headers - An object containing the response headers.
  * @param {string} body - The raw response body.
  */
+
+/**
+ * Every resource method accepts an optional callback as the last argument.
+ *
+ * @callback listRequestCallback
+ * @param {object} error - An error or null if no error occurred.
+ * @param {ListResponse} listResource - The list resource or null if error.
+ * @param {object} headers - An object containing the response headers.
+ * @param {string} body - The raw response body.
+ */
+
 },{"./digitalocean/account":2,"./digitalocean/client":4}],2:[function(require,module,exports){
 (function() {
   var slice = [].slice,
@@ -46,7 +57,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Account
      */
     Account.prototype.listSshKeys = function() {
@@ -107,6 +118,7 @@ module.exports = {
 
   module.exports = Account;
 }).call(this);
+
 },{"./util":15}],3:[function(require,module,exports){
 (function() {
   var slice = [].slice,
@@ -126,7 +138,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Action
      */
     Action.prototype.list = function() {
@@ -151,6 +163,7 @@ module.exports = {
 
   module.exports = Action;
 }).call(this);
+
 },{"./util":15}],4:[function(require,module,exports){
 (function() {
   // External Dependencies
@@ -269,7 +282,7 @@ module.exports = {
     // successRootKeys, required, string or array of strings
     // callback, required, function
     /** @private */
-    Client.prototype._buildrequestPromiseHandler = function(successStatuses, successRootKeys, resolve, reject) {
+    Client.prototype._buildRequestPromiseHandler = function(requestOptions, successStatuses, successRootKeys, resolve, reject) {
       if (typeof successStatuses === 'number') {
         successStatuses = [successStatuses];
       }
@@ -278,6 +291,8 @@ module.exports = {
         successRootKeys = [successRootKeys];
       }
 
+      var self = this;
+      var Promise = this.promise;
       return function(err, res, body) {
         if (err) {
           return reject(err);
@@ -318,13 +333,22 @@ module.exports = {
           }
         }
 
+        // If body.meta.total exists, then it's a paginated response
+        var result;
+        if (body.meta && body.meta.total) {
+          result = new util.ListResponse(self, data, body.meta.total, requestOptions, successStatuses, successRootKeys, Promise);
+        } else {
+          result = data;
+        }
+
         // Append response data under a special key in the object
-        data._digitalOcean = {
+        result._digitalOcean = {
           statusCode: res.statusCode,
           body: body,
           headers: res.headers
         };
-        return resolve(data);
+
+        return resolve(result);
       };
     };
 
@@ -341,7 +365,7 @@ module.exports = {
       var deferred = new this.promise(function(resolve, reject) {
         self.request(
           requestOptions,
-          self._buildrequestPromiseHandler(successStatuses, successRootKeys, resolve, reject)
+          self._buildRequestPromiseHandler.apply(self, [requestOptions, successStatuses, successRootKeys, resolve, reject])
         );
       });
 
@@ -411,7 +435,9 @@ module.exports = {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + this.token
-          }
+          },
+          query: query,
+          path: path,
         },
         options,
         successStatuses,
@@ -539,7 +565,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Domain
      */
     Domain.prototype.list = function() {
@@ -588,7 +614,7 @@ module.exports = {
      * @param {string} domainName - name of domain for which to retrieve records
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Domain
      */
     Domain.prototype.listRecords = function() {
@@ -656,6 +682,7 @@ module.exports = {
 
   module.exports = Domain;
 }).call(this);
+
 },{"./util":15}],6:[function(require,module,exports){
 (function() {
   var slice = [].slice,
@@ -675,7 +702,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Droplet
      */
     Droplet.prototype.list = function() {
@@ -713,7 +740,7 @@ module.exports = {
      * @param {number} id - ID of Droplet for which to retrieve kernels
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Droplet
      */
     Droplet.prototype.kernels = function() {
@@ -729,7 +756,7 @@ module.exports = {
      * @param {number} id - ID of Droplet for which to retrieve snapshots
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Droplet
      */
     Droplet.prototype.snapshots = function() {
@@ -745,7 +772,7 @@ module.exports = {
      * @param {number} id - ID of Droplet for which to retrieve backups
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Droplet
      */
     Droplet.prototype.backups = function() {
@@ -761,7 +788,7 @@ module.exports = {
      * @param {number} id - ID of Droplet for which to retrieve neighbors
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Droplet
      */
     Droplet.prototype.neighbors = function() {
@@ -802,7 +829,7 @@ module.exports = {
      * @param {number} id - ID of Droplet for which to retrieve actions
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Droplet
      */
     Droplet.prototype.listActions = function() {
@@ -1116,6 +1143,7 @@ module.exports = {
 
   module.exports = Droplet;
 }).call(this);
+
 },{"./util":15}],7:[function(require,module,exports){
 (function() {
   var extend = function(child, parent) {
@@ -1168,7 +1196,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof FloatingIp
      */
     FloatingIp.prototype.list = function() {
@@ -1218,7 +1246,7 @@ module.exports = {
      * @param {string} ip - The IP of the floating ip for which to retrieve actions
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof FloatingIp
      */
     FloatingIp.prototype.listActions = function() {
@@ -1301,6 +1329,7 @@ module.exports = {
 
   module.exports = FloatingIp;
 }).call(this);
+
 },{"./util":15}],9:[function(require,module,exports){
 (function() {
   var slice = [].slice,
@@ -1320,7 +1349,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Image
      */
     Image.prototype.list = function() {
@@ -1371,7 +1400,7 @@ module.exports = {
      * @param {number} id - ID of Droplet for which to retrieve actions
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Image
      */
     Image.prototype.listActions = function() {
@@ -1454,6 +1483,7 @@ module.exports = {
 
   module.exports = Image;
 }).call(this);
+
 },{"./util":15}],10:[function(require,module,exports){
 (function() {
   var slice = [].slice,
@@ -1473,7 +1503,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof LoadBalancer
      */
     LoadBalancer.prototype.list = function() {
@@ -1646,7 +1676,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof region
      */
     Region.prototype.list = function() {
@@ -1659,6 +1689,7 @@ module.exports = {
 
   module.exports = Region;
 }).call(this);
+
 },{"./util":15}],12:[function(require,module,exports){
 (function() {
   var slice = [].slice,
@@ -1677,7 +1708,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Size
      */
     Size.prototype.list = function() {
@@ -1690,6 +1721,7 @@ module.exports = {
 
   module.exports = Size;
 }).call(this);
+
 },{"./util":15}],13:[function(require,module,exports){
 (function() {
   var slice = [].slice,
@@ -1709,7 +1741,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Snapshot
      */
     Snapshot.prototype.list = function() {
@@ -1746,6 +1778,7 @@ module.exports = {
 
   module.exports = Snapshot;
 }).call(this);
+
 },{"./util":15}],14:[function(require,module,exports){
 (function() {
   var slice = [].slice,
@@ -1765,7 +1798,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Tag
      */
     Tag.prototype.list = function() {
@@ -1925,6 +1958,122 @@ module.exports = {
       params: params
     };
   };
+
+  /**
+   * A class that runs the pagination until the end if necessary.
+   *
+   * @class ListResponse
+   */
+  var ListResponse = function(client, initialData, totalLength, requestOptions, successStatuses, successRootKeys, promise) {
+    this.currentPage = 1; // default to start at page 1
+    // this.perPage = queryParams && queryParams.per_page || 25; // default to 25 per page
+    this.totalLength = totalLength;
+    // bootstrap with initial data
+    this.push.apply(this, initialData);
+
+    this.client = client;
+    this.requestOptions = requestOptions;
+    this.successStatuses = successStatuses;
+    this.successRootKeys = successRootKeys;
+    this.promise = promise;
+  };
+  ListResponse.prototype = Object.create(Array.prototype);
+
+  ListResponse.prototype.concat = function() {
+    // not sure why concat doesn't like the subclass, but treats it as an
+    // object
+    return [].concat.apply(this.slice(0), arguments);
+  };
+
+  ListResponse.prototype.all = function(callback) {
+    var iterator = this.iterator();
+    var iterable = iterator.next();
+
+    var handleNext = function(value) {
+      if (callback) {
+        setTimeout(function() {
+          callback(null, value);
+        }, 0);
+      }
+      iterable = iterator.next();
+
+      // "recurse"
+      if (!iterable.done) {
+        iterable.value.then(handleNext).catch(handleError);
+      }
+    };
+    var handleError = function(error) {
+      if (callback) {
+        setTimeout(function() {
+          callback(error, null);
+        }, 0);
+      }
+    };
+
+    iterable.value.then(handleNext).catch(handleError);
+  };
+
+  /**
+   * Implement the iterator protocol. Return an object that responds to next()
+   * with two properties: a boolean `done` and `value` with the result of that iteration, which is a promise in this case.
+   */
+  ListResponse.prototype.iterator = function() {
+    var totalIterated = 0;
+    var self = this;
+    var Promise = this.promise;
+    return {
+      next: function() {
+        if (totalIterated < self.totalLength) {
+          var deferred;
+          if (totalIterated >= self.length) {
+            // Fetch next page
+            deferred = self.nextPage().then(function(page) {
+              [].push.apply(self, page.slice(0));
+            });
+          } else {
+            deferred = new Promise(function(resolve) {
+              return resolve(1);
+            });
+          }
+
+          deferred = deferred.then(function() {
+            var value = self[totalIterated];
+            totalIterated += 1;
+            return value;
+          });
+
+          return {
+            value: deferred,
+            done: false
+          };
+        } else {
+          return {
+            done: true
+          };
+        }
+      }
+    };
+  };
+
+  // returns a promise
+  ListResponse.prototype.nextPage = function() {
+    this.currentPage += 1;
+    var params = Object.assign({}, this.requestOptions.query);
+    params.page = this.currentPage;
+
+    var promise = this.client.get(
+      this.requestOptions.path,
+      this.requestOptions,
+      params,
+      this.successStatuses,
+      this.successRootKeys,
+      false
+    );
+
+    return promise;
+  };
+
+  module.exports.ListResponse = ListResponse;
 }).call(this);
 
 },{}],16:[function(require,module,exports){
@@ -1946,7 +2095,7 @@ module.exports = {
      *
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Volume
      */
     Volume.prototype.list = function() {
@@ -1984,7 +2133,7 @@ module.exports = {
      * @param {number} id - ID of Droplet for which to retrieve snapshots
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Droplet
      */
     Volume.prototype.snapshots = function() {
@@ -2035,7 +2184,7 @@ module.exports = {
      * @param {string} id - ID of volume for which to retrieve actions
      * @param {(number|object)} [page or queryObject] - page number to retrieve or key value pairs of query parameters
      * @param {number} [perPage] - number of result per page to retrieve
-     * @param {requestCallback} [callback] - callback that handles the response
+     * @param {listRequestCallback} [callback] - callback that handles the response
      * @memberof Volume
      */
     Volume.prototype.listActions = function() {
@@ -70678,7 +70827,7 @@ module.exports = Request
 },{"./lib/auth":275,"./lib/cookies":276,"./lib/getProxyFromURI":277,"./lib/har":278,"./lib/helpers":279,"./lib/multipart":280,"./lib/oauth":281,"./lib/querystring":282,"./lib/redirect":283,"./lib/tunnel":284,"_process":236,"aws-sign2":285,"aws4":286,"buffer":34,"caseless":288,"extend":291,"forever-agent":292,"form-data":293,"hawk":322,"http":258,"http-signature":323,"https":232,"is-typedarray":375,"isstream":376,"mime-types":378,"stream":257,"stringstream":387,"url":265,"util":269,"zlib":33}],402:[function(require,module,exports){
 module.exports={
   "name": "digitalocean",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
@@ -70707,7 +70856,7 @@ module.exports={
   "dependencies": {
     "bluebird": "^3.0",
     "deep-extend": "0.x.x",
-    "request": "^2.50"
+    "request": "^2.68"
   },
   "devDependencies": {
     "bower": ">= 0.0.0",
@@ -70717,10 +70866,10 @@ module.exports={
     "jsdoc": "3.4.0",
     "mocha": "~2.1.0",
     "mocha-jshint": "^2.3.1",
-    "nock": "0.57.x"
+    "nock": "9.1.0"
   },
   "engines": {
-    "node": ">0.4.11",
+    "node": ">= 4",
     "npm": ">= 2.13.1"
   },
   "tonicExampleFilename": "examples/make_droplet.js",
