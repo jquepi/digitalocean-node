@@ -121,7 +121,7 @@ describe('firewall endpoints', function() {
     };
 
     it('creates the firewall', function() {
-      testUtils.api.post('/v2/firewalls', attributes).reply(201, data);
+      testUtils.api.post('/v2/firewalls', attributes).reply(202, data);
 
       client.firewalls.create(attributes, function(err, firewall, headers) {
         expect(firewall).to.shallowDeepEqual(data.firewall);
@@ -129,7 +129,7 @@ describe('firewall endpoints', function() {
     });
 
     it('returns a promisable', function(done) {
-      testUtils.api.post('/v2/firewalls', attributes).reply(201, data);
+      testUtils.api.post('/v2/firewalls', attributes).reply(202, data);
 
       client.firewalls.create(attributes).then(function(firewall) {
         expect(firewall).to.shallowDeepEqual(data.firewall);
