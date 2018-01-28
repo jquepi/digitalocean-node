@@ -3,8 +3,16 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/) and documents changes in a similar fashion to [Keep a CHANGELOG](http://keepachangelog.com/).
 
-<a name="Unreleased"></a>
-# Unreleased
+<a name="1.0.0"></a>
+# 1.0.0 (2018-01-28)
+
+* Add firewalls ([@straley](https://github.com/straley))
+
+<a name="0.12.0"></a>
+# 0.12.0 (2017-11-26)
+
+* Add auto-paging
+* Only test on supported versions of node
 
 <a name="0.11.0"></a>
 # 0.11.0 (2017-10-05)
