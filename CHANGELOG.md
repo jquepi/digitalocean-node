@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/) and documents changes in a similar fashion to [Keep a CHANGELOG](http://keepachangelog.com/).
 
+<a name="1.1.0"></a>
+# 1.1.0 (2018-03-25)
+
+* Add load balancers certificate ([@omgimanerd](https://github.com/omgimanerd))
+
 <a name="1.0.0"></a>
 # 1.0.0 (2018-01-28)
 
