@@ -246,18 +246,18 @@ module.exports = {
   // API sections
   var Account = require('./account'),
     Action = require('./action'),
+    Volume = require('./volume'),
     Certificate = require('./certificate'),
     Domain = require('./domain'),
     Droplet = require('./droplet'),
-    LoadBalancer = require('./load_balancer'),
-    Volume = require('./volume'),
     FloatingIp = require('./floating_ip'),
+    Firewall = require('./firewall'),
     Image = require('./image'),
+    LoadBalancer = require('./load_balancer'),
     Region = require('./region'),
     Size = require('./size'),
     Snapshot = require('./snapshot'),
-    Tag = require('./tag'),
-    Firewall = require('./firewall');
+    Tag = require('./tag');
 
   // Utilities
   var slice = [].slice,
@@ -310,18 +310,18 @@ module.exports = {
 
       this.account = new Account(this);
       this.actions = new Action(this);
+      this.volumes = new Volume(this);
       this.certificates = new Certificate(this);
       this.domains = new Domain(this);
-      this.loadBalancers = new LoadBalancer(this);
-      this.volumes = new Volume(this);
-      this.floatingIps = new FloatingIp(this);
-      this.images = new Image(this);
       this.droplets = new Droplet(this);
+      this.floatingIps = new FloatingIp(this);
+      this.firewalls = new Firewall(this);
+      this.images = new Image(this);
+      this.loadBalancers = new LoadBalancer(this);
       this.regions = new Region(this);
       this.sizes = new Size(this);
       this.snapshots = new Snapshot(this);
       this.tags = new Tag(this);
-      this.firewalls = new Firewall(this);
     }
 
     /** @private */
@@ -2360,7 +2360,7 @@ module.exports = {
      * @memberof Volume
      */
     Volume.prototype.create = function(attributes, callback) {
-      return this.client.post('/volumes', attributes, 201, 'volume', callback);
+      return this.client.post('/volumes', attributes, [200, 201], 'volume', callback);
     };
 
     /**
@@ -71075,7 +71075,7 @@ module.exports = Request
 },{"./lib/auth":277,"./lib/cookies":278,"./lib/getProxyFromURI":279,"./lib/har":280,"./lib/helpers":281,"./lib/multipart":282,"./lib/oauth":283,"./lib/querystring":284,"./lib/redirect":285,"./lib/tunnel":286,"_process":238,"aws-sign2":287,"aws4":288,"buffer":36,"caseless":290,"extend":293,"forever-agent":294,"form-data":295,"hawk":324,"http":260,"http-signature":325,"https":234,"is-typedarray":377,"isstream":378,"mime-types":380,"stream":259,"stringstream":389,"url":267,"util":271,"zlib":35}],404:[function(require,module,exports){
 module.exports={
   "name": "digitalocean",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
