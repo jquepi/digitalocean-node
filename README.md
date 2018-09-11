@@ -484,8 +484,8 @@ client.floatingIps
 * `client.floatingIps.get(floatingIp.ip, [callback])`
 * `client.floatingIps.create(attributes, [callback])`
 * `client.floatingIps.delete(floatingIp.ip, [callback])`
-* `client.floatingIps.listActions([page, perPage], [callback])`
-* `client.floatingIps.listActions([queryObject], [callback])`
+* `client.floatingIps.listActions(floatingIp.ip, [page, perPage], [callback])`
+* `client.floatingIps.listActions(floatingIp.ip, [queryObject], [callback])`
 * `client.floatingIps.getAction(floatingIp.ip, [callback])`
 
 Methods resulting in an `action`:
@@ -498,7 +498,7 @@ For the latest valid attributes, [see the official docs](https://developers.digi
 ```js
 var digitalocean = require('digitalocean');
 var client = digitalocean.client('TOKEN');
-client.floatingIps
+client.firewalls
 ```
 * `client.firewalls.list([page, perPage], [callback])`
 * `client.firewalls.list([queryObject], [callback])`
@@ -524,8 +524,8 @@ client.images
 * `client.images.get(image.id, [callback])`
 * `client.images.delete(image.id, [callback])`
 * `client.images.update(image.id, attributes, [callback])`
-* `client.images.listActions([page, perPage], image.id, [callback])`
-* `client.images.listActions([queryObject], image.id, [callback])`
+* `client.images.listActions(image.id, [page, perPage], [callback])`
+* `client.images.listActions(image.id, [queryObject], [callback])`
 * `client.images.getAction(image.id, action.id, [callback])`
 
 Methods resulting in an `action`:
