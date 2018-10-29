@@ -71075,7 +71075,7 @@ module.exports = Request
 },{"./lib/auth":277,"./lib/cookies":278,"./lib/getProxyFromURI":279,"./lib/har":280,"./lib/helpers":281,"./lib/multipart":282,"./lib/oauth":283,"./lib/querystring":284,"./lib/redirect":285,"./lib/tunnel":286,"_process":238,"aws-sign2":287,"aws4":288,"buffer":36,"caseless":290,"extend":293,"forever-agent":294,"form-data":295,"hawk":324,"http":260,"http-signature":325,"https":234,"is-typedarray":377,"isstream":378,"mime-types":380,"stream":259,"stringstream":389,"url":267,"util":271,"zlib":35}],404:[function(require,module,exports){
 module.exports={
   "name": "digitalocean",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "Phillip Baker <phillbaker@retrodict.com>",
   "description": "nodejs wrapper for digitalocean v2 api",
   "main": "./lib/digitalocean",
@@ -71103,7 +71103,7 @@ module.exports={
   },
   "dependencies": {
     "bluebird": "^3.0",
-    "deep-extend": "0.x.x",
+    "deep-extend": ">=0.5.1",
     "request": "^2.68"
   },
   "devDependencies": {
