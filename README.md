@@ -486,7 +486,7 @@ client.floatingIps
 * `client.floatingIps.delete(floatingIp.ip, [callback])`
 * `client.floatingIps.listActions(floatingIp.ip, [page, perPage], [callback])`
 * `client.floatingIps.listActions(floatingIp.ip, [queryObject], [callback])`
-* `client.floatingIps.getAction(floatingIp.ip, [callback])`
+* `client.floatingIps.getAction(floatingIp.ip, action.id, [callback])`
 
 Methods resulting in an `action`:
 * `client.floatingIps.assign(floatingIp.ip, parametersOrDropletId, [callback])`
