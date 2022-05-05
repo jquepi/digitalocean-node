@@ -288,11 +288,9 @@ function getAllDroplets() {
     }
 
     return client.droplets.list(page)
-      .each(function(droplet) {
-        allDroplets.push(droplet);
-      })
       .then(function(droplets) {
-        var links = droplets._digitalocean.body.links;
+        droplets.forEach(droplet => allDroplets.push(droplet));
+        var links = droplets._digitalOcean.body.links;
         var isLastPage = links && (
           !links.pages ||
             (links.pages && links.pages.last === undefined)
